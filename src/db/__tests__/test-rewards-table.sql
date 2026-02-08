@@ -1,17 +1,17 @@
 CREATE FUNCTION public.test_redemption_methods_must_not_be_empty() 
 RETURNS SETOF TEXT AS $test_definition$
+DECLARE
+  partner_id INT;
 BEGIN
   INSERT INTO partners (
-    id,
     name,
     logo_url,
     description
   ) VALUES (
-    'joes-coffee-shop',
     'Joe''s Coffee Shop',
     '/images/logos/joes-coffee-shop.webp',
     'An coffee shop for programmers'
-  );
+  ) RETURNING id INTO partner_id;
 
   RETURN QUERY (
     SELECT throws_ok(
@@ -24,7 +24,7 @@ BEGIN
           voucher_type
         ) VALUES (
           gen_random_uuid(),
-          'joes-coffee-shop',
+          partner_id,
           'Free caffe latte',
           '{}',
           'multiple_use'
@@ -37,18 +37,18 @@ $test_definition$ LANGUAGE plpgsql;
 
 CREATE FUNCTION public.test_redemption_methods_must_not_contain_duplicates() 
 RETURNS SETOF TEXT AS $test_definition$
+DECLARE
+  partner_id INT;
 BEGIN
   INSERT INTO partners (
-    id,
     name,
     logo_url,
     description
   ) VALUES (
-    'joes-coffee-shop',
     'Joe''s Coffee Shop',
     '/images/logos/joes-coffee-shop.webp',
     'An coffee shop for programmers'
-  );
+  ) RETURNING id INTO partner_id;
 
   RETURN QUERY (
     SELECT throws_ok(
@@ -61,7 +61,7 @@ BEGIN
           voucher_type
         ) VALUES (
           gen_random_uuid(),
-          'joes-coffee-shop',
+          partner_id,
           'Free caffe latte',
           '{"online", "online"}',
           'multiple_use'
@@ -75,21 +75,20 @@ $test_definition$ LANGUAGE plpgsql;
 CREATE FUNCTION public.test_rewards_table_update_trigger() 
 RETURNS SETOF TEXT AS $$
 DECLARE
+  partner_id INT;
   reward_id UUID;
   original_updated_at TIMESTAMPTZ;
   new_updated_at TIMESTAMPTZ;
 BEGIN
   INSERT INTO partners (
-    id,
     name,
     logo_url,
     description
   ) VALUES (
-    'joes-coffee-shop',
     'Joe''s Coffee Shop',
     '/images/logos/joes-coffee-shop.webp',
     'An coffee shop for programmers'
-  );
+  ) RETURNING id INTO partner_id;
 
   INSERT INTO rewards (
     id,
@@ -99,7 +98,7 @@ BEGIN
     voucher_type
   ) VALUES (
     gen_random_uuid(),
-    'joes-coffee-shop',
+    partner_id,
     'Free caffe latte',
     '{"online", "in_store"}',
     'multiple_use'

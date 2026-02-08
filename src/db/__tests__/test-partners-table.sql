@@ -1,23 +1,22 @@
 CREATE FUNCTION public.test_partners_table_update_trigger() RETURNS SETOF TEXT AS $$
 DECLARE
+  partner_id INT;
   original_updated_at TIMESTAMPTZ;
   new_updated_at TIMESTAMPTZ;
 BEGIN
   INSERT INTO partners (
-    id,
     name,
     logo_url,
     description
   ) VALUES (
-    'joes-coffee-shop',
     'Joe''s Coffee Shop',
     '/images/logos/joes-coffee-shop.webp',
     'An coffee shop for programmers'
-  ) RETURNING updated_at INTO original_updated_at;
+  ) RETURNING id, updated_at INTO partner_id, original_updated_at;
 
   UPDATE partners 
   SET description = 'An AWESOME coffee shop for programmers' 
-  WHERE id = 'joes-coffee-shop'
+  WHERE id = partner_id
   RETURNING updated_at INTO new_updated_at;
 
   RETURN QUERY (

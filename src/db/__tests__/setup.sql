@@ -9,6 +9,10 @@ CREATE TABLE test_override.mocked_values (
 INSERT INTO test_override.mocked_values 
 (mocked_current_timestamp) VALUES (now());
 
+/*
+  Mock now() so that each time it is called, the returned value is advanced by
+  one hour.
+*/
 CREATE OR REPLACE FUNCTION test_override.now() RETURNS TIMESTAMPTZ AS $$
 DECLARE
   t TIMESTAMPTZ;

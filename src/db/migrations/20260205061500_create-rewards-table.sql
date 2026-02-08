@@ -1,7 +1,7 @@
 -- migrate:up
 CREATE TABLE rewards (
   id UUID PRIMARY KEY,
-  partner_id VARCHAR(255) NOT NULL REFERENCES partners(id) ON DELETE CASCADE,
+  partner_id INT NOT NULL REFERENCES partners(id) ON DELETE CASCADE,
   short_description VARCHAR(255) NOT NULL,
   redemption_forums redemption_forum[] NOT NULL,
   voucher_type voucher_type NOT NULL,

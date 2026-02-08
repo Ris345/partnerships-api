@@ -1,27 +1,26 @@
 CREATE FUNCTION public.test_locations_table_update_trigger() 
 RETURNS SETOF TEXT AS $$
 DECLARE
-  location_id INT;
+  partner_id INT;
+  location_id BIGINT;
   original_updated_at TIMESTAMPTZ;
   new_updated_at TIMESTAMPTZ;
 BEGIN
   INSERT INTO partners (
-    id,
     name,
     logo_url,
     description
   ) VALUES (
-    'joes-coffee-shop',
     'Joe''s Coffee Shop',
     '/images/logos/joes-coffee-shop.webp',
     'An coffee shop for programmers'
-  );
+  ) RETURNING id INTO partner_id;
 
   INSERT INTO locations (
     partner_id,
     coordinates
   ) VALUES (
-    'joes-coffee-shop',
+    partner_id,
     make_geographic_point(124.43555, -23.98791)
   ) RETURNING id, updated_at INTO location_id, original_updated_at;
 
