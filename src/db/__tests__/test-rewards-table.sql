@@ -75,6 +75,7 @@ $test_definition$ LANGUAGE plpgsql;
 CREATE FUNCTION public.test_rewards_table_update_trigger() 
 RETURNS SETOF TEXT AS $$
 DECLARE
+  reward_id UUID;
   original_updated_at TIMESTAMPTZ;
   new_updated_at TIMESTAMPTZ;
 BEGIN
@@ -102,9 +103,10 @@ BEGIN
     'Free caffe latte',
     '{"online", "in_store"}',
     'multiple_use'
-  ) RETURNING updated_at INTO original_updated_at;
+  ) RETURNING id, updated_at INTO reward_id, original_updated_at;
 
   UPDATE rewards SET short_description = 'Free caffe mocha'
+  WHERE id = reward_id
   RETURNING updated_at INTO new_updated_at;
 
   RETURN QUERY (
