@@ -46,16 +46,18 @@ async function testDB() {
   );
   console.log(output.stdout);
 
-  // create the pgtap extension
+  // perform setup functions
   const client = new Client(dbUrl);
   await client.connect();
-  await client.query('CREATE EXTENSION pgtap;');
+
+  const testsDir = path.join(__dirname, '../db/__tests__');
+  const setup = fs.readFileSync(path.join(testsDir, 'setup.sql'), 'utf-8');
+  await client.query(setup);
 
   // create the test functions
-  const testsDir = path.join(__dirname, '../db/__tests__');
   const testFiles = fs.readdirSync(testsDir);
   for (const file of testFiles) {
-    if (!file.endsWith('.sql')) continue;
+    if (file.startsWith('setup') || !file.endsWith('.sql')) continue;
 
     const fullPath = path.join(testsDir, file);
     const contents = fs.readFileSync(fullPath, 'utf-8');
@@ -66,7 +68,7 @@ async function testDB() {
 
   try {
     const { stdout } = await exec(
-      `pg_prove --dbname ${process.env.TEST_DB_NAME} --user postgres --runtests --verbose`,
+      `PGOPTIONS='--search_path=test_override,pg_catalog,public' pg_prove --dbname ${process.env.TEST_DB_NAME} --user postgres --runtests --verbose`,
     );
     console.log(stdout);
   } catch (e: any) {

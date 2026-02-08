@@ -17,5 +17,12 @@ CREATE TRIGGER locations_update_trigger
 BEFORE UPDATE ON locations 
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
+/*
+  Order matters here. The index performs better when partner_id is specified 
+  first.
+*/
+CREATE INDEX locations_partner_id_coordinates_idx 
+ON locations USING GIST(partner_id, coordinates);
+
 -- migrate:down
 DROP TABLE locations;
