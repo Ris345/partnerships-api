@@ -11,9 +11,15 @@ A utility function that can be called within a trigger to set the updated_at
 column of a row when it receives updates.
 $$;
 
+CREATE FUNCTION sort_arr(arr ANYARRAY) RETURNS ANYARRAY AS $$
+  BEGIN 
+    RETURN ARRAY(SELECT UNNEST(arr) ORDER BY 1);
+  END;
+$$ LANGUAGE plpgsql;
+
 CREATE FUNCTION contains_duplicates(arr ANYARRAY) RETURNS BOOLEAN AS $$
   BEGIN
-    RETURN ARRAY(SELECT DISTINCT UNNEST(arr)) != arr;
+    RETURN sort_arr(ARRAY(SELECT DISTINCT UNNEST(arr))) != sort_arr(arr);
   END;
 $$ LANGUAGE plpgsql;
 

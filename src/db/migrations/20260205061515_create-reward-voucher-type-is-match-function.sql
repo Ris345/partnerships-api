@@ -2,7 +2,10 @@
 CREATE FUNCTION reward_voucher_type_is_match(reward_id UUID, voucher_type voucher_type)
 RETURNS BOOLEAN AS $$
 BEGIN
-  RETURN (SELECT voucher_type FROM rewards WHERE id = reward_id) = voucher_type;
+  RETURN (
+    SELECT rewards.voucher_type 
+    FROM rewards WHERE id = reward_id
+  ) = reward_voucher_type_is_match.voucher_type;
 END;
 $$ LANGUAGE plpgsql;
 

@@ -2,7 +2,7 @@
 CREATE TABLE base_vouchers (
   redeemable_until TIMESTAMPTZ,
   redemption_methods redemption_method[] NOT NULL,
-  instructions TEXT,
+  instructions TEXT NOT NULL,
   redemption_code TEXT,
   redemption_qr_code TEXT,
   redemption_link_url TEXT,
