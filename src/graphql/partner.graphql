@@ -1,0 +1,81 @@
+type Partner {
+  id: ID!
+  partnerDetails(languageCode: LanguageCode!): PartnerDetails!
+  locations(
+    filter: LocationFilter
+    orderBy: [LocationOrderByCriteria!]
+    take: Int
+  ): [Location!]!
+  locationsCount(filter: LocationFilter): Int!
+  rewards(
+    filter: RewardFilter
+    orderBy: [RewardOrderByCriteria!]
+    take: Int
+  ): [Reward!]!
+  rewardsCount(filter: RewardFilter): Int!
+}
+
+type PartnerDetails {
+  name: String!
+  logoUrl: String!
+  description: String!
+  webAddressUrl: String
+  webAddressText: String
+  reasonForSupporting8by8: String
+}
+
+input PartnerFilter @oneOf {
+  id: IDFilter
+  partnerDetails: LocalizedPartnerDetailsFilter
+  rewardsCount: RewardsCountFilter
+  locationsCount: LocationsCountFilter
+  _and: [PartnerFilter!]
+  _or: [PartnerFilter!]
+  _not: PartnerFilter
+}
+
+input LocalizedPartnerDetailsFilter {
+  _languageCode: LanguageCode!
+  _filter: PartnerDetailsFilter!
+}
+
+input PartnerDetailsFilter @oneOf {
+  name: StringFilter
+  logoUrl: StringFilter
+  description: StringFilter
+  webAddressUrl: StringFilter
+  webAddressText: StringFilter
+  reasonForSupporting8by8: StringFilter
+  _and: [PartnerDetailsFilter!]
+  _or: [PartnerDetailsFilter!]
+  _not: PartnerDetailsFilter
+}
+
+input LocationsCountFilter {
+  _value: IntFilter!
+  _filter: LocationFilter
+}
+
+input RewardsCountFilter {
+  _value: IntFilter!
+  _filter: RewardFilter
+}
+
+input PartnerOrderByCriteria @oneOf {
+  id: SortOrder
+  partnerDetails: LocalizedPartnerDetailsOrderByCriteria
+}
+
+input LocalizedPartnerDetailsOrderByCriteria {
+  _languageCode: LanguageCode!
+  _orderBy: PartnerDetailsOrderByCriteria!
+}
+
+input PartnerDetailsOrderByCriteria @oneOf {
+  name: SortOrder
+  logoUrl: SortOrder
+  description: SortOrder
+  webAddressUrl: SortOrder
+  webAddressText: SortOrder
+  reasonForSupporting8by8: SortOrder
+}

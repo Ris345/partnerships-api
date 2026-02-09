@@ -1,0 +1,52 @@
+enum DistanceUnits {
+  METERS
+  KILOMETERS
+  MILES
+}
+
+type Location {
+  id: ID!
+  coordinates: Coordinates!
+  distance(from: InputCoordinates!, units: DistanceUnits!): Float!
+  partner: Partner!
+}
+
+type Coordinates {
+  latitude: Float!
+  longitude: Float!
+}
+
+input InputCoordinates {
+  latitude: Float!
+  longitude: Float!
+}
+
+input LocationFilter @oneOf {
+  id: IDFilter
+  distance: DistanceFilter
+  partner: PartnerFilter
+  _and: [LocationFilter!]
+  _or: [LocationFilter!]
+  _not: LocationFilter
+}
+
+input DistanceFilter @oneOf {
+  _within: DistanceWithinFilter
+}
+
+input DistanceWithinFilter {
+  _radius: Float!
+  _from: InputCoordinates!
+  _units: DistanceUnits!
+}
+
+input LocationOrderByCriteria @oneOf {
+  id: SortOrder
+  distance: DistanceOrderByCriteria
+  partner: PartnerOrderByCriteria
+}
+
+input DistanceOrderByCriteria {
+  _from: InputCoordinates!
+  _sortOrder: SortOrder!
+}

@@ -25,7 +25,7 @@ BEGIN
         ) VALUES (
           gen_random_uuid(),
           partner_id,
-          'Free caffe latte',
+          '20% Off At Checkout',
           '{}',
           'multiple_use'
         );
@@ -62,7 +62,7 @@ BEGIN
         ) VALUES (
           gen_random_uuid(),
           partner_id,
-          'Free caffe latte',
+          '20% Off At Checkout',
           '{"online", "online"}',
           'multiple_use'
         );
@@ -99,7 +99,7 @@ BEGIN
   ) VALUES (
     gen_random_uuid(),
     partner_id,
-    'Free caffe latte',
+    '20% Off At Checkout',
     '{"online", "in_store"}',
     'multiple_use'
   ) RETURNING id, updated_at INTO reward_id, original_updated_at;

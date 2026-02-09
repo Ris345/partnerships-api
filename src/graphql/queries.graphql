@@ -1,0 +1,33 @@
+type Query {
+  partner(id: ID!): Partner
+
+  partners(
+    filter: PartnerFilter
+    orderBy: [PartnerOrderByCriteria!]
+    take: Int = 50
+  ): [Partner!]!
+
+  partnersCount(filter: PartnerFilter): Int!
+
+  location(id: ID!): Location
+
+  locations(
+    filter: LocationFilter
+    orderBy: [LocationOrderByCriteria!]
+    take: Int = 50
+  ): [Location!]!
+
+  locationsCount(filter: LocationFilter): Int!
+
+  reward(id: ID!): Reward
+
+  rewards(
+    filter: RewardFilter
+    orderBy: [RewardOrderByCriteria!]
+    take: Int = 50
+  ): [Reward!]!
+
+  rewardsCount(filter: RewardFilter): Int!
+
+  categories(languageCode: LanguageCode!): [String!]!
+}

@@ -1,0 +1,90 @@
+enum RedemptionForum {
+  ONLINE
+  IN_STORE
+}
+
+enum VoucherType {
+  MULTIPLE_USE
+  SINGLE_USE
+  MANUAL
+  ON_DEMAND
+}
+
+type Reward {
+  id: ID!
+  redemptionForums: [RedemptionForum!]!
+  voucherType: VoucherType!
+  hasLimitedTotalUsesOrQuantity: Boolean!
+  vouchersRemaining: Int
+  minExpirationDate: DateTime
+  partner: Partner!
+  rewardDetails(languageCode: LanguageCode): RewardDetails!
+}
+
+type RewardDetails {
+  categories: [String!]!
+  shortDescription: String!
+  longDescription: String
+}
+
+input RewardFilter @oneOf {
+  id: IDFilter
+  redemptionForums: RedemptionForumArrayFilter
+  voucherType: VoucherTypeFilter
+  rewardDetails: LocalizedRewardDetailsFilter
+  hasLimitedTotalUsesOrQuantity: BooleanFilter
+  vouchersRemaining: IntFilter
+  minExpirationDate: DateTimeFilter
+  partner: PartnerFilter
+  _and: [RewardFilter!]
+  _or: [RewardFilter!]
+  _not: RewardFilter
+}
+
+input RedemptionForumArrayFilter {
+  _eq: [RedemptionForum!]
+  _neq: [RedemptionForum!]
+  _containsEl: RedemptionForum
+  _containsArr: [RedemptionForum!]
+  _containedBy: [RedemptionForum!]
+  _overlaps: [RedemptionForum!]
+}
+
+input VoucherTypeFilter @oneOf {
+  _eq: VoucherType
+  _neq: VoucherType
+  _containedBy: [VoucherType!]
+}
+
+input LocalizedRewardDetailsFilter {
+  _languageCode: LanguageCode!
+  _filter: RewardDetailsFilter!
+}
+
+input RewardDetailsFilter @oneOf {
+  shortDescription: StringFilter
+  longDescription: StringFilter
+  categories: StringArrayFilter
+  _and: [RewardDetailsFilter!]
+  _or: [RewardDetailsFilter!]
+  _not: RewardDetailsFilter
+}
+
+input RewardOrderByCriteria @oneOf {
+  id: SortOrder
+  vouchersRemaining: SortOrder
+  minExpirationDate: SortOrder
+  partner: PartnerOrderByCriteria
+  rewardDetails: LocalizedRewardDetailsOrderByCriteria
+}
+
+input LocalizedRewardDetailsOrderByCriteria {
+  _languageCode: LanguageCode!
+  _orderBy: RewardDetailsOrderByCriteria!
+}
+
+input RewardDetailsOrderByCriteria @oneOf {
+  categories: SortOrder
+  shortDescription: SortOrder
+  longDescription: SortOrder
+}

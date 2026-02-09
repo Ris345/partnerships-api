@@ -46,16 +46,16 @@ export namespace Public {
       export type ColumnNames = |
         'id' |
         'partner_id' |
-        'coordinates' |
+        'updated_at' |
         'created_at' |
-        'updated_at';
+        'coordinates';
     
       export interface RowType {
         ['id']: string;
-        ['partner_id']: string;
-        ['coordinates']: string;
-        ['created_at']: Date;
+        ['partner_id']: number;
         ['updated_at']: Date;
+        ['created_at']: Date;
+        ['coordinates']: string;
       }
     }
     
@@ -116,7 +116,7 @@ export namespace Public {
       export interface RowType {
         ['redeemable_until']: Date | null;
         ['redemption_methods']: string;
-        ['instructions']: string | null;
+        ['instructions']: string;
         ['redemption_code']: string | null;
         ['redemption_qr_code']: string | null;
         ['redemption_link_url']: string | null;
@@ -184,7 +184,7 @@ export namespace Public {
         'updated_at';
     
       export interface RowType {
-        ['id']: string;
+        ['id']: number;
         ['name']: string;
         ['logo_url']: string;
         ['description']: string;
@@ -238,7 +238,7 @@ export namespace Public {
     
       export interface RowType {
         ['id']: string;
-        ['partner_id']: string;
+        ['partner_id']: number;
         ['short_description']: string;
         ['redemption_forums']: Enums.RedemptionForum[];
         ['voucher_type']: Enums.VoucherType;
@@ -279,7 +279,7 @@ export namespace Public {
       export interface RowType {
         ['redeemable_until']: Date | null;
         ['redemption_methods']: string;
-        ['instructions']: string | null;
+        ['instructions']: string;
         ['redemption_code']: string | null;
         ['redemption_qr_code']: string | null;
         ['redemption_link_url']: string | null;
