@@ -1,24 +1,39 @@
+enum RewardType {
+  PUBLIC
+  CLAIMABLE
+}
+
 enum RedemptionForum {
   ONLINE
   IN_STORE
 }
 
-enum VoucherType {
-  MULTIPLE_USE
-  SINGLE_USE
-  MANUAL
-  ON_DEMAND
+interface IReward {
+  id: ID!
+  rewardType: RewardType!
+  redemptionForums: [RedemptionForum!]!
+  rewardDetails(languageCode: LanguageCode!): RewardDetails!
+  partner: Partner!
 }
 
-type Reward {
+union Reward = PublicReward | ClaimableReward
+
+type PublicReward implements IReward {
   id: ID!
+  rewardType: RewardType!
   redemptionForums: [RedemptionForum!]!
-  voucherType: VoucherType!
-  hasLimitedTotalUsesOrQuantity: Boolean!
-  vouchersRemaining: Int
-  minExpirationDate: DateTime
   partner: Partner!
-  rewardDetails(languageCode: LanguageCode): RewardDetails!
+  rewardDetails(languageCode: LanguageCode!): RewardDetails!
+  publicVoucher: PublicVoucher!
+}
+
+type ClaimableReward implements IReward {
+  id: ID!
+  rewardType: RewardType!
+  redemptionForums: [RedemptionForum!]!
+  partner: Partner!
+  rewardDetails(languageCode: LanguageCode!): RewardDetails!
+  earliestExpirationDate: DateTime
 }
 
 type RewardDetails {
@@ -30,18 +45,17 @@ type RewardDetails {
 input RewardFilter @oneOf {
   id: IDFilter
   redemptionForums: RedemptionForumArrayFilter
-  voucherType: VoucherTypeFilter
-  rewardDetails: LocalizedRewardDetailsFilter
-  hasLimitedTotalUsesOrQuantity: BooleanFilter
-  vouchersRemaining: IntFilter
-  minExpirationDate: DateTimeFilter
+  rewardDetails: TranslatedRewardDetailsFilter
   partner: PartnerFilter
+  rewardType: RewardTypeFilter
+  publicVoucher: TranslatedPublicVoucherFilter
+  earliestExpirationDate: DateTimeFilter
   _and: [RewardFilter!]
   _or: [RewardFilter!]
   _not: RewardFilter
 }
 
-input RedemptionForumArrayFilter {
+input RedemptionForumArrayFilter @oneOf {
   _eq: [RedemptionForum!]
   _neq: [RedemptionForum!]
   _containsEl: RedemptionForum
@@ -50,13 +64,7 @@ input RedemptionForumArrayFilter {
   _overlaps: [RedemptionForum!]
 }
 
-input VoucherTypeFilter @oneOf {
-  _eq: VoucherType
-  _neq: VoucherType
-  _containedBy: [VoucherType!]
-}
-
-input LocalizedRewardDetailsFilter {
+input TranslatedRewardDetailsFilter {
   _languageCode: LanguageCode!
   _filter: RewardDetailsFilter!
 }
@@ -70,15 +78,28 @@ input RewardDetailsFilter @oneOf {
   _not: RewardDetailsFilter
 }
 
-input RewardOrderByCriteria @oneOf {
-  id: SortOrder
-  vouchersRemaining: SortOrder
-  minExpirationDate: SortOrder
-  partner: PartnerOrderByCriteria
-  rewardDetails: LocalizedRewardDetailsOrderByCriteria
+input RewardTypeFilter @oneOf {
+  _eq: RewardType
+  _neq: RewardType
 }
 
-input LocalizedRewardDetailsOrderByCriteria {
+input TranslatedPublicVoucherFilter {
+  _languageCode: LanguageCode!
+  _filter: PublicVoucherFilter!
+}
+
+input PublicVoucherFilter @oneOf {
+  hasLimitedTotalUses: BooleanFilter
+  expirationDate: DateTimeFilter
+}
+
+input RewardOrderByCriteria @oneOf {
+  id: SortOrder
+  partner: PartnerOrderByCriteria
+  rewardDetails: TranslatedRewardDetailsOrderByCriteria
+}
+
+input TranslatedRewardDetailsOrderByCriteria {
   _languageCode: LanguageCode!
   _orderBy: RewardDetailsOrderByCriteria!
 }

@@ -24,7 +24,7 @@ input DateTimeFilter @oneOf {
   _lte: DateTime
 }
 
-input IDFilter {
+input IDFilter @oneOf {
   _eq: ID
   _neq: ID
   _gt: ID
@@ -34,7 +34,7 @@ input IDFilter {
   _containedBy: [ID!]
 }
 
-input IntFilter {
+input IntFilter @oneOf {
   _eq: Int
   _neq: Int
   _gt: Int
@@ -43,33 +43,33 @@ input IntFilter {
   _lte: Int
 }
 
-input StringFilter {
-  _eq: String
-  _neq: String
+input StringFilter @oneOf {
+  _eq: CaseAwareStringFilterValue
+  _neq: CaseAwareStringFilterValue
   _lt: String
   _gt: String
   _gte: String
   _lte: String
-  _like: LikeOperatorValue
-  _includes: String
-  _includedBy: String
-  _containedBy: [String!]
+  _includes: CaseAwareStringFilterValue
+  _like: CaseAwareStringFilterValue
+  _containedBy: CaseAwareStringArrayFilterValue
 }
 
-input LikeOperatorValue {
+input CaseAwareStringFilterValue {
   _value: String!
   _ignoreCase: Boolean = false
 }
 
-input StringArrayFilter {
-  _eq: [String!]
-  _neq: [String!]
-  _gt: [String!]
-  _lt: [String!]
-  _gte: [String!]
-  _lte: [String!]
-  _containsEl: String
-  _containsArr: [String!]
-  _containedBy: [String!]
-  _overlaps: [String!]
+input CaseAwareStringArrayFilterValue {
+  _value: [String!]!
+  _ignoreCase: Boolean = false
+}
+
+input StringArrayFilter @oneOf {
+  _eq: CaseAwareStringArrayFilterValue
+  _neq: CaseAwareStringArrayFilterValue
+  _containsEl: CaseAwareStringFilterValue
+  _containsArr: CaseAwareStringArrayFilterValue
+  _containedBy: CaseAwareStringArrayFilterValue
+  _overlaps: CaseAwareStringArrayFilterValue
 }

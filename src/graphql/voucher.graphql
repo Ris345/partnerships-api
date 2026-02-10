@@ -1,0 +1,47 @@
+enum RedemptionMethod {
+  CODE
+  QR_CODE
+  LINK
+  MANUAL
+}
+
+interface IVoucherDetails {
+  redemptionMethod: RedemptionMethod!
+  instructions: String!
+}
+
+type PublicVoucher {
+  voucherDetails(languageCode: LanguageCode!): [VoucherDetails!]!
+  hasLimitedTotalUses: Boolean!
+  expirationDate: DateTime
+}
+
+union VoucherDetails =
+  | CodeVoucherDetails
+  | QRCodeVoucherDetails
+  | LinkVoucherDetails
+  | ManualVoucherDetails
+
+type CodeVoucherDetails implements IVoucherDetails {
+  redemptionMethod: RedemptionMethod!
+  instructions: String!
+  redemptionCode: String!
+}
+
+type QRCodeVoucherDetails implements IVoucherDetails {
+  redemptionMethod: RedemptionMethod!
+  instructions: String!
+  redemptionQRCode: String!
+}
+
+type LinkVoucherDetails implements IVoucherDetails {
+  redemptionMethod: RedemptionMethod!
+  instructions: String!
+  redemptionLinkUrl: String!
+  redemptionLinkText: String
+}
+
+type ManualVoucherDetails implements IVoucherDetails {
+  redemptionMethod: RedemptionMethod!
+  instructions: String!
+}

@@ -1,0 +1,19 @@
+type Mutations {
+  claimReward(id: ID!): ClaimedReward
+}
+
+type ClaimedReward {
+  voucher: ClaimedVoucher!
+  rewardSnapshot: RewardSnapshot!
+  partnerSnapshot: PartnerSnapshot!
+}
+
+type ClaimedVoucher {
+  voucherDetailsTranslations: [TranslatedVoucherDetails!]!
+  expirationDate: DateTime
+}
+
+type TranslatedVoucherDetails {
+  languageCode: LanguageCode!
+  voucherDetails: [VoucherDetails!]!
+}

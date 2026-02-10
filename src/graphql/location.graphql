@@ -1,5 +1,4 @@
 enum DistanceUnits {
-  METERS
   KILOMETERS
   MILES
 }

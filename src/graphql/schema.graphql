@@ -24,7 +24,7 @@ input DateTimeFilter @oneOf {
   _lte: DateTime
 }
 
-input IDFilter {
+input IDFilter @oneOf {
   _eq: ID
   _neq: ID
   _gt: ID
@@ -34,7 +34,7 @@ input IDFilter {
   _containedBy: [ID!]
 }
 
-input IntFilter {
+input IntFilter @oneOf {
   _eq: Int
   _neq: Int
   _gt: Int
@@ -43,7 +43,7 @@ input IntFilter {
   _lte: Int
 }
 
-input StringFilter {
+input StringFilter @oneOf {
   _eq: String
   _neq: String
   _lt: String
@@ -61,7 +61,7 @@ input LikeOperatorValue {
   _ignoreCase: Boolean = false
 }
 
-input StringArrayFilter {
+input StringArrayFilter @oneOf {
   _eq: [String!]
   _neq: [String!]
   _gt: [String!]
@@ -102,7 +102,7 @@ type PartnerDetails {
 
 input PartnerFilter @oneOf {
   id: IDFilter
-  partnerDetails: LocalizedPartnerDetailsFilter
+  partnerDetails: TranslatedPartnerDetailsFilter
   rewardsCount: RewardsCountFilter
   locationsCount: LocationsCountFilter
   _and: [PartnerFilter!]
@@ -110,7 +110,7 @@ input PartnerFilter @oneOf {
   _not: PartnerFilter
 }
 
-input LocalizedPartnerDetailsFilter {
+input TranslatedPartnerDetailsFilter {
   _languageCode: LanguageCode!
   _filter: PartnerDetailsFilter!
 }
@@ -139,10 +139,10 @@ input RewardsCountFilter {
 
 input PartnerOrderByCriteria @oneOf {
   id: SortOrder
-  partnerDetails: LocalizedPartnerDetailsOrderByCriteria
+  partnerDetails: TranslatedPartnerDetailsOrderByCriteria
 }
 
-input LocalizedPartnerDetailsOrderByCriteria {
+input TranslatedPartnerDetailsOrderByCriteria {
   _languageCode: LanguageCode!
   _orderBy: PartnerDetailsOrderByCriteria!
 }
@@ -156,99 +156,7 @@ input PartnerDetailsOrderByCriteria @oneOf {
   reasonForSupporting8by8: SortOrder
 }
 
-enum RedemptionForum {
-  ONLINE
-  IN_STORE
-}
-
-enum VoucherType {
-  MULTIPLE_USE
-  SINGLE_USE
-  MANUAL
-  ON_DEMAND
-}
-
-type Reward {
-  id: ID!
-  redemptionForums: [RedemptionForum!]!
-  voucherType: VoucherType!
-  hasLimitedTotalUsesOrQuantity: Boolean!
-  vouchersRemaining: Int
-  minExpirationDate: DateTime
-  partner: Partner!
-  rewardDetails(languageCode: LanguageCode): RewardDetails!
-}
-
-type RewardDetails {
-  categories: [String!]!
-  shortDescription: String!
-  longDescription: String
-}
-
-input RewardFilter @oneOf {
-  id: IDFilter
-  redemptionForums: RedemptionForumArrayFilter
-  voucherType: VoucherTypeFilter
-  rewardDetails: LocalizedRewardDetailsFilter
-  hasLimitedTotalUsesOrQuantity: BooleanFilter
-  vouchersRemaining: IntFilter
-  minExpirationDate: DateTimeFilter
-  partner: PartnerFilter
-  _and: [RewardFilter!]
-  _or: [RewardFilter!]
-  _not: RewardFilter
-}
-
-input RedemptionForumArrayFilter {
-  _eq: [RedemptionForum!]
-  _neq: [RedemptionForum!]
-  _containsEl: RedemptionForum
-  _containsArr: [RedemptionForum!]
-  _containedBy: [RedemptionForum!]
-  _overlaps: [RedemptionForum!]
-}
-
-input VoucherTypeFilter @oneOf {
-  _eq: VoucherType
-  _neq: VoucherType
-  _containedBy: [VoucherType!]
-}
-
-input LocalizedRewardDetailsFilter {
-  _languageCode: LanguageCode!
-  _filter: RewardDetailsFilter!
-}
-
-input RewardDetailsFilter @oneOf {
-  shortDescription: StringFilter
-  longDescription: StringFilter
-  categories: StringArrayFilter
-  _and: [RewardDetailsFilter!]
-  _or: [RewardDetailsFilter!]
-  _not: RewardDetailsFilter
-}
-
-input RewardOrderByCriteria @oneOf {
-  id: SortOrder
-  vouchersRemaining: SortOrder
-  minExpirationDate: SortOrder
-  partner: PartnerOrderByCriteria
-  rewardDetails: LocalizedRewardDetailsOrderByCriteria
-}
-
-input LocalizedRewardDetailsOrderByCriteria {
-  _languageCode: LanguageCode!
-  _orderBy: RewardDetailsOrderByCriteria!
-}
-
-input RewardDetailsOrderByCriteria @oneOf {
-  categories: SortOrder
-  shortDescription: SortOrder
-  longDescription: SortOrder
-}
-
 enum DistanceUnits {
-  METERS
   KILOMETERS
   MILES
 }
@@ -298,6 +206,176 @@ input LocationOrderByCriteria @oneOf {
 input DistanceOrderByCriteria {
   _from: InputCoordinates!
   _sortOrder: SortOrder!
+}
+
+enum RewardType {
+  PUBLIC
+  CLAIMABLE
+}
+
+enum RedemptionForum {
+  ONLINE
+  IN_STORE
+}
+
+interface IReward {
+  id: ID!
+  rewardType: RewardType!
+  redemptionForums: [RedemptionForum!]!
+  rewardDetails(languageCode: LanguageCode!): RewardDetails!
+  partner: Partner!
+}
+
+union Reward = PublicReward | ClaimableReward
+
+type PublicReward implements IReward {
+  id: ID!
+  rewardType: RewardType!
+  redemptionForums: [RedemptionForum!]!
+  partner: Partner!
+  rewardDetails(languageCode: LanguageCode!): RewardDetails!
+  publicVoucher: PublicVoucher!
+}
+
+type ClaimableReward implements IReward {
+  id: ID!
+  rewardType: RewardType!
+  redemptionForums: [RedemptionForum!]!
+  partner: Partner!
+  rewardDetails(languageCode: LanguageCode!): RewardDetails!
+  earliestExpirationDate: DateTime
+}
+
+type RewardDetails {
+  categories: [String!]!
+  shortDescription: String!
+  longDescription: String
+}
+
+input RewardFilter @oneOf {
+  id: IDFilter
+  redemptionForums: RedemptionForumArrayFilter
+  rewardDetails: TranslatedRewardDetailsFilter
+  partner: PartnerFilter
+  rewardType: RewardTypeFilter
+  publicVoucher: TranslatedPublicVoucherFilter
+  earliestExpirationDate: DateTimeFilter
+  _and: [RewardFilter!]
+  _or: [RewardFilter!]
+  _not: RewardFilter
+}
+
+input RedemptionForumArrayFilter @oneOf {
+  _eq: [RedemptionForum!]
+  _neq: [RedemptionForum!]
+  _containsEl: RedemptionForum
+  _containsArr: [RedemptionForum!]
+  _containedBy: [RedemptionForum!]
+  _overlaps: [RedemptionForum!]
+}
+
+input TranslatedRewardDetailsFilter {
+  _languageCode: LanguageCode!
+  _filter: RewardDetailsFilter!
+}
+
+input RewardDetailsFilter @oneOf {
+  shortDescription: StringFilter
+  longDescription: StringFilter
+  categories: StringArrayFilter
+  _and: [RewardDetailsFilter!]
+  _or: [RewardDetailsFilter!]
+  _not: RewardDetailsFilter
+}
+
+input RewardTypeFilter @oneOf {
+  _eq: RewardType
+  _neq: RewardType
+}
+
+input TranslatedPublicVoucherFilter {
+  _languageCode: LanguageCode!
+  _filter: PublicVoucherFilter!
+}
+
+input PublicVoucherFilter @oneOf {
+  hasLimitedTotalUses: BooleanFilter
+  expirationDate: DateTimeFilter
+}
+
+input RewardOrderByCriteria @oneOf {
+  id: SortOrder
+  partner: PartnerOrderByCriteria
+  rewardDetails: TranslatedRewardDetailsOrderByCriteria
+}
+
+input TranslatedRewardDetailsOrderByCriteria {
+  _languageCode: LanguageCode!
+  _orderBy: RewardDetailsOrderByCriteria!
+}
+
+input RewardDetailsOrderByCriteria @oneOf {
+  categories: SortOrder
+  shortDescription: SortOrder
+  longDescription: SortOrder
+}
+
+enum RedemptionMethod {
+  CODE
+  QR_CODE
+  LINK
+  MANUAL
+}
+
+interface IVoucherDetails {
+  redemptionMethod: RedemptionMethod!
+  instructions: String!
+}
+
+type PublicVoucher {
+  voucherDetails(languageCode: LanguageCode!): [VoucherDetails!]!
+  hasLimitedTotalUses: Boolean!
+  expirationDate: DateTime
+}
+
+type ClaimedVoucher {
+  voucherDetailsTranslations: [TranslatedVoucherDetails!]!
+  expirationDate: DateTime
+}
+
+type TranslatedVoucherDetails {
+  languageCode: LanguageCode!
+  voucherDetails: [VoucherDetails!]!
+}
+
+union VoucherDetails =
+  | CodeVoucherDetails
+  | QRCodeVoucherDetails
+  | LinkVoucherDetails
+  | ManualVoucherDetails
+
+type CodeVoucherDetails implements IVoucherDetails {
+  redemptionMethod: RedemptionMethod!
+  instructions: String!
+  redemptionCode: String!
+}
+
+type QRCodeVoucherDetails implements IVoucherDetails {
+  redemptionMethod: RedemptionMethod!
+  instructions: String!
+  redemptionQRCode: String!
+}
+
+type LinkVoucherDetails implements IVoucherDetails {
+  redemptionMethod: RedemptionMethod!
+  instructions: String!
+  redemptionLinkUrl: String!
+  redemptionLinkText: String
+}
+
+type ManualVoucherDetails implements IVoucherDetails {
+  redemptionMethod: RedemptionMethod!
+  instructions: String!
 }
 
 type Query {
