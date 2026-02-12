@@ -1,4 +1,5 @@
 scalar DateTime
+  @specifiedBy(url: "https://scalars.graphql.org/andimarek/date-time.html")
 
 enum LanguageCode {
   EN

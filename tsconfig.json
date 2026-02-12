@@ -1,10 +1,13 @@
 {
   "compilerOptions": {
-    "lib": ["ESNext"],
-    "strict": true,
-    "exactOptionalPropertyTypes": true,
+    "outDir": "dist",
+    "lib": ["esnext"],
+    "target": "esnext",
     "module": "esnext",
-    "moduleResolution": "bundler",
-    "target": "esnext"
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "types": ["node"],
+    "strict": true,
+    "exactOptionalPropertyTypes": true
   }
 }

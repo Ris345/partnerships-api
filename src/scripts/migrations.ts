@@ -16,7 +16,7 @@ const dbUrl = encodeURI(
     '?sslmode=disable',
 );
 
-const migrationsDir = path.join(__dirname, '../db/migrations');
+const migrationsDir = path.join(import.meta.dirname, '../db/migrations');
 
 const commands = process.argv.slice(2).join(' ');
 

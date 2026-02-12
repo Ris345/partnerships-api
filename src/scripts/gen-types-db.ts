@@ -13,7 +13,7 @@ const config: IntrospeQLConfig = {
     database: process.env.DB_NAME,
   },
   schemas: ['public'],
-  outFile: path.join(__dirname, '..' + outFile),
+  outFile: path.join(import.meta.dirname, '..' + outFile),
   tables: {
     mode: 'exclusive',
   },

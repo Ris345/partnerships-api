@@ -54,7 +54,7 @@ class DatabaseTests {
     console.log(output.stdout);
 
     // execute migrations
-    const migrationsDir = path.join(__dirname, '../db/migrations');
+    const migrationsDir = path.join(import.meta.dirname, '../db/migrations');
 
     output = await exec(
       `npx dbmate --url "${this.databaseUrl}" --migrations-dir "${migrationsDir}" --no-dump-schema up`,
@@ -66,7 +66,7 @@ class DatabaseTests {
     const client = new Client(this.databaseUrl);
     await client.connect();
 
-    const testsDir = path.join(__dirname, '../db/__tests__');
+    const testsDir = path.join(import.meta.dirname, '../db/__tests__');
     const setup = fs.readFileSync(path.join(testsDir, 'setup.sql'), 'utf-8');
     await client.query(setup);
 
