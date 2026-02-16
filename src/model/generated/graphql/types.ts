@@ -56,12 +56,7 @@ export type ClaimedReward = {
 export type ClaimedVoucher = {
   __typename?: 'ClaimedVoucher';
   expirationDate?: Maybe<Scalars['DateTime']['output']>;
-  voucherDetails: Array<TranslatedVoucherDetails>;
-};
-
-
-export type ClaimedVoucherVoucherDetailsArgs = {
-  appId: Scalars['ID']['input'];
+  voucherDetailsTranslations: Array<TranslatedVoucherDetails>;
 };
 
 export type CodeVoucherDetails = IVoucherDetails & {
@@ -467,7 +462,6 @@ export type RewardSnapshot = {
   partnerSnapshot: PartnerSnapshot;
   redemptionForums: Array<RedemptionForum>;
   rewardDetailsSnapshots: Array<TranslatedRewardDetailsSnapshot>;
-  rewardType: RewardType;
 };
 
 export enum RewardType {
@@ -666,7 +660,7 @@ export type ResolversTypes = {
   CaseAwareStringFilterValue: CaseAwareStringFilterValue;
   ClaimableReward: ResolverTypeWrapper<Omit<ClaimableReward, 'partner'> & { partner: ResolversTypes['Partner'] }>;
   ClaimedReward: ResolverTypeWrapper<Omit<ClaimedReward, 'voucher'> & { voucher: ResolversTypes['ClaimedVoucher'] }>;
-  ClaimedVoucher: ResolverTypeWrapper<Omit<ClaimedVoucher, 'voucherDetails'> & { voucherDetails: Array<ResolversTypes['TranslatedVoucherDetails']> }>;
+  ClaimedVoucher: ResolverTypeWrapper<Omit<ClaimedVoucher, 'voucherDetailsTranslations'> & { voucherDetailsTranslations: Array<ResolversTypes['TranslatedVoucherDetails']> }>;
   CodeVoucherDetails: ResolverTypeWrapper<CodeVoucherDetails>;
   Coordinates: ResolverTypeWrapper<Coordinates>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']['output']>;
@@ -739,7 +733,7 @@ export type ResolversParentTypes = {
   CaseAwareStringFilterValue: CaseAwareStringFilterValue;
   ClaimableReward: Omit<ClaimableReward, 'partner'> & { partner: ResolversParentTypes['Partner'] };
   ClaimedReward: Omit<ClaimedReward, 'voucher'> & { voucher: ResolversParentTypes['ClaimedVoucher'] };
-  ClaimedVoucher: Omit<ClaimedVoucher, 'voucherDetails'> & { voucherDetails: Array<ResolversParentTypes['TranslatedVoucherDetails']> };
+  ClaimedVoucher: Omit<ClaimedVoucher, 'voucherDetailsTranslations'> & { voucherDetailsTranslations: Array<ResolversParentTypes['TranslatedVoucherDetails']> };
   CodeVoucherDetails: CodeVoucherDetails;
   Coordinates: Coordinates;
   DateTime: Scalars['DateTime']['output'];
@@ -815,7 +809,7 @@ export type ClaimedRewardResolvers<ContextType = any, ParentType extends Resolve
 
 export type ClaimedVoucherResolvers<ContextType = any, ParentType extends ResolversParentTypes['ClaimedVoucher'] = ResolversParentTypes['ClaimedVoucher']> = {
   expirationDate?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
-  voucherDetails?: Resolver<Array<ResolversTypes['TranslatedVoucherDetails']>, ParentType, ContextType, RequireFields<ClaimedVoucherVoucherDetailsArgs, 'appId'>>;
+  voucherDetailsTranslations?: Resolver<Array<ResolversTypes['TranslatedVoucherDetails']>, ParentType, ContextType>;
 };
 
 export type CodeVoucherDetailsResolvers<ContextType = any, ParentType extends ResolversParentTypes['CodeVoucherDetails'] = ResolversParentTypes['CodeVoucherDetails']> = {
@@ -943,7 +937,6 @@ export type RewardSnapshotResolvers<ContextType = any, ParentType extends Resolv
   partnerSnapshot?: Resolver<ResolversTypes['PartnerSnapshot'], ParentType, ContextType>;
   redemptionForums?: Resolver<Array<ResolversTypes['RedemptionForum']>, ParentType, ContextType>;
   rewardDetailsSnapshots?: Resolver<Array<ResolversTypes['TranslatedRewardDetailsSnapshot']>, ParentType, ContextType>;
-  rewardType?: Resolver<ResolversTypes['RewardType'], ParentType, ContextType>;
 };
 
 export type TranslatedPartnerDetailsSnapshotResolvers<ContextType = any, ParentType extends ResolversParentTypes['TranslatedPartnerDetailsSnapshot'] = ResolversParentTypes['TranslatedPartnerDetailsSnapshot']> = {

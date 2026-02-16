@@ -8,7 +8,7 @@ type ClaimedReward {
 }
 
 type ClaimedVoucher {
-  voucherDetails(appId: ID!): [TranslatedVoucherDetails!]!
+  voucherDetailsTranslations: [TranslatedVoucherDetails!]!
   expirationDate: DateTime
 }
 
@@ -19,7 +19,6 @@ type TranslatedVoucherDetails {
 
 type RewardSnapshot {
   id: ID!
-  rewardType: RewardType!
   redemptionForums: [RedemptionForum!]!
   rewardDetailsSnapshots: [TranslatedRewardDetailsSnapshot!]!
   partnerSnapshot: PartnerSnapshot!
