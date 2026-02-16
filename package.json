@@ -4,13 +4,18 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "create-pg-container-config": "npx tsx ./src/scripts/create-pg-container-config.ts",
     "format": "npx prettier . --write",
-    "migrations": "npx tsx ./src/scripts/migrations.ts",
+    "gen-diagram:graphql": "npx graphqlviz http://localhost:4000 | dot -Tpng -o src/assets/diagrams/graphql-schema.png",
     "gen-types:db": "npx tsx ./src/scripts/gen-types-db.ts",
     "gen-types:graphql": "graphql-codegen --config codegen.config.ts",
-    "gen-diagram:graphql": "npx graphqlviz http://localhost:4000 | dot -Tpng -o src/assets/diagrams/graphql-schema.png",
-    "test:db": "npx tsx ./src/scripts/test-db.ts --no-cache",
-    "start": "npx tsx ./src/index.ts"
+    "migrations": "npx tsx ./src/scripts/migrations.ts",
+    "pg-dev:start": "npx tsx ./src/scripts/pg.ts --mode=dev start",
+    "pg-dev:stop": "npx tsx ./src/scripts/pg.ts --mode=dev stop",
+    "pg-test:start": "npx tsx ./src/scripts/pg.ts --mode=test start",
+    "pg-test:stop": "npx tsx ./src/scripts/pg.ts --mode=test stop",
+    "start": "npx tsx ./src/index.ts",
+    "test:db": "npx tsx ./src/scripts/test-db.ts --no-cache"
   },
   "repository": {
     "type": "git",
