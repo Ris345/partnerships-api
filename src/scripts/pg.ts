@@ -55,7 +55,7 @@ class PostgresContainerManager {
     const { containerName, port, volumeName, dummyPassword } = config.dev;
 
     await execAsync(
-      `docker run --platform="${this.platform}" -dp ${port}:5432 -v ${volumeName}:/var/lib/postgresql --rm -e POSTGRES_PASSWORD=${dummyPassword} --name ${containerName} ${this.imageTag}`,
+      `docker run --platform="${this.platform}" -dp ${port}:5432 -v ${volumeName}:/var/lib/postgresql --rm -e POSTGRES_PASSWORD="${dummyPassword}" --name ${containerName} ${this.imageTag}`,
     );
 
     console.log(
