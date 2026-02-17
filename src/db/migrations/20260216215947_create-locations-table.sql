@@ -7,12 +7,6 @@ CREATE TABLE locations (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-COMMENT ON TABLE locations IS $$
-Physical locations of partners. Each partner may have zero to many locations.
-
-@introspeql-include
-$$;
-
 CREATE TRIGGER locations_update_trigger 
 BEFORE UPDATE ON locations 
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
