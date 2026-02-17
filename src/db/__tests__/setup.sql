@@ -1,4 +1,6 @@
 CREATE EXTENSION pgtap;
+CREATE EXTENSION anon;
+SELECT anon.init();
 
 CREATE SCHEMA test_override;
 

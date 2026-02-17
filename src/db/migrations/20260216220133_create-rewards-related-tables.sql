@@ -9,7 +9,9 @@ CREATE TABLE rewards (
   available_from_local TIMESTAMP,
   available_until_local TIMESTAMP,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  CONSTRAINT redemption_forums_is_not_empty CHECK (CARDINALITY(redemption_forums) > 0),
+  CONSTRAINT redemption_forums_contains_no_duplicates CHECK (NOT contains_duplicates (redemption_forums))
 );
 
 CREATE TRIGGER rewards_update_trigger

@@ -5,11 +5,15 @@ CREATE TABLE base_voucher_stubs (
   redeemable_for INTERVAL,
   vouchers_remaining INT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  CONSTRAINT prevent_direction_insertions CHECK (false) NO INHERIT
 );
 
 CREATE TABLE on_demand_voucher_stubs (
-  reward_id UUID PRIMARY KEY REFERENCES rewards(id) ON DELETE CASCADE
+  reward_id UUID PRIMARY KEY REFERENCES rewards(id) ON DELETE CASCADE,
+  CONSTRAINT validate_reward_voucher_type CHECK (
+    reward_voucher_type_matches(reward_id, 'ON_DEMAND')
+  )
 ) INHERITS (base_voucher_stubs);
 
 CREATE TRIGGER on_demand_voucher_stubs_update_trigger
@@ -18,7 +22,10 @@ FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 CREATE TABLE manual_voucher_stubs (
   id SERIAL PRIMARY KEY,
-  reward_id UUID UNIQUE REFERENCES rewards(id) ON DELETE CASCADE
+  reward_id UUID UNIQUE REFERENCES rewards(id) ON DELETE CASCADE,
+  CONSTRAINT validate_reward_voucher_type CHECK (
+    reward_voucher_type_matches(reward_id, 'MANUAL')
+  )
 ) INHERITS (base_voucher_stubs);
 
 CREATE TRIGGER manual_voucher_stubs_update_trigger

@@ -3,13 +3,28 @@ CREATE TABLE vouchers (
   id BIGSERIAL PRIMARY KEY
 );
 
+CREATE FUNCTION reward_voucher_type_matches(
+  reward_id UUID, 
+  expected_voucher_type voucher_type
+) RETURNS BOOLEAN AS $$
+BEGIN
+  RETURN (
+    SELECT rewards.voucher_type 
+    FROM rewards WHERE id = reward_id
+  ) = expected_voucher_type;
+END;
+$$ LANGUAGE plpgsql;
+
 CREATE TABLE multiple_use_vouchers (
   id BIGINT PRIMARY KEY REFERENCES vouchers(id) ON DELETE CASCADE,
   reward_id UUID UNIQUE NOT NULL REFERENCES rewards(id) ON DELETE RESTRICT,
   redeemable_until TIMESTAMPTZ,
   has_usage_cap BOOLEAN NOT NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  CONSTRAINT validate_reward_voucher_type CHECK (
+    reward_voucher_type_matches(reward_id, 'MULTIPLE_USE')
+  )
 );
 
 CREATE TRIGGER multiple_use_vouchers_update_trigger
@@ -21,7 +36,10 @@ CREATE TABLE single_use_vouchers (
   reward_id UUID NOT NULL REFERENCES rewards(id) ON DELETE RESTRICT,
   redeemable_until TIMESTAMPTZ,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  CONSTRAINT validate_reward_voucher_type CHECK (
+    reward_voucher_type_matches(reward_id, 'SINGLE_USE')
+  )
 );
 
 CREATE TRIGGER single_use_vouchers_update_trigger
@@ -101,4 +119,5 @@ DROP TABLE code_based_voucher_value_details_translations;
 DROP TABLE code_based_voucher_values;
 DROP TABLE single_use_vouchers;
 DROP TABLE multiple_use_vouchers;
+DROP FUNCTION reward_voucher_type_matches;
 DROP TABLE vouchers;
