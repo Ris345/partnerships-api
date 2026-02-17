@@ -1,6 +1,6 @@
 -- migrate:up
 CREATE TABLE rewards (
-  id UUID PRIMARY KEY,
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   partner_id INT NOT NULL REFERENCES partners(id) ON DELETE RESTRICT,
   redemption_forums redemption_forum[] NOT NULL,
   voucher_type voucher_type NOT NULL,

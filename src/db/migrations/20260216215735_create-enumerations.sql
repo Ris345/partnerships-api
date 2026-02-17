@@ -1,5 +1,5 @@
 -- migrate:up
-CREATE TYPE distance_units AS ENUM ('KILOMETERS', 'MILES');
+CREATE TYPE distance_units AS ENUM ('METERS', 'KILOMETERS', 'MILES');
 
 CREATE TYPE reward_type AS ENUM ('PUBLIC', 'CLAIMABLE');
 

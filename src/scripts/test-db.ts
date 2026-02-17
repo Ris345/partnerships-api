@@ -78,7 +78,6 @@ class DatabaseTests {
       const fullPath = path.join(testsDir, file);
       const contents = fs.readFileSync(fullPath, 'utf-8');
 
-      console.log(contents);
       await client.query(contents);
     }
 
@@ -107,7 +106,7 @@ class DatabaseTests {
   }
 
   private get runTestsCommand() {
-    const pgOptions = '--search_path=test_override,pg_catalog,public';
+    const pgOptions = '--search_path=testing,pg_catalog,public';
     const setPGOptionsCommand =
       this.isWindows() ?
         `set PGOPTIONS='${pgOptions}' &&`
