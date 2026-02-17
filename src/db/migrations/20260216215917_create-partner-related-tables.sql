@@ -11,7 +11,7 @@ FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 CREATE TABLE partner_details_translations (
   partner_id INT REFERENCES partners(id) ON DELETE CASCADE,
-  language_code CHAR(2) REFERENCES languages(language_code) ON DELETE CASCADE,
+  language_code CHAR(2) REFERENCES languages(language_code) ON DELETE RESTRICT,
   name TEXT NOT NULL,
   logo_url TEXT NOT NULL,
   description TEXT NOT NULL,

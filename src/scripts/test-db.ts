@@ -77,6 +77,8 @@ class DatabaseTests {
 
       const fullPath = path.join(testsDir, file);
       const contents = fs.readFileSync(fullPath, 'utf-8');
+
+      console.log(contents);
       await client.query(contents);
     }
 
@@ -111,7 +113,7 @@ class DatabaseTests {
         `set PGOPTIONS='${pgOptions}' &&`
       : `PGOPTIONS='${pgOptions}'`;
 
-    const runTestsCommand = `${setPGOptionsCommand} pg_prove --dbname ${process.env.TEST_DB_NAME} --user postgres --runtests --verbose`;
+    const runTestsCommand = `${setPGOptionsCommand} pg_prove -h ${process.env.TEST_DB_HOST} -p ${process.env.TEST_DB_PORT} -d ${process.env.TEST_DB_NAME} -U ${process.env.TEST_DB_USER} --runtests --verbose`;
     return runTestsCommand;
   }
 
