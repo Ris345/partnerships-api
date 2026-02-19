@@ -1,4 +1,4 @@
-enum VoucherType {
+enum VoucherOwnership {
   MULTI_USER
   SINGLE_USER
 }
@@ -10,7 +10,7 @@ enum RedemptionForum {
 
 type Reward {
   id: ID!
-  voucherType: VoucherType!
+  voucherOwnership: VoucherOwnership!
   redemptionForums: [RedemptionForum!]!
   translatedDetails(languageCode: LanguageCode!): RewardDetails!
   hasUsageOrQuantityLimit: Boolean!
@@ -26,7 +26,7 @@ type RewardDetails {
 
 input RewardFilter @oneOf {
   id: IDFilter
-  voucherType: VoucherTypeFilter
+  voucherType: VoucherOwnershipFilter
   redemptionForums: RedemptionForumArrayFilter
   translatedDetails: TranslatedRewardDetailsFilter
   hasUsageOrQuantityLimit: BooleanFilter
@@ -60,9 +60,9 @@ input RewardDetailsFilter @oneOf {
   _not: RewardDetailsFilter
 }
 
-input VoucherTypeFilter @oneOf {
-  _eq: VoucherType
-  _neq: VoucherType
+input VoucherOwnershipFilter @oneOf {
+  _eq: VoucherOwnership
+  _neq: VoucherOwnership
 }
 
 input RewardOrderByCriteria @oneOf {

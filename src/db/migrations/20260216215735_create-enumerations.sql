@@ -1,7 +1,7 @@
 -- migrate:up
 CREATE TYPE distance_units AS ENUM ('METERS', 'KILOMETERS', 'MILES');
 
-CREATE TYPE reward_type AS ENUM ('PUBLIC', 'CLAIMABLE');
+CREATE TYPE voucher_ownership AS ENUM ('SINGLE_USER', 'MULTI_USER');
 
 CREATE TYPE redemption_forum AS ENUM ('ONLINE', 'IN_STORE');
 
