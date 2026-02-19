@@ -32,34 +32,7 @@ export type CaseAwareStringFilterValue = {
   _value: Scalars['String']['input'];
 };
 
-export type ClaimableReward = IReward & {
-  __typename?: 'ClaimableReward';
-  earliestExpirationDate?: Maybe<Scalars['DateTime']['output']>;
-  id: Scalars['ID']['output'];
-  partner: Partner;
-  redemptionForums: Array<RedemptionForum>;
-  rewardDetails: RewardDetails;
-  rewardType: RewardType;
-};
-
-
-export type ClaimableRewardRewardDetailsArgs = {
-  languageCode: LanguageCode;
-};
-
-export type ClaimedReward = {
-  __typename?: 'ClaimedReward';
-  rewardSnapshot: RewardSnapshot;
-  voucher: ClaimedVoucher;
-};
-
-export type ClaimedVoucher = {
-  __typename?: 'ClaimedVoucher';
-  expirationDate?: Maybe<Scalars['DateTime']['output']>;
-  voucherDetailsTranslations: Array<TranslatedVoucherDetails>;
-};
-
-export type CodeVoucherDetails = IVoucherDetails & {
+export type CodeVoucherDetails = VoucherDetails & {
   __typename?: 'CodeVoucherDetails';
   instructions: Scalars['String']['output'];
   redemptionCode: Scalars['String']['output'];
@@ -108,24 +81,6 @@ export type IdFilter =
   |  { _containedBy?: never; _eq?: never; _gt?: never; _gte?: never; _lt?: never; _lte: Scalars['ID']['input']; _neq?: never; }
   |  { _containedBy?: never; _eq?: never; _gt?: never; _gte?: never; _lt?: never; _lte?: never; _neq: Scalars['ID']['input']; };
 
-export type IReward = {
-  id: Scalars['ID']['output'];
-  partner: Partner;
-  redemptionForums: Array<RedemptionForum>;
-  rewardDetails: RewardDetails;
-  rewardType: RewardType;
-};
-
-
-export type IRewardRewardDetailsArgs = {
-  languageCode: LanguageCode;
-};
-
-export type IVoucherDetails = {
-  instructions: Scalars['String']['output'];
-  redemptionMethod: RedemptionMethod;
-};
-
 export type InputCoordinates = {
   latitude: Scalars['Float']['input'];
   longitude: Scalars['Float']['input'];
@@ -144,7 +99,7 @@ export enum LanguageCode {
   Es = 'ES'
 }
 
-export type LinkVoucherDetails = IVoucherDetails & {
+export type LinkVoucherDetails = VoucherDetails & {
   __typename?: 'LinkVoucherDetails';
   instructions: Scalars['String']['output'];
   redemptionLinkText?: Maybe<Scalars['String']['output']>;
@@ -184,7 +139,7 @@ export type LocationsCountFilter = {
   _value: IntFilter;
 };
 
-export type ManualVoucherDetails = IVoucherDetails & {
+export type ManualVoucherDetails = VoucherDetails & {
   __typename?: 'ManualVoucherDetails';
   instructions: Scalars['String']['output'];
   redemptionMethod: RedemptionMethod;
@@ -192,11 +147,11 @@ export type ManualVoucherDetails = IVoucherDetails & {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  claimReward?: Maybe<ClaimedReward>;
+  retrieveVoucher?: Maybe<VoucherWithRewardSnapshot>;
 };
 
 
-export type MutationClaimRewardArgs = {
+export type MutationRetrieveVoucherArgs = {
   id: Scalars['ID']['input'];
 };
 
@@ -205,9 +160,9 @@ export type Partner = {
   id: Scalars['ID']['output'];
   locations: Array<Location>;
   locationsCount: Scalars['Int']['output'];
-  partnerDetails: PartnerDetails;
   rewards: Array<Reward>;
   rewardsCount: Scalars['Int']['output'];
+  translatedDetails: PartnerDetails;
 };
 
 
@@ -223,11 +178,6 @@ export type PartnerLocationsCountArgs = {
 };
 
 
-export type PartnerPartnerDetailsArgs = {
-  languageCode: LanguageCode;
-};
-
-
 export type PartnerRewardsArgs = {
   filter?: InputMaybe<RewardFilter>;
   orderBy?: InputMaybe<Array<RewardOrderByCriteria>>;
@@ -237,6 +187,11 @@ export type PartnerRewardsArgs = {
 
 export type PartnerRewardsCountArgs = {
   filter?: InputMaybe<RewardFilter>;
+};
+
+
+export type PartnerTranslatedDetailsArgs = {
+  languageCode: LanguageCode;
 };
 
 export type PartnerDetails = {
@@ -269,57 +224,31 @@ export type PartnerDetailsOrderByCriteria =
   |  { description?: never; logoUrl?: never; name?: never; reasonForSupporting8by8?: never; webAddressText?: never; webAddressUrl: SortOrder; };
 
 export type PartnerFilter =
-  { _and: Array<PartnerFilter>; _not?: never; _or?: never; id?: never; locationsCount?: never; partnerDetails?: never; rewardsCount?: never; }
-  |  { _and?: never; _not: PartnerFilter; _or?: never; id?: never; locationsCount?: never; partnerDetails?: never; rewardsCount?: never; }
-  |  { _and?: never; _not?: never; _or: Array<PartnerFilter>; id?: never; locationsCount?: never; partnerDetails?: never; rewardsCount?: never; }
-  |  { _and?: never; _not?: never; _or?: never; id: IdFilter; locationsCount?: never; partnerDetails?: never; rewardsCount?: never; }
-  |  { _and?: never; _not?: never; _or?: never; id?: never; locationsCount: LocationsCountFilter; partnerDetails?: never; rewardsCount?: never; }
-  |  { _and?: never; _not?: never; _or?: never; id?: never; locationsCount?: never; partnerDetails: TranslatedPartnerDetailsFilter; rewardsCount?: never; }
-  |  { _and?: never; _not?: never; _or?: never; id?: never; locationsCount?: never; partnerDetails?: never; rewardsCount: RewardsCountFilter; };
+  { _and: Array<PartnerFilter>; _not?: never; _or?: never; id?: never; locationsCount?: never; rewardsCount?: never; translatedDetails?: never; }
+  |  { _and?: never; _not: PartnerFilter; _or?: never; id?: never; locationsCount?: never; rewardsCount?: never; translatedDetails?: never; }
+  |  { _and?: never; _not?: never; _or: Array<PartnerFilter>; id?: never; locationsCount?: never; rewardsCount?: never; translatedDetails?: never; }
+  |  { _and?: never; _not?: never; _or?: never; id: IdFilter; locationsCount?: never; rewardsCount?: never; translatedDetails?: never; }
+  |  { _and?: never; _not?: never; _or?: never; id?: never; locationsCount: LocationsCountFilter; rewardsCount?: never; translatedDetails?: never; }
+  |  { _and?: never; _not?: never; _or?: never; id?: never; locationsCount?: never; rewardsCount: RewardsCountFilter; translatedDetails?: never; }
+  |  { _and?: never; _not?: never; _or?: never; id?: never; locationsCount?: never; rewardsCount?: never; translatedDetails: TranslatedPartnerDetailsFilter; };
 
 export type PartnerOrderByCriteria =
-  { id: SortOrder; partnerDetails?: never; }
-  |  { id?: never; partnerDetails: TranslatedPartnerDetailsOrderByCriteria; };
+  { id: SortOrder; translatedDetails?: never; }
+  |  { id?: never; translatedDetails: TranslatedPartnerDetailsOrderByCriteria; };
 
 export type PartnerSnapshot = {
   __typename?: 'PartnerSnapshot';
   id: Scalars['ID']['output'];
   lastUpdatedAt: Scalars['DateTime']['output'];
-  partnerDetailsSnapshots: Array<TranslatedPartnerDetailsSnapshot>;
-};
-
-export type PublicReward = IReward & {
-  __typename?: 'PublicReward';
-  id: Scalars['ID']['output'];
-  partner: Partner;
-  publicVoucher: PublicVoucher;
-  redemptionForums: Array<RedemptionForum>;
-  rewardDetails: RewardDetails;
-  rewardType: RewardType;
+  translatedDetailsSnapshots: Array<TranslatedPartnerDetailsSnapshot>;
 };
 
 
-export type PublicRewardRewardDetailsArgs = {
-  languageCode: LanguageCode;
+export type PartnerSnapshotTranslatedDetailsSnapshotsArgs = {
+  languageCodes?: InputMaybe<Array<LanguageCode>>;
 };
 
-export type PublicVoucher = {
-  __typename?: 'PublicVoucher';
-  expirationDate?: Maybe<Scalars['DateTime']['output']>;
-  hasLimitedTotalUses: Scalars['Boolean']['output'];
-  voucherDetails: Array<VoucherDetails>;
-};
-
-
-export type PublicVoucherVoucherDetailsArgs = {
-  languageCode: LanguageCode;
-};
-
-export type PublicVoucherFilter =
-  { expirationDate: DateTimeFilter; hasLimitedTotalUses?: never; }
-  |  { expirationDate?: never; hasLimitedTotalUses: BooleanFilter; };
-
-export type QrCodeVoucherDetails = IVoucherDetails & {
+export type QrCodeVoucherDetails = VoucherDetails & {
   __typename?: 'QRCodeVoucherDetails';
   instructions: Scalars['String']['output'];
   redemptionMethod: RedemptionMethod;
@@ -416,7 +345,21 @@ export enum RedemptionMethod {
   QrCode = 'QR_CODE'
 }
 
-export type Reward = ClaimableReward | PublicReward;
+export type Reward = {
+  __typename?: 'Reward';
+  earliestExpirationDate?: Maybe<Scalars['DateTime']['output']>;
+  hasUsageOrQuantityLimit: Scalars['Boolean']['output'];
+  id: Scalars['ID']['output'];
+  partner: Partner;
+  redemptionForums: Array<RedemptionForum>;
+  translatedDetails: RewardDetails;
+  voucherType: VoucherType;
+};
+
+
+export type RewardTranslatedDetailsArgs = {
+  languageCode: LanguageCode;
+};
 
 export type RewardDetails = {
   __typename?: 'RewardDetails';
@@ -439,21 +382,21 @@ export type RewardDetailsOrderByCriteria =
   |  { categories?: never; longDescription?: never; shortDescription: SortOrder; };
 
 export type RewardFilter =
-  { _and: Array<RewardFilter>; _not?: never; _or?: never; earliestExpirationDate?: never; id?: never; partner?: never; publicVoucher?: never; redemptionForums?: never; rewardDetails?: never; rewardType?: never; }
-  |  { _and?: never; _not: RewardFilter; _or?: never; earliestExpirationDate?: never; id?: never; partner?: never; publicVoucher?: never; redemptionForums?: never; rewardDetails?: never; rewardType?: never; }
-  |  { _and?: never; _not?: never; _or: Array<RewardFilter>; earliestExpirationDate?: never; id?: never; partner?: never; publicVoucher?: never; redemptionForums?: never; rewardDetails?: never; rewardType?: never; }
-  |  { _and?: never; _not?: never; _or?: never; earliestExpirationDate: DateTimeFilter; id?: never; partner?: never; publicVoucher?: never; redemptionForums?: never; rewardDetails?: never; rewardType?: never; }
-  |  { _and?: never; _not?: never; _or?: never; earliestExpirationDate?: never; id: IdFilter; partner?: never; publicVoucher?: never; redemptionForums?: never; rewardDetails?: never; rewardType?: never; }
-  |  { _and?: never; _not?: never; _or?: never; earliestExpirationDate?: never; id?: never; partner: PartnerFilter; publicVoucher?: never; redemptionForums?: never; rewardDetails?: never; rewardType?: never; }
-  |  { _and?: never; _not?: never; _or?: never; earliestExpirationDate?: never; id?: never; partner?: never; publicVoucher: TranslatedPublicVoucherFilter; redemptionForums?: never; rewardDetails?: never; rewardType?: never; }
-  |  { _and?: never; _not?: never; _or?: never; earliestExpirationDate?: never; id?: never; partner?: never; publicVoucher?: never; redemptionForums: RedemptionForumArrayFilter; rewardDetails?: never; rewardType?: never; }
-  |  { _and?: never; _not?: never; _or?: never; earliestExpirationDate?: never; id?: never; partner?: never; publicVoucher?: never; redemptionForums?: never; rewardDetails: TranslatedRewardDetailsFilter; rewardType?: never; }
-  |  { _and?: never; _not?: never; _or?: never; earliestExpirationDate?: never; id?: never; partner?: never; publicVoucher?: never; redemptionForums?: never; rewardDetails?: never; rewardType: RewardTypeFilter; };
+  { _and: Array<RewardFilter>; _not?: never; _or?: never; earliestExpirationDate?: never; hasUsageOrQuantityLimit?: never; id?: never; partner?: never; redemptionForums?: never; translatedDetails?: never; voucherType?: never; }
+  |  { _and?: never; _not: RewardFilter; _or?: never; earliestExpirationDate?: never; hasUsageOrQuantityLimit?: never; id?: never; partner?: never; redemptionForums?: never; translatedDetails?: never; voucherType?: never; }
+  |  { _and?: never; _not?: never; _or: Array<RewardFilter>; earliestExpirationDate?: never; hasUsageOrQuantityLimit?: never; id?: never; partner?: never; redemptionForums?: never; translatedDetails?: never; voucherType?: never; }
+  |  { _and?: never; _not?: never; _or?: never; earliestExpirationDate: DateTimeFilter; hasUsageOrQuantityLimit?: never; id?: never; partner?: never; redemptionForums?: never; translatedDetails?: never; voucherType?: never; }
+  |  { _and?: never; _not?: never; _or?: never; earliestExpirationDate?: never; hasUsageOrQuantityLimit: BooleanFilter; id?: never; partner?: never; redemptionForums?: never; translatedDetails?: never; voucherType?: never; }
+  |  { _and?: never; _not?: never; _or?: never; earliestExpirationDate?: never; hasUsageOrQuantityLimit?: never; id: IdFilter; partner?: never; redemptionForums?: never; translatedDetails?: never; voucherType?: never; }
+  |  { _and?: never; _not?: never; _or?: never; earliestExpirationDate?: never; hasUsageOrQuantityLimit?: never; id?: never; partner: PartnerFilter; redemptionForums?: never; translatedDetails?: never; voucherType?: never; }
+  |  { _and?: never; _not?: never; _or?: never; earliestExpirationDate?: never; hasUsageOrQuantityLimit?: never; id?: never; partner?: never; redemptionForums: RedemptionForumArrayFilter; translatedDetails?: never; voucherType?: never; }
+  |  { _and?: never; _not?: never; _or?: never; earliestExpirationDate?: never; hasUsageOrQuantityLimit?: never; id?: never; partner?: never; redemptionForums?: never; translatedDetails: TranslatedRewardDetailsFilter; voucherType?: never; }
+  |  { _and?: never; _not?: never; _or?: never; earliestExpirationDate?: never; hasUsageOrQuantityLimit?: never; id?: never; partner?: never; redemptionForums?: never; translatedDetails?: never; voucherType: VoucherTypeFilter; };
 
 export type RewardOrderByCriteria =
-  { id: SortOrder; partner?: never; rewardDetails?: never; }
-  |  { id?: never; partner: PartnerOrderByCriteria; rewardDetails?: never; }
-  |  { id?: never; partner?: never; rewardDetails: TranslatedRewardDetailsOrderByCriteria; };
+  { id: SortOrder; partner?: never; translatedDetails?: never; }
+  |  { id?: never; partner: PartnerOrderByCriteria; translatedDetails?: never; }
+  |  { id?: never; partner?: never; translatedDetails: TranslatedRewardDetailsOrderByCriteria; };
 
 export type RewardSnapshot = {
   __typename?: 'RewardSnapshot';
@@ -461,17 +404,13 @@ export type RewardSnapshot = {
   lastUpdatedAt: Scalars['DateTime']['output'];
   partnerSnapshot: PartnerSnapshot;
   redemptionForums: Array<RedemptionForum>;
-  rewardDetailsSnapshots: Array<TranslatedRewardDetailsSnapshot>;
+  translatedDetailsSnapshots: Array<TranslatedRewardDetailsSnapshot>;
 };
 
-export enum RewardType {
-  Claimable = 'CLAIMABLE',
-  Public = 'PUBLIC'
-}
 
-export type RewardTypeFilter =
-  { _eq: RewardType; _neq?: never; }
-  |  { _eq?: never; _neq: RewardType; };
+export type RewardSnapshotTranslatedDetailsSnapshotsArgs = {
+  languageCodes?: InputMaybe<Array<LanguageCode>>;
+};
 
 export type RewardsCountFilter = {
   _filter?: InputMaybe<RewardFilter>;
@@ -515,17 +454,13 @@ export type TranslatedPartnerDetailsOrderByCriteria = {
 export type TranslatedPartnerDetailsSnapshot = {
   __typename?: 'TranslatedPartnerDetailsSnapshot';
   description: Scalars['String']['output'];
+  languageCode: LanguageCode;
   lastUpdatedAt: Scalars['DateTime']['output'];
   logoUrl: Scalars['String']['output'];
   name: Scalars['String']['output'];
   reasonForSupporting8by8?: Maybe<Scalars['String']['output']>;
   webAddressText?: Maybe<Scalars['String']['output']>;
   webAddressUrl?: Maybe<Scalars['String']['output']>;
-};
-
-export type TranslatedPublicVoucherFilter = {
-  _filter: PublicVoucherFilter;
-  _languageCode: LanguageCode;
 };
 
 export type TranslatedRewardDetailsFilter = {
@@ -553,7 +488,36 @@ export type TranslatedVoucherDetails = {
   voucherDetails: Array<VoucherDetails>;
 };
 
-export type VoucherDetails = CodeVoucherDetails | LinkVoucherDetails | ManualVoucherDetails | QrCodeVoucherDetails;
+export type Voucher = {
+  __typename?: 'Voucher';
+  expirationDate?: Maybe<Scalars['DateTime']['output']>;
+  translatedDetails: Array<TranslatedVoucherDetails>;
+};
+
+
+export type VoucherTranslatedDetailsArgs = {
+  languageCodes?: InputMaybe<Array<LanguageCode>>;
+};
+
+export type VoucherDetails = {
+  instructions: Scalars['String']['output'];
+  redemptionMethod: RedemptionMethod;
+};
+
+export enum VoucherType {
+  MultiUser = 'MULTI_USER',
+  SingleUser = 'SINGLE_USER'
+}
+
+export type VoucherTypeFilter =
+  { _eq: VoucherType; _neq?: never; }
+  |  { _eq?: never; _neq: VoucherType; };
+
+export type VoucherWithRewardSnapshot = {
+  __typename?: 'VoucherWithRewardSnapshot';
+  rewardSnapshot: RewardSnapshot;
+  voucher: Voucher;
+};
 
 
 
@@ -624,27 +588,10 @@ export type DirectiveResolverFn<TResult = Record<PropertyKey, never>, TParent = 
 
 
 
-/** Mapping of union types */
-export type ResolversUnionTypes<_RefType extends Record<string, unknown>> = {
-  Reward:
-    | ( Omit<ClaimableReward, 'partner'> & { partner: _RefType['Partner'] } )
-    | ( Omit<PublicReward, 'partner' | 'publicVoucher'> & { partner: _RefType['Partner'], publicVoucher: _RefType['PublicVoucher'] } )
-  ;
-  VoucherDetails:
-    | ( CodeVoucherDetails )
-    | ( LinkVoucherDetails )
-    | ( ManualVoucherDetails )
-    | ( QrCodeVoucherDetails )
-  ;
-};
 
 /** Mapping of interface types */
 export type ResolversInterfaceTypes<_RefType extends Record<string, unknown>> = {
-  IReward:
-    | ( Omit<ClaimableReward, 'partner'> & { partner: _RefType['Partner'] } )
-    | ( Omit<PublicReward, 'partner' | 'publicVoucher'> & { partner: _RefType['Partner'], publicVoucher: _RefType['PublicVoucher'] } )
-  ;
-  IVoucherDetails:
+  VoucherDetails:
     | ( CodeVoucherDetails )
     | ( LinkVoucherDetails )
     | ( ManualVoucherDetails )
@@ -658,9 +605,6 @@ export type ResolversTypes = {
   BooleanFilter: BooleanFilter;
   CaseAwareStringArrayFilterValue: CaseAwareStringArrayFilterValue;
   CaseAwareStringFilterValue: CaseAwareStringFilterValue;
-  ClaimableReward: ResolverTypeWrapper<Omit<ClaimableReward, 'partner'> & { partner: ResolversTypes['Partner'] }>;
-  ClaimedReward: ResolverTypeWrapper<Omit<ClaimedReward, 'voucher'> & { voucher: ResolversTypes['ClaimedVoucher'] }>;
-  ClaimedVoucher: ResolverTypeWrapper<Omit<ClaimedVoucher, 'voucherDetailsTranslations'> & { voucherDetailsTranslations: Array<ResolversTypes['TranslatedVoucherDetails']> }>;
   CodeVoucherDetails: ResolverTypeWrapper<CodeVoucherDetails>;
   Coordinates: ResolverTypeWrapper<Coordinates>;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']['output']>;
@@ -672,43 +616,36 @@ export type ResolversTypes = {
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   IDFilter: IdFilter;
-  IReward: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['IReward']>;
-  IVoucherDetails: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['IVoucherDetails']>;
   InputCoordinates: InputCoordinates;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   IntFilter: IntFilter;
   LanguageCode: LanguageCode;
   LinkVoucherDetails: ResolverTypeWrapper<LinkVoucherDetails>;
-  Location: ResolverTypeWrapper<Omit<Location, 'partner'> & { partner: ResolversTypes['Partner'] }>;
+  Location: ResolverTypeWrapper<Location>;
   LocationFilter: LocationFilter;
   LocationOrderByCriteria: LocationOrderByCriteria;
   LocationsCountFilter: LocationsCountFilter;
   ManualVoucherDetails: ResolverTypeWrapper<ManualVoucherDetails>;
   Mutation: ResolverTypeWrapper<Record<PropertyKey, never>>;
-  Partner: ResolverTypeWrapper<Omit<Partner, 'partnerDetails' | 'rewards'> & { partnerDetails: ResolversTypes['PartnerDetails'], rewards: Array<ResolversTypes['Reward']> }>;
+  Partner: ResolverTypeWrapper<Partner>;
   PartnerDetails: ResolverTypeWrapper<PartnerDetails>;
   PartnerDetailsFilter: PartnerDetailsFilter;
   PartnerDetailsOrderByCriteria: PartnerDetailsOrderByCriteria;
   PartnerFilter: PartnerFilter;
   PartnerOrderByCriteria: PartnerOrderByCriteria;
   PartnerSnapshot: ResolverTypeWrapper<PartnerSnapshot>;
-  PublicReward: ResolverTypeWrapper<Omit<PublicReward, 'partner' | 'publicVoucher'> & { partner: ResolversTypes['Partner'], publicVoucher: ResolversTypes['PublicVoucher'] }>;
-  PublicVoucher: ResolverTypeWrapper<Omit<PublicVoucher, 'voucherDetails'> & { voucherDetails: Array<ResolversTypes['VoucherDetails']> }>;
-  PublicVoucherFilter: PublicVoucherFilter;
   QRCodeVoucherDetails: ResolverTypeWrapper<QrCodeVoucherDetails>;
   Query: ResolverTypeWrapper<Record<PropertyKey, never>>;
   RedemptionForum: RedemptionForum;
   RedemptionForumArrayFilter: RedemptionForumArrayFilter;
   RedemptionMethod: RedemptionMethod;
-  Reward: ResolverTypeWrapper<ResolversUnionTypes<ResolversTypes>['Reward']>;
+  Reward: ResolverTypeWrapper<Reward>;
   RewardDetails: ResolverTypeWrapper<RewardDetails>;
   RewardDetailsFilter: RewardDetailsFilter;
   RewardDetailsOrderByCriteria: RewardDetailsOrderByCriteria;
   RewardFilter: RewardFilter;
   RewardOrderByCriteria: RewardOrderByCriteria;
   RewardSnapshot: ResolverTypeWrapper<RewardSnapshot>;
-  RewardType: RewardType;
-  RewardTypeFilter: RewardTypeFilter;
   RewardsCountFilter: RewardsCountFilter;
   SortOrder: SortOrder;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
@@ -717,12 +654,15 @@ export type ResolversTypes = {
   TranslatedPartnerDetailsFilter: TranslatedPartnerDetailsFilter;
   TranslatedPartnerDetailsOrderByCriteria: TranslatedPartnerDetailsOrderByCriteria;
   TranslatedPartnerDetailsSnapshot: ResolverTypeWrapper<TranslatedPartnerDetailsSnapshot>;
-  TranslatedPublicVoucherFilter: TranslatedPublicVoucherFilter;
   TranslatedRewardDetailsFilter: TranslatedRewardDetailsFilter;
   TranslatedRewardDetailsOrderByCriteria: TranslatedRewardDetailsOrderByCriteria;
   TranslatedRewardDetailsSnapshot: ResolverTypeWrapper<TranslatedRewardDetailsSnapshot>;
   TranslatedVoucherDetails: ResolverTypeWrapper<Omit<TranslatedVoucherDetails, 'voucherDetails'> & { voucherDetails: Array<ResolversTypes['VoucherDetails']> }>;
-  VoucherDetails: ResolverTypeWrapper<ResolversUnionTypes<ResolversTypes>['VoucherDetails']>;
+  Voucher: ResolverTypeWrapper<Omit<Voucher, 'translatedDetails'> & { translatedDetails: Array<ResolversTypes['TranslatedVoucherDetails']> }>;
+  VoucherDetails: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['VoucherDetails']>;
+  VoucherType: VoucherType;
+  VoucherTypeFilter: VoucherTypeFilter;
+  VoucherWithRewardSnapshot: ResolverTypeWrapper<Omit<VoucherWithRewardSnapshot, 'voucher'> & { voucher: ResolversTypes['Voucher'] }>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -731,9 +671,6 @@ export type ResolversParentTypes = {
   BooleanFilter: BooleanFilter;
   CaseAwareStringArrayFilterValue: CaseAwareStringArrayFilterValue;
   CaseAwareStringFilterValue: CaseAwareStringFilterValue;
-  ClaimableReward: Omit<ClaimableReward, 'partner'> & { partner: ResolversParentTypes['Partner'] };
-  ClaimedReward: Omit<ClaimedReward, 'voucher'> & { voucher: ResolversParentTypes['ClaimedVoucher'] };
-  ClaimedVoucher: Omit<ClaimedVoucher, 'voucherDetailsTranslations'> & { voucherDetailsTranslations: Array<ResolversParentTypes['TranslatedVoucherDetails']> };
   CodeVoucherDetails: CodeVoucherDetails;
   Coordinates: Coordinates;
   DateTime: Scalars['DateTime']['output'];
@@ -744,39 +681,33 @@ export type ResolversParentTypes = {
   Float: Scalars['Float']['output'];
   ID: Scalars['ID']['output'];
   IDFilter: IdFilter;
-  IReward: ResolversInterfaceTypes<ResolversParentTypes>['IReward'];
-  IVoucherDetails: ResolversInterfaceTypes<ResolversParentTypes>['IVoucherDetails'];
   InputCoordinates: InputCoordinates;
   Int: Scalars['Int']['output'];
   IntFilter: IntFilter;
   LinkVoucherDetails: LinkVoucherDetails;
-  Location: Omit<Location, 'partner'> & { partner: ResolversParentTypes['Partner'] };
+  Location: Location;
   LocationFilter: LocationFilter;
   LocationOrderByCriteria: LocationOrderByCriteria;
   LocationsCountFilter: LocationsCountFilter;
   ManualVoucherDetails: ManualVoucherDetails;
   Mutation: Record<PropertyKey, never>;
-  Partner: Omit<Partner, 'partnerDetails' | 'rewards'> & { partnerDetails: ResolversParentTypes['PartnerDetails'], rewards: Array<ResolversParentTypes['Reward']> };
+  Partner: Partner;
   PartnerDetails: PartnerDetails;
   PartnerDetailsFilter: PartnerDetailsFilter;
   PartnerDetailsOrderByCriteria: PartnerDetailsOrderByCriteria;
   PartnerFilter: PartnerFilter;
   PartnerOrderByCriteria: PartnerOrderByCriteria;
   PartnerSnapshot: PartnerSnapshot;
-  PublicReward: Omit<PublicReward, 'partner' | 'publicVoucher'> & { partner: ResolversParentTypes['Partner'], publicVoucher: ResolversParentTypes['PublicVoucher'] };
-  PublicVoucher: Omit<PublicVoucher, 'voucherDetails'> & { voucherDetails: Array<ResolversParentTypes['VoucherDetails']> };
-  PublicVoucherFilter: PublicVoucherFilter;
   QRCodeVoucherDetails: QrCodeVoucherDetails;
   Query: Record<PropertyKey, never>;
   RedemptionForumArrayFilter: RedemptionForumArrayFilter;
-  Reward: ResolversUnionTypes<ResolversParentTypes>['Reward'];
+  Reward: Reward;
   RewardDetails: RewardDetails;
   RewardDetailsFilter: RewardDetailsFilter;
   RewardDetailsOrderByCriteria: RewardDetailsOrderByCriteria;
   RewardFilter: RewardFilter;
   RewardOrderByCriteria: RewardOrderByCriteria;
   RewardSnapshot: RewardSnapshot;
-  RewardTypeFilter: RewardTypeFilter;
   RewardsCountFilter: RewardsCountFilter;
   String: Scalars['String']['output'];
   StringArrayFilter: StringArrayFilter;
@@ -784,32 +715,14 @@ export type ResolversParentTypes = {
   TranslatedPartnerDetailsFilter: TranslatedPartnerDetailsFilter;
   TranslatedPartnerDetailsOrderByCriteria: TranslatedPartnerDetailsOrderByCriteria;
   TranslatedPartnerDetailsSnapshot: TranslatedPartnerDetailsSnapshot;
-  TranslatedPublicVoucherFilter: TranslatedPublicVoucherFilter;
   TranslatedRewardDetailsFilter: TranslatedRewardDetailsFilter;
   TranslatedRewardDetailsOrderByCriteria: TranslatedRewardDetailsOrderByCriteria;
   TranslatedRewardDetailsSnapshot: TranslatedRewardDetailsSnapshot;
   TranslatedVoucherDetails: Omit<TranslatedVoucherDetails, 'voucherDetails'> & { voucherDetails: Array<ResolversParentTypes['VoucherDetails']> };
-  VoucherDetails: ResolversUnionTypes<ResolversParentTypes>['VoucherDetails'];
-};
-
-export type ClaimableRewardResolvers<ContextType = any, ParentType extends ResolversParentTypes['ClaimableReward'] = ResolversParentTypes['ClaimableReward']> = {
-  earliestExpirationDate?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  partner?: Resolver<ResolversTypes['Partner'], ParentType, ContextType>;
-  redemptionForums?: Resolver<Array<ResolversTypes['RedemptionForum']>, ParentType, ContextType>;
-  rewardDetails?: Resolver<ResolversTypes['RewardDetails'], ParentType, ContextType, RequireFields<ClaimableRewardRewardDetailsArgs, 'languageCode'>>;
-  rewardType?: Resolver<ResolversTypes['RewardType'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type ClaimedRewardResolvers<ContextType = any, ParentType extends ResolversParentTypes['ClaimedReward'] = ResolversParentTypes['ClaimedReward']> = {
-  rewardSnapshot?: Resolver<ResolversTypes['RewardSnapshot'], ParentType, ContextType>;
-  voucher?: Resolver<ResolversTypes['ClaimedVoucher'], ParentType, ContextType>;
-};
-
-export type ClaimedVoucherResolvers<ContextType = any, ParentType extends ResolversParentTypes['ClaimedVoucher'] = ResolversParentTypes['ClaimedVoucher']> = {
-  expirationDate?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
-  voucherDetailsTranslations?: Resolver<Array<ResolversTypes['TranslatedVoucherDetails']>, ParentType, ContextType>;
+  Voucher: Omit<Voucher, 'translatedDetails'> & { translatedDetails: Array<ResolversParentTypes['TranslatedVoucherDetails']> };
+  VoucherDetails: ResolversInterfaceTypes<ResolversParentTypes>['VoucherDetails'];
+  VoucherTypeFilter: VoucherTypeFilter;
+  VoucherWithRewardSnapshot: Omit<VoucherWithRewardSnapshot, 'voucher'> & { voucher: ResolversParentTypes['Voucher'] };
 };
 
 export type CodeVoucherDetailsResolvers<ContextType = any, ParentType extends ResolversParentTypes['CodeVoucherDetails'] = ResolversParentTypes['CodeVoucherDetails']> = {
@@ -827,14 +740,6 @@ export type CoordinatesResolvers<ContextType = any, ParentType extends Resolvers
 export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
   name: 'DateTime';
 }
-
-export type IRewardResolvers<ContextType = any, ParentType extends ResolversParentTypes['IReward'] = ResolversParentTypes['IReward']> = {
-  __resolveType: TypeResolveFn<'ClaimableReward' | 'PublicReward', ParentType, ContextType>;
-};
-
-export type IVoucherDetailsResolvers<ContextType = any, ParentType extends ResolversParentTypes['IVoucherDetails'] = ResolversParentTypes['IVoucherDetails']> = {
-  __resolveType: TypeResolveFn<'CodeVoucherDetails' | 'LinkVoucherDetails' | 'ManualVoucherDetails' | 'QRCodeVoucherDetails', ParentType, ContextType>;
-};
 
 export type LinkVoucherDetailsResolvers<ContextType = any, ParentType extends ResolversParentTypes['LinkVoucherDetails'] = ResolversParentTypes['LinkVoucherDetails']> = {
   instructions?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -858,16 +763,16 @@ export type ManualVoucherDetailsResolvers<ContextType = any, ParentType extends 
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  claimReward?: Resolver<Maybe<ResolversTypes['ClaimedReward']>, ParentType, ContextType, RequireFields<MutationClaimRewardArgs, 'id'>>;
+  retrieveVoucher?: Resolver<Maybe<ResolversTypes['VoucherWithRewardSnapshot']>, ParentType, ContextType, RequireFields<MutationRetrieveVoucherArgs, 'id'>>;
 };
 
 export type PartnerResolvers<ContextType = any, ParentType extends ResolversParentTypes['Partner'] = ResolversParentTypes['Partner']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   locations?: Resolver<Array<ResolversTypes['Location']>, ParentType, ContextType, Partial<PartnerLocationsArgs>>;
   locationsCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType, Partial<PartnerLocationsCountArgs>>;
-  partnerDetails?: Resolver<ResolversTypes['PartnerDetails'], ParentType, ContextType, RequireFields<PartnerPartnerDetailsArgs, 'languageCode'>>;
   rewards?: Resolver<Array<ResolversTypes['Reward']>, ParentType, ContextType, Partial<PartnerRewardsArgs>>;
   rewardsCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType, Partial<PartnerRewardsCountArgs>>;
+  translatedDetails?: Resolver<ResolversTypes['PartnerDetails'], ParentType, ContextType, RequireFields<PartnerTranslatedDetailsArgs, 'languageCode'>>;
 };
 
 export type PartnerDetailsResolvers<ContextType = any, ParentType extends ResolversParentTypes['PartnerDetails'] = ResolversParentTypes['PartnerDetails']> = {
@@ -882,23 +787,7 @@ export type PartnerDetailsResolvers<ContextType = any, ParentType extends Resolv
 export type PartnerSnapshotResolvers<ContextType = any, ParentType extends ResolversParentTypes['PartnerSnapshot'] = ResolversParentTypes['PartnerSnapshot']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   lastUpdatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  partnerDetailsSnapshots?: Resolver<Array<ResolversTypes['TranslatedPartnerDetailsSnapshot']>, ParentType, ContextType>;
-};
-
-export type PublicRewardResolvers<ContextType = any, ParentType extends ResolversParentTypes['PublicReward'] = ResolversParentTypes['PublicReward']> = {
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  partner?: Resolver<ResolversTypes['Partner'], ParentType, ContextType>;
-  publicVoucher?: Resolver<ResolversTypes['PublicVoucher'], ParentType, ContextType>;
-  redemptionForums?: Resolver<Array<ResolversTypes['RedemptionForum']>, ParentType, ContextType>;
-  rewardDetails?: Resolver<ResolversTypes['RewardDetails'], ParentType, ContextType, RequireFields<PublicRewardRewardDetailsArgs, 'languageCode'>>;
-  rewardType?: Resolver<ResolversTypes['RewardType'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type PublicVoucherResolvers<ContextType = any, ParentType extends ResolversParentTypes['PublicVoucher'] = ResolversParentTypes['PublicVoucher']> = {
-  expirationDate?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
-  hasLimitedTotalUses?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  voucherDetails?: Resolver<Array<ResolversTypes['VoucherDetails']>, ParentType, ContextType, RequireFields<PublicVoucherVoucherDetailsArgs, 'languageCode'>>;
+  translatedDetailsSnapshots?: Resolver<Array<ResolversTypes['TranslatedPartnerDetailsSnapshot']>, ParentType, ContextType, Partial<PartnerSnapshotTranslatedDetailsSnapshotsArgs>>;
 };
 
 export type QrCodeVoucherDetailsResolvers<ContextType = any, ParentType extends ResolversParentTypes['QRCodeVoucherDetails'] = ResolversParentTypes['QRCodeVoucherDetails']> = {
@@ -922,7 +811,13 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 };
 
 export type RewardResolvers<ContextType = any, ParentType extends ResolversParentTypes['Reward'] = ResolversParentTypes['Reward']> = {
-  __resolveType: TypeResolveFn<'ClaimableReward' | 'PublicReward', ParentType, ContextType>;
+  earliestExpirationDate?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  hasUsageOrQuantityLimit?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  partner?: Resolver<ResolversTypes['Partner'], ParentType, ContextType>;
+  redemptionForums?: Resolver<Array<ResolversTypes['RedemptionForum']>, ParentType, ContextType>;
+  translatedDetails?: Resolver<ResolversTypes['RewardDetails'], ParentType, ContextType, RequireFields<RewardTranslatedDetailsArgs, 'languageCode'>>;
+  voucherType?: Resolver<ResolversTypes['VoucherType'], ParentType, ContextType>;
 };
 
 export type RewardDetailsResolvers<ContextType = any, ParentType extends ResolversParentTypes['RewardDetails'] = ResolversParentTypes['RewardDetails']> = {
@@ -936,11 +831,12 @@ export type RewardSnapshotResolvers<ContextType = any, ParentType extends Resolv
   lastUpdatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   partnerSnapshot?: Resolver<ResolversTypes['PartnerSnapshot'], ParentType, ContextType>;
   redemptionForums?: Resolver<Array<ResolversTypes['RedemptionForum']>, ParentType, ContextType>;
-  rewardDetailsSnapshots?: Resolver<Array<ResolversTypes['TranslatedRewardDetailsSnapshot']>, ParentType, ContextType>;
+  translatedDetailsSnapshots?: Resolver<Array<ResolversTypes['TranslatedRewardDetailsSnapshot']>, ParentType, ContextType, Partial<RewardSnapshotTranslatedDetailsSnapshotsArgs>>;
 };
 
 export type TranslatedPartnerDetailsSnapshotResolvers<ContextType = any, ParentType extends ResolversParentTypes['TranslatedPartnerDetailsSnapshot'] = ResolversParentTypes['TranslatedPartnerDetailsSnapshot']> = {
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  languageCode?: Resolver<ResolversTypes['LanguageCode'], ParentType, ContextType>;
   lastUpdatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   logoUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -962,19 +858,24 @@ export type TranslatedVoucherDetailsResolvers<ContextType = any, ParentType exte
   voucherDetails?: Resolver<Array<ResolversTypes['VoucherDetails']>, ParentType, ContextType>;
 };
 
+export type VoucherResolvers<ContextType = any, ParentType extends ResolversParentTypes['Voucher'] = ResolversParentTypes['Voucher']> = {
+  expirationDate?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  translatedDetails?: Resolver<Array<ResolversTypes['TranslatedVoucherDetails']>, ParentType, ContextType, Partial<VoucherTranslatedDetailsArgs>>;
+};
+
 export type VoucherDetailsResolvers<ContextType = any, ParentType extends ResolversParentTypes['VoucherDetails'] = ResolversParentTypes['VoucherDetails']> = {
   __resolveType: TypeResolveFn<'CodeVoucherDetails' | 'LinkVoucherDetails' | 'ManualVoucherDetails' | 'QRCodeVoucherDetails', ParentType, ContextType>;
 };
 
+export type VoucherWithRewardSnapshotResolvers<ContextType = any, ParentType extends ResolversParentTypes['VoucherWithRewardSnapshot'] = ResolversParentTypes['VoucherWithRewardSnapshot']> = {
+  rewardSnapshot?: Resolver<ResolversTypes['RewardSnapshot'], ParentType, ContextType>;
+  voucher?: Resolver<ResolversTypes['Voucher'], ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = any> = {
-  ClaimableReward?: ClaimableRewardResolvers<ContextType>;
-  ClaimedReward?: ClaimedRewardResolvers<ContextType>;
-  ClaimedVoucher?: ClaimedVoucherResolvers<ContextType>;
   CodeVoucherDetails?: CodeVoucherDetailsResolvers<ContextType>;
   Coordinates?: CoordinatesResolvers<ContextType>;
   DateTime?: GraphQLScalarType;
-  IReward?: IRewardResolvers<ContextType>;
-  IVoucherDetails?: IVoucherDetailsResolvers<ContextType>;
   LinkVoucherDetails?: LinkVoucherDetailsResolvers<ContextType>;
   Location?: LocationResolvers<ContextType>;
   ManualVoucherDetails?: ManualVoucherDetailsResolvers<ContextType>;
@@ -982,8 +883,6 @@ export type Resolvers<ContextType = any> = {
   Partner?: PartnerResolvers<ContextType>;
   PartnerDetails?: PartnerDetailsResolvers<ContextType>;
   PartnerSnapshot?: PartnerSnapshotResolvers<ContextType>;
-  PublicReward?: PublicRewardResolvers<ContextType>;
-  PublicVoucher?: PublicVoucherResolvers<ContextType>;
   QRCodeVoucherDetails?: QrCodeVoucherDetailsResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Reward?: RewardResolvers<ContextType>;
@@ -992,6 +891,8 @@ export type Resolvers<ContextType = any> = {
   TranslatedPartnerDetailsSnapshot?: TranslatedPartnerDetailsSnapshotResolvers<ContextType>;
   TranslatedRewardDetailsSnapshot?: TranslatedRewardDetailsSnapshotResolvers<ContextType>;
   TranslatedVoucherDetails?: TranslatedVoucherDetailsResolvers<ContextType>;
+  Voucher?: VoucherResolvers<ContextType>;
   VoucherDetails?: VoucherDetailsResolvers<ContextType>;
+  VoucherWithRewardSnapshot?: VoucherWithRewardSnapshotResolvers<ContextType>;
 };
 

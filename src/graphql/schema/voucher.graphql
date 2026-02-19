@@ -5,43 +5,85 @@ enum RedemptionMethod {
   MANUAL
 }
 
-interface IVoucherDetails {
+type VoucherWithRewardSnapshot {
+  voucher: Voucher!
+  rewardSnapshot: RewardSnapshot!
+}
+
+type Voucher {
+  translatedDetails(
+    languageCodes: [LanguageCode!]
+  ): [TranslatedVoucherDetails!]!
+  expirationDate: DateTime
+}
+
+type TranslatedVoucherDetails {
+  languageCode: LanguageCode!
+  voucherDetails: [VoucherDetails!]!
+}
+
+interface VoucherDetails {
   redemptionMethod: RedemptionMethod!
   instructions: String!
 }
 
-type PublicVoucher {
-  voucherDetails(languageCode: LanguageCode!): [VoucherDetails!]!
-  hasLimitedTotalUses: Boolean!
-  expirationDate: DateTime
-}
-
-union VoucherDetails =
-  | CodeVoucherDetails
-  | QRCodeVoucherDetails
-  | LinkVoucherDetails
-  | ManualVoucherDetails
-
-type CodeVoucherDetails implements IVoucherDetails {
+type CodeVoucherDetails implements VoucherDetails {
   redemptionMethod: RedemptionMethod!
   instructions: String!
   redemptionCode: String!
 }
 
-type QRCodeVoucherDetails implements IVoucherDetails {
+type QRCodeVoucherDetails implements VoucherDetails {
   redemptionMethod: RedemptionMethod!
   instructions: String!
   redemptionQRCode: String!
 }
 
-type LinkVoucherDetails implements IVoucherDetails {
+type LinkVoucherDetails implements VoucherDetails {
   redemptionMethod: RedemptionMethod!
   instructions: String!
   redemptionLinkUrl: String!
   redemptionLinkText: String
 }
 
-type ManualVoucherDetails implements IVoucherDetails {
+type ManualVoucherDetails implements VoucherDetails {
   redemptionMethod: RedemptionMethod!
   instructions: String!
+}
+
+type RewardSnapshot {
+  id: ID!
+  redemptionForums: [RedemptionForum!]!
+  translatedDetailsSnapshots(
+    languageCodes: [LanguageCode!]
+  ): [TranslatedRewardDetailsSnapshot!]!
+  partnerSnapshot: PartnerSnapshot!
+  lastUpdatedAt: DateTime!
+}
+
+type TranslatedRewardDetailsSnapshot {
+  languageCode: LanguageCode!
+  categories: [String!]!
+  shortDescription: String!
+  longDescription: String
+  lastUpdatedAt: DateTime!
+}
+
+type PartnerSnapshot {
+  id: ID!
+  translatedDetailsSnapshots(
+    languageCodes: [LanguageCode!]
+  ): [TranslatedPartnerDetailsSnapshot!]!
+  lastUpdatedAt: DateTime!
+}
+
+type TranslatedPartnerDetailsSnapshot {
+  languageCode: LanguageCode!
+  name: String!
+  logoUrl: String!
+  description: String!
+  webAddressUrl: String
+  webAddressText: String
+  reasonForSupporting8by8: String
+  lastUpdatedAt: DateTime!
 }
