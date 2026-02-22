@@ -1,4 +1,4 @@
-CREATE FUNCTION public.test_partner_details_update_trigger() 
+CREATE FUNCTION public.test_partner_details_translation_update_trigger() 
 RETURNS SETOF TEXT AS $$
 DECLARE 
   test_partner_id INT;
@@ -6,15 +6,15 @@ DECLARE
   original_updated_at TIMESTAMPTZ;
   new_updated_at TIMESTAMPTZ;
 BEGIN 
-INSERT INTO partners DEFAULT VALUES 
+INSERT INTO partner DEFAULT VALUES 
 RETURNING id INTO test_partner_id;
 
-INSERT INTO languages (language_code, language_name) VALUES (
+INSERT INTO language (language_code, language_name) VALUES (
   test_language_code,
   'English'
 );
 
-INSERT INTO partner_details_translations (
+INSERT INTO partner_details_translation (
   partner_id,
   language_code,
   name,
@@ -28,15 +28,15 @@ INSERT INTO partner_details_translations (
   anon.lorem_ipsum(2)
 ) RETURNING updated_at INTO original_updated_at;
 
-UPDATE partner_details_translations SET description = anon.lorem_ipsum(3) 
-WHERE partner_details_translations.partner_id = test_partner_id AND 
-partner_details_translations.language_code = test_language_code
+UPDATE partner_details_translation SET description = anon.lorem_ipsum(3) 
+WHERE partner_details_translation.partner_id = test_partner_id AND 
+partner_details_translation.language_code = test_language_code
 RETURNING updated_at INTO new_updated_at;
 
 RETURN QUERY (
   SELECT ok(
     new_updated_at > original_updated_at,
-    'partner_details_translations.updated_at was set when a row was updated.'
+    'partner_details_translation.updated_at was set when a row was updated.'
   )
 );
 END;
