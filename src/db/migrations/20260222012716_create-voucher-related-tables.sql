@@ -1,15 +1,12 @@
 -- migrate:up
 CREATE TABLE base_voucher (
-  redeemable_until TIMESTAMPTZ
+  redeemable_until TIMESTAMPTZ,
+  CONSTRAINT disallow_insert CHECK (false) NO INHERIT
 ) INHERITS (base_entity);
-
-CREATE TRIGGER disallow_insert_into_base_voucher
-BEFORE INSERT ON base_voucher
-FOR EACH ROW EXECUTE FUNCTION disallow_insert();
 
 CREATE TABLE single_use_voucher (
   id BIGSERIAL PRIMARY KEY,
-  reward_id UUID NOT NULL REFERENCES reward(id) ON DELETE RESTRICT,
+  reward_id UUID NOT NULL REFERENCES reward(id) ON DELETE CASCADE,
   CONSTRAINT validate_reward_voucher_type CHECK (
     reward_voucher_type_matches(reward_id, 'SINGLE_USE')
   )
@@ -21,7 +18,7 @@ FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 CREATE TABLE multiple_use_voucher (
   id SERIAL PRIMARY KEY,
-  reward_id UUID UNIQUE NOT NULL REFERENCES reward(id) ON DELETE RESTRICT, 
+  reward_id UUID UNIQUE NOT NULL REFERENCES reward(id) ON DELETE CASCADE, 
   has_usage_cap BOOLEAN NOT NULL,
   CONSTRAINT validate_reward_voucher_type CHECK (
     reward_voucher_type_matches(reward_id, 'MULTIPLE_USE')
@@ -87,7 +84,11 @@ FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 CREATE TABLE link_based_voucher_value (
   id BIGSERIAL PRIMARY KEY,
   single_use_voucher_id BIGINT UNIQUE NULLS DISTINCT REFERENCES single_use_voucher(id) ON DELETE CASCADE,
-  multiple_use_voucher_id INT UNIQUE NULLS DISTINCT REFERENCES multiple_use_voucher(id) ON DELETE CASCADE
+  multiple_use_voucher_id INT UNIQUE NULLS DISTINCT REFERENCES multiple_use_voucher(id) ON DELETE CASCADE,
+  CONSTRAINT disallow_references_to_multiple_vouchers CHECK (num_nonnulls(
+    multiple_use_voucher_id,
+    single_use_voucher_id
+  ) = 1)
 ) INHERITS (base_entity);
 
 CREATE TRIGGER link_based_voucher_value_update_trigger

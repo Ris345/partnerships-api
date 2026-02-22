@@ -4,12 +4,12 @@ CREATE TABLE base_voucher_stub (
   redeemable_until_local TIMESTAMP,
   redeemable_for INTERVAL,
   vouchers_remaining INT,
-  CONSTRAINT prevent_direction_insertions CHECK (false) NO INHERIT
+  CONSTRAINT disallow_insert CHECK (false) NO INHERIT
 ) INHERITS (base_entity);
 
 CREATE TABLE on_demand_voucher_stub (
   id SERIAL PRIMARY KEY,
-  reward_id UUID UNIQUE REFERENCES reward(id) ON DELETE CASCADE,
+  reward_id UUID NOT NULL UNIQUE REFERENCES reward(id) ON DELETE CASCADE,
   CONSTRAINT validate_reward_voucher_type CHECK (
     reward_voucher_type_matches(reward_id, 'ON_DEMAND')
   )
@@ -21,7 +21,7 @@ FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 CREATE TABLE manual_voucher_stub (
   id SERIAL PRIMARY KEY,
-  reward_id UUID UNIQUE REFERENCES reward(id) ON DELETE CASCADE,
+  reward_id UUID NOT NULL UNIQUE REFERENCES reward(id) ON DELETE CASCADE,
   CONSTRAINT validate_reward_voucher_type CHECK (
     reward_voucher_type_matches(reward_id, 'MANUAL')
   )

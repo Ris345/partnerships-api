@@ -27,10 +27,11 @@ BEFORE UPDATE ON reward_category
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 CREATE TABLE reward_details_translation (
-  reward_id UUID REFERENCES reward(id) ON DELETE CASCADE,
-  language_code CHAR(2) REFERENCES language(language_code) ON DELETE RESTRICT,
+  reward_id UUID NOT NULL REFERENCES reward(id) ON DELETE CASCADE,
+  language_code CHAR(2) NOT NULL REFERENCES language(language_code) ON DELETE RESTRICT,
   short_description TEXT NOT NULL,
-  long_description TEXT
+  long_description TEXT,
+  PRIMARY KEY(reward_id, language_code)
 ) INHERITS (base_entity);
 
 CREATE TRIGGER reward_details_translation_update_trigger
@@ -43,7 +44,7 @@ CREATE FUNCTION reward_voucher_type_matches(
 ) RETURNS BOOLEAN AS $$
 BEGIN
   RETURN (
-    SELECT reward.voucher_type 
+    SELECT voucher_type 
     FROM reward WHERE id = reward_id
   ) = expected_voucher_type;
 END;
