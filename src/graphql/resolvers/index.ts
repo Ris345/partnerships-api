@@ -1,10 +1,6 @@
 import type { Resolvers } from '../../model/generated/graphql/types';
 import { queryResolvers } from './query';
-import {
-  locationResolvers,
-  partnerResolvers,
-  rewardResolvers,
-} from './types';
+import { locationResolvers, partnerResolvers, rewardResolvers } from './types';
 
 export const resolvers: Resolvers = {
   Query: queryResolvers,

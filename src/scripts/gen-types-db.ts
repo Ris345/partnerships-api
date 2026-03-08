@@ -29,6 +29,16 @@ const config: IntrospeqlKyselyConfig = {
   },
   functions: {
     mode: 'exclusive',
+    includeFunctions: [
+      {
+        schema: 'pg_catalog',
+        name: 'jsonb_build_object',
+      },
+      {
+        schema: 'public',
+        name: 'st_dwithin',
+      },
+    ],
   },
   types: {
     'public.geography': 'Point',

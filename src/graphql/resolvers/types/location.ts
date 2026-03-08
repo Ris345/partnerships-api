@@ -1,6 +1,11 @@
-import type { LocationResolvers } from '../../../model/generated/graphql/types';
-import { argsSignature } from '../helpers/args-signature';
+import { sql } from 'kysely';
+import { db, pgFn } from '../../../db';
+import type {
+  LocationResolvers,
+} from '../../../model/generated/graphql/types';
+import type { Point } from '../../../model/point';
 import { mapPartnerId, type LocationNode } from '../helpers/mappers';
+import { distanceUnitsToDbEnum } from '../helpers/query-builders';
 import type { GraphQLContext } from '../helpers/types';
 
 const coordinates: NonNullable<LocationResolvers<GraphQLContext, LocationNode>['coordinates']> = (
@@ -9,22 +14,29 @@ const coordinates: NonNullable<LocationResolvers<GraphQLContext, LocationNode>['
   return parent.coordinates;
 };
 
-const distance: NonNullable<LocationResolvers<GraphQLContext, LocationNode>['distance']> = (
+const distance: NonNullable<LocationResolvers<GraphQLContext, LocationNode>['distance']> = async (
   parent,
   args,
 ) => {
-  const value = parent._meta.distanceByArgs[argsSignature(args)];
+  const originPoint = pgFn('public.make_geographic_point', [
+    sql.val(args.from.longitude),
+    sql.val(args.from.latitude),
+  ]);
 
-  if (value === undefined) {
-    throw new Error(
-      `Location distance not loaded for location ${parent.id} and args ${JSON.stringify(args)}`,
-    );
-  }
+  const row = await db
+    .selectNoFrom([
+      pgFn('public.calc_distance_with_units', [
+        sql.val(parent._meta.coordinates as Point),
+        sql<Point>`${originPoint}::geography`,
+        sql.val(distanceUnitsToDbEnum(args.units)),
+      ]).as('distance'),
+    ])
+    .executeTakeFirstOrThrow();
 
-  return value;
+  return row.distance ?? 0;
 };
 
-const partner: NonNullable<LocationResolvers<GraphQLContext, LocationNode>['partner']> = (
+const partner: NonNullable<LocationResolvers<GraphQLContext, LocationNode>['partner']> = async (
   parent,
 ) => {
   return mapPartnerId(parent._meta.partnerId);
