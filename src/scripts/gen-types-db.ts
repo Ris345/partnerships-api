@@ -17,6 +17,7 @@ const config: IntrospeqlKyselyConfig = {
   },
   schemas: ['public', 'pg_catalog'],
   outFile: path.join(import.meta.dirname, '..' + outFile),
+  header: "import type { Point } from '../../point';",
   tables: {
     mode: 'exclusive',
   },
@@ -33,7 +34,14 @@ const config: IntrospeqlKyselyConfig = {
         schema: 'pg_catalog',
         name: 'jsonb_build_object',
       },
+      {
+        schema: 'public',
+        name: 'st_dwithin',
+      },
     ],
+  },
+  types: {
+    'public.geography': 'Point',
   },
 };
 

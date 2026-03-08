@@ -15,7 +15,8 @@
     "pg-test:start": "npx tsx ./src/scripts/pg.ts --mode=test start",
     "pg-test:stop": "npx tsx ./src/scripts/pg.ts --mode=test stop",
     "start": "npx tsx ./src/index.ts",
-    "test:db": "npx tsx ./src/scripts/test-db.ts --no-cache"
+    "test:db": "npx tsx ./src/scripts/test-db.ts --no-cache",
+    "test:unit": "node --test --import tsx ./src/__tests__/*.test.ts"
   },
   "repository": {
     "type": "git",
