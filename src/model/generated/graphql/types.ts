@@ -353,7 +353,7 @@ export type Reward = {
   partner: Partner;
   redemptionForums: Array<RedemptionForum>;
   translatedDetails: RewardDetails;
-  voucherOwnership: VoucherOwnership;
+  voucherType: VoucherType;
 };
 
 
@@ -391,7 +391,7 @@ export type RewardFilter =
   |  { _and?: never; _not?: never; _or?: never; earliestExpirationDate?: never; hasUsageOrQuantityLimit?: never; id?: never; partner: PartnerFilter; redemptionForums?: never; translatedDetails?: never; voucherType?: never; }
   |  { _and?: never; _not?: never; _or?: never; earliestExpirationDate?: never; hasUsageOrQuantityLimit?: never; id?: never; partner?: never; redemptionForums: RedemptionForumArrayFilter; translatedDetails?: never; voucherType?: never; }
   |  { _and?: never; _not?: never; _or?: never; earliestExpirationDate?: never; hasUsageOrQuantityLimit?: never; id?: never; partner?: never; redemptionForums?: never; translatedDetails: TranslatedRewardDetailsFilter; voucherType?: never; }
-  |  { _and?: never; _not?: never; _or?: never; earliestExpirationDate?: never; hasUsageOrQuantityLimit?: never; id?: never; partner?: never; redemptionForums?: never; translatedDetails?: never; voucherType: VoucherOwnershipFilter; };
+  |  { _and?: never; _not?: never; _or?: never; earliestExpirationDate?: never; hasUsageOrQuantityLimit?: never; id?: never; partner?: never; redemptionForums?: never; translatedDetails?: never; voucherType: VoucherTypeFilter; };
 
 export type RewardOrderByCriteria =
   { id: SortOrder; partner?: never; translatedDetails?: never; }
@@ -504,14 +504,14 @@ export type VoucherDetails = {
   redemptionMethod: RedemptionMethod;
 };
 
-export enum VoucherOwnership {
+export enum VoucherType {
   MultiUser = 'MULTI_USER',
   SingleUser = 'SINGLE_USER'
 }
 
-export type VoucherOwnershipFilter =
-  { _eq: VoucherOwnership; _neq?: never; }
-  |  { _eq?: never; _neq: VoucherOwnership; };
+export type VoucherTypeFilter =
+  { _eq: VoucherType; _neq?: never; }
+  |  { _eq?: never; _neq: VoucherType; };
 
 export type VoucherWithRewardSnapshot = {
   __typename?: 'VoucherWithRewardSnapshot';
@@ -660,8 +660,8 @@ export type ResolversTypes = {
   TranslatedVoucherDetails: ResolverTypeWrapper<Omit<TranslatedVoucherDetails, 'voucherDetails'> & { voucherDetails: Array<ResolversTypes['VoucherDetails']> }>;
   Voucher: ResolverTypeWrapper<Omit<Voucher, 'translatedDetails'> & { translatedDetails: Array<ResolversTypes['TranslatedVoucherDetails']> }>;
   VoucherDetails: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['VoucherDetails']>;
-  VoucherOwnership: VoucherOwnership;
-  VoucherOwnershipFilter: VoucherOwnershipFilter;
+  VoucherType: VoucherType;
+  VoucherTypeFilter: VoucherTypeFilter;
   VoucherWithRewardSnapshot: ResolverTypeWrapper<Omit<VoucherWithRewardSnapshot, 'voucher'> & { voucher: ResolversTypes['Voucher'] }>;
 };
 
@@ -721,7 +721,7 @@ export type ResolversParentTypes = {
   TranslatedVoucherDetails: Omit<TranslatedVoucherDetails, 'voucherDetails'> & { voucherDetails: Array<ResolversParentTypes['VoucherDetails']> };
   Voucher: Omit<Voucher, 'translatedDetails'> & { translatedDetails: Array<ResolversParentTypes['TranslatedVoucherDetails']> };
   VoucherDetails: ResolversInterfaceTypes<ResolversParentTypes>['VoucherDetails'];
-  VoucherOwnershipFilter: VoucherOwnershipFilter;
+  VoucherTypeFilter: VoucherTypeFilter;
   VoucherWithRewardSnapshot: Omit<VoucherWithRewardSnapshot, 'voucher'> & { voucher: ResolversParentTypes['Voucher'] };
 };
 
@@ -817,7 +817,7 @@ export type RewardResolvers<ContextType = any, ParentType extends ResolversParen
   partner?: Resolver<ResolversTypes['Partner'], ParentType, ContextType>;
   redemptionForums?: Resolver<Array<ResolversTypes['RedemptionForum']>, ParentType, ContextType>;
   translatedDetails?: Resolver<ResolversTypes['RewardDetails'], ParentType, ContextType, RequireFields<RewardTranslatedDetailsArgs, 'languageCode'>>;
-  voucherOwnership?: Resolver<ResolversTypes['VoucherOwnership'], ParentType, ContextType>;
+  voucherType?: Resolver<ResolversTypes['VoucherType'], ParentType, ContextType>;
 };
 
 export type RewardDetailsResolvers<ContextType = any, ParentType extends ResolversParentTypes['RewardDetails'] = ResolversParentTypes['RewardDetails']> = {
