@@ -186,7 +186,7 @@ type PgFnNames =
   | "public.st_dwithin";
 
 type PgFnParams<T extends PgFnNames> = T extends "pg_catalog.jsonb_build_object"
-  ? [...Expression<string>[]]
+  ? [...Expression<any>[]]
   : T extends "public.calc_distance_with_units"
     ? [
         Expression<string>,
@@ -220,7 +220,7 @@ type PgFnReturnTypes<
   T extends PgFnNames,
   V extends PgFnParams<T>,
 > = T extends "pg_catalog.jsonb_build_object"
-  ? V extends [...Expression<string>[]]
+  ? V extends [...Expression<any>[]]
     ? object
     : never
   : T extends "public.calc_distance_with_units"

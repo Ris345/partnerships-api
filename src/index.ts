@@ -11,6 +11,8 @@ interface MyContext {
   token?: String;
 }
 
+console.log(resolvers);
+
 const app = express();
 const httpServer = http.createServer(app);
 const server = new ApolloServer<MyContext>({

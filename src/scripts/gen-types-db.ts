@@ -29,6 +29,9 @@ const config: IntrospeqlKyselyConfig = {
   functions: {
     mode: 'exclusive',
   },
+  types: {
+    'pg_catalog.any': 'any',
+  },
 };
 
 generateTypes();
