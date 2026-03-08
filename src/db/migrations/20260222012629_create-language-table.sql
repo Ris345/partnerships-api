@@ -7,6 +7,8 @@ CREATE TABLE language (
   )
 ) INHERITS (base_entity);
 
+COMMENT ON TABLE language IS '@introspeql-include';
+
 CREATE TRIGGER language_update_trigger
 BEFORE UPDATE ON language
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();

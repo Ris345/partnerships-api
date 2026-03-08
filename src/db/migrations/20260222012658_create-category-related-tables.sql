@@ -3,6 +3,8 @@ CREATE TABLE category (
   id SERIAL PRIMARY KEY
 ) INHERITS (base_entity);
 
+COMMENT ON TABLE category IS '@introspeql-include';
+
 CREATE TRIGGER category_update_trigger
 BEFORE UPDATE ON category
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
@@ -13,6 +15,8 @@ CREATE TABLE category_translation (
   category_name TEXT NOT NULL,
   PRIMARY KEY(category_id, language_code)
 ) INHERITS (base_entity);
+
+COMMENT ON TABLE category_translation IS '@introspeql-include';
 
 CREATE TRIGGER category_translation_update_trigger
 BEFORE UPDATE ON category_translation

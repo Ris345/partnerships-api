@@ -5,5 +5,7 @@ CREATE TABLE base_entity (
     CONSTRAINT disallow_insert CHECK (false) NO INHERIT
 );
 
+COMMENT ON TABLE base_entity IS '@introspeql-include';
+
 -- migrate:down
 DROP TABLE base_entity;

@@ -12,6 +12,8 @@ CREATE TABLE reward (
   CONSTRAINT redemption_forums_contains_no_duplicates CHECK (NOT contains_duplicates (redemption_forums))
 ) INHERITS (base_entity);
 
+COMMENT ON TABLE reward IS '@introspeql-include';
+
 CREATE TRIGGER reward_update_trigger
 BEFORE UPDATE ON reward
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
@@ -21,6 +23,8 @@ CREATE TABLE reward_category (
   category_id INT REFERENCES category(id) ON DELETE RESTRICT,
   PRIMARY KEY(reward_id, category_id)
 ) INHERITS (base_entity);
+
+COMMENT ON TABLE reward_category IS '@introspeql-include';
 
 CREATE TRIGGER reward_category_update_trigger
 BEFORE UPDATE ON reward_category
@@ -33,6 +37,8 @@ CREATE TABLE reward_details_translation (
   long_description TEXT,
   PRIMARY KEY(reward_id, language_code)
 ) INHERITS (base_entity);
+
+COMMENT ON TABLE reward_details_translation IS '@introspeql-include';
 
 CREATE TRIGGER reward_details_translation_update_trigger
 BEFORE UPDATE ON reward_details_translation

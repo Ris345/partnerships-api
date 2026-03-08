@@ -4,6 +4,8 @@ CREATE TABLE base_voucher (
   CONSTRAINT disallow_insert CHECK (false) NO INHERIT
 ) INHERITS (base_entity);
 
+COMMENT ON TABLE base_voucher IS '@introspeql-include';
+
 CREATE TABLE single_use_voucher (
   id BIGSERIAL PRIMARY KEY,
   reward_id UUID NOT NULL REFERENCES reward(id) ON DELETE CASCADE,
@@ -11,6 +13,8 @@ CREATE TABLE single_use_voucher (
     reward_voucher_type_matches(reward_id, 'SINGLE_USE')
   )
 ) INHERITS (base_voucher);
+
+COMMENT ON TABLE single_use_voucher IS '@introspeql-include';
 
 CREATE TRIGGER single_use_voucher_update_trigger
 BEFORE UPDATE ON single_use_voucher
@@ -24,6 +28,8 @@ CREATE TABLE multiple_use_voucher (
     reward_voucher_type_matches(reward_id, 'MULTIPLE_USE')
   )
 ) INHERITS (base_voucher);
+
+COMMENT ON TABLE multiple_use_voucher IS '@introspeql-include';
 
 CREATE TRIGGER multiple_use_voucher_update_trigger
 BEFORE UPDATE ON multiple_use_voucher
@@ -40,6 +46,8 @@ CREATE TABLE code_based_voucher_value (
   ) = 1)
 ) INHERITS (base_entity);
 
+COMMENT ON TABLE code_based_voucher_value IS '@introspeql-include';
+
 CREATE TRIGGER code_based_voucher_value_update_trigger
 BEFORE UPDATE ON code_based_voucher_value
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
@@ -50,6 +58,8 @@ CREATE TABLE code_based_voucher_value_details_translation (
   instructions TEXT NOT NULL,
   PRIMARY KEY (code_based_voucher_value_id, language_code)
 ) INHERITS (base_entity);
+
+COMMENT ON TABLE code_based_voucher_value_details_translation IS '@introspeql-include';
 
 CREATE TRIGGER code_based_voucher_value_details_translation_update_trigger
 BEFORE UPDATE ON code_based_voucher_value_details_translation
@@ -66,6 +76,8 @@ CREATE TABLE qr_code_based_voucher_value (
   ) = 1)
 ) INHERITS (base_entity);
 
+COMMENT ON TABLE qr_code_based_voucher_value IS '@introspeql-include';
+
 CREATE TRIGGER qr_code_based_voucher_value_update_trigger
 BEFORE UPDATE ON qr_code_based_voucher_value
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
@@ -76,6 +88,8 @@ CREATE TABLE qr_code_based_voucher_value_details_translation (
   instructions TEXT NOT NULL,
   PRIMARY KEY (qr_code_based_voucher_value_id, language_code)
 ) INHERITS (base_entity);
+
+COMMENT ON TABLE qr_code_based_voucher_value_details_translation IS '@introspeql-include';
 
 CREATE TRIGGER qr_code_based_voucher_value_details_translation_update_trigger
 BEFORE UPDATE ON qr_code_based_voucher_value_details_translation
@@ -91,6 +105,8 @@ CREATE TABLE link_based_voucher_value (
   ) = 1)
 ) INHERITS (base_entity);
 
+COMMENT ON TABLE link_based_voucher_value IS '@introspeql-include';
+
 CREATE TRIGGER link_based_voucher_value_update_trigger
 BEFORE UPDATE ON link_based_voucher_value
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
@@ -103,6 +119,8 @@ CREATE TABLE link_based_voucher_value_details_translation (
   redemption_link_text TEXT,
   PRIMARY KEY (link_based_voucher_value_id, language_code)
 ) INHERITS (base_entity);
+
+COMMENT ON TABLE link_based_voucher_value_details_translation IS '@introspeql-include';
 
 CREATE TRIGGER link_based_voucher_value_details_translation_update_trigger
 BEFORE UPDATE ON link_based_voucher_value_details_translation

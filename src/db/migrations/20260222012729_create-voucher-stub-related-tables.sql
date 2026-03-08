@@ -7,6 +7,8 @@ CREATE TABLE base_voucher_stub (
   CONSTRAINT disallow_insert CHECK (false) NO INHERIT
 ) INHERITS (base_entity);
 
+COMMENT ON TABLE base_voucher_stub IS '@introspeql-include';
+
 CREATE TABLE on_demand_voucher_stub (
   id SERIAL PRIMARY KEY,
   reward_id UUID NOT NULL UNIQUE REFERENCES reward(id) ON DELETE CASCADE,
@@ -14,6 +16,8 @@ CREATE TABLE on_demand_voucher_stub (
     reward_voucher_type_matches(reward_id, 'ON_DEMAND')
   )
 ) INHERITS (base_voucher_stub);
+
+COMMENT ON TABLE on_demand_voucher_stub IS '@introspeql-include';
 
 CREATE TRIGGER on_demand_voucher_stub_update_trigger
 BEFORE UPDATE ON on_demand_voucher_stub
@@ -27,6 +31,8 @@ CREATE TABLE manual_voucher_stub (
   )
 ) INHERITS (base_voucher_stub);
 
+COMMENT ON TABLE manual_voucher_stub IS '@introspeql-include';
+
 CREATE TRIGGER manual_voucher_stub_update_trigger
 BEFORE UPDATE ON manual_voucher_stub
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
@@ -37,6 +43,8 @@ CREATE TABLE manual_voucher_stub_details_translation (
   instructions TEXT NOT NULL,
   PRIMARY KEY (manual_voucher_stub_id, language_code)
 ) INHERITS (base_entity);
+
+COMMENT ON TABLE manual_voucher_stub_details_translation IS '@introspeql-include';
 
 CREATE TRIGGER manual_voucher_stub_details_translation_update_trigger
 BEFORE UPDATE ON manual_voucher_stub_details_translation

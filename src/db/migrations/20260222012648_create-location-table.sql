@@ -5,6 +5,8 @@ CREATE TABLE location (
   coordinates GEOGRAPHY(POINT, 4326) NOT NULL
 ) INHERITS (base_entity);
 
+COMMENT ON TABLE location IS '@introspeql-include';
+
 CREATE TRIGGER location_update_trigger 
 BEFORE UPDATE ON location
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();

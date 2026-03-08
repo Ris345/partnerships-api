@@ -3,6 +3,8 @@ CREATE TABLE partner (
   id SERIAL PRIMARY KEY
 ) INHERITS (base_entity);
 
+COMMENT ON TABLE partner IS '@introspeql-include';
+
 CREATE TRIGGER partner_update_trigger 
 BEFORE UPDATE ON partner
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
@@ -18,6 +20,8 @@ CREATE TABLE partner_details_translation (
   reason_for_supporting_8by8 TEXT,
   PRIMARY KEY(partner_id, language_code)
 ) INHERITS (base_entity);
+
+COMMENT ON TABLE partner_details_translation IS '@introspeql-include';
 
 CREATE TRIGGER partners_details_translation_update_trigger 
 BEFORE UPDATE ON partner_details_translation

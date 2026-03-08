@@ -9,6 +9,8 @@ CREATE FUNCTION make_geographic_point(
   END;
 $$ LANGUAGE plpgsql IMMUTABLE;
 
+COMMENT ON FUNCTION make_geographic_point IS '@introspeql-include';
+
 CREATE FUNCTION convert_distance (
   distance DOUBLE PRECISION,
   from_units distance_units,
@@ -43,6 +45,8 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql IMMUTABLE;
 
+COMMENT ON FUNCTION convert_distance IS '@introspeql-include';
+
 CREATE FUNCTION calc_distance_with_units (
   pointA GEOGRAPHY (POINT, 4326),
   pointB GEOGRAPHY (POINT, 4326),
@@ -56,17 +60,23 @@ CREATE FUNCTION calc_distance_with_units (
   END;
 $$ LANGUAGE plpgsql IMMUTABLE;
 
+COMMENT ON FUNCTION calc_distance_with_units IS '@introspeql-include';
+
 CREATE FUNCTION get_latitude (point GEOGRAPHY (POINT, 4326)) RETURNS DOUBLE PRECISION AS $$
   BEGIN
     RETURN ST_Y(point::geometry);
   END;
 $$ LANGUAGE plpgsql IMMUTABLE;
 
+COMMENT ON FUNCTION get_latitude IS '@introspeql-include';
+
 CREATE FUNCTION get_longitude (point GEOGRAPHY (POINT, 4326)) RETURNS DOUBLE PRECISION AS $$
   BEGIN 
     RETURN ST_X(point::geometry);
   END;
 $$ LANGUAGE plpgsql IMMUTABLE;
+
+COMMENT ON FUNCTION get_longitude IS '@introspeql-include';
 
 -- migrate:down
 DROP FUNCTION get_longitude;
