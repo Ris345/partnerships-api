@@ -182,10 +182,11 @@ type PgFnNames =
   | "public.convert_distance"
   | "public.get_latitude"
   | "public.get_longitude"
-  | "public.make_geographic_point";
+  | "public.make_geographic_point"
+  | "public.st_dwithin";
 
 type PgFnParams<T extends PgFnNames> = T extends "pg_catalog.jsonb_build_object"
-  ? [] | [...Expression<string>[]]
+  ? [...Expression<string>[]]
   : T extends "public.calc_distance_with_units"
     ? [
         Expression<string>,
@@ -204,24 +205,31 @@ type PgFnParams<T extends PgFnNames> = T extends "pg_catalog.jsonb_build_object"
           ? [Expression<string>]
           : T extends "public.make_geographic_point"
             ? [Expression<number>, Expression<number>]
-            : never;
+            : T extends "public.st_dwithin"
+              ?
+                  | [Expression<string>, Expression<string>, Expression<number>]
+                  | [
+                      Expression<string>,
+                      Expression<string>,
+                      Expression<number>,
+                      Expression<boolean>,
+                    ]
+              : never;
 
 type PgFnReturnTypes<
   T extends PgFnNames,
   V extends PgFnParams<T>,
 > = T extends "pg_catalog.jsonb_build_object"
-  ? V extends []
-    ? object | null
-    : V extends [...Expression<string>[]]
-      ? object | null
-      : never
+  ? V extends [...Expression<string>[]]
+    ? object
+    : never
   : T extends "public.calc_distance_with_units"
     ? V extends [
         Expression<string>,
         Expression<string>,
         Expression<"METERS" | "KILOMETERS" | "MILES">,
       ]
-      ? number | null
+      ? number
       : never
     : T extends "public.convert_distance"
       ? V extends [
@@ -229,21 +237,36 @@ type PgFnReturnTypes<
           Expression<"METERS" | "KILOMETERS" | "MILES">,
           Expression<"METERS" | "KILOMETERS" | "MILES">,
         ]
-        ? number | null
+        ? number
         : never
       : T extends "public.get_latitude"
         ? V extends [Expression<string>]
-          ? number | null
+          ? number
           : never
         : T extends "public.get_longitude"
           ? V extends [Expression<string>]
-            ? number | null
+            ? number
             : never
           : T extends "public.make_geographic_point"
             ? V extends [Expression<number>, Expression<number>]
-              ? string | null
+              ? string
               : never
-            : never;
+            : T extends "public.st_dwithin"
+              ? V extends [
+                  Expression<string>,
+                  Expression<string>,
+                  Expression<number>,
+                ]
+                ? boolean
+                : V extends [
+                      Expression<string>,
+                      Expression<string>,
+                      Expression<number>,
+                      Expression<boolean>,
+                    ]
+                  ? boolean
+                  : never
+              : never;
 
 export function pgFn<T extends PgFnNames, V extends PgFnParams<T>>(
   fn: T,
