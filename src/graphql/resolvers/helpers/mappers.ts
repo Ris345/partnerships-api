@@ -11,7 +11,6 @@ import {
   RedemptionForum as RedemptionForumEnum,
   VoucherOwnership as VoucherOwnershipEnum,
 } from '../../../model/generated/graphql/types';
-import type { Point } from '../../../model/point';
 
 const EMPTY_PARTNER_DETAILS: PartnerDetails = {
   name: '',
@@ -31,6 +30,11 @@ const EMPTY_REWARD_DETAILS: RewardDetails = {
 export type PartnerNode = Partner & {
   _meta: {
     partnerId: number;
+    translatedDetailsByArgs: Record<string, PartnerDetails>;
+    locationsByArgs: Record<string, LocationNode[]>;
+    locationsCountByArgs: Record<string, number>;
+    rewardsByArgs: Record<string, RewardNode[]>;
+    rewardsCountByArgs: Record<string, number>;
   };
 };
 
@@ -41,7 +45,7 @@ export type LocationNode = {
   partner: Partner;
   _meta: {
     partnerId: number;
-    coordinates: Point;
+    distanceByArgs: Record<string, number>;
   };
 };
 
@@ -49,9 +53,7 @@ export type RewardNode = Reward & {
   _meta: {
     partnerId: number;
     voucherType: 'MULTIPLE_USE' | 'SINGLE_USE' | 'ON_DEMAND' | 'MANUAL';
-    earliestExpirationDate?: Date | null;
-    hasUsageOrQuantityLimit?: boolean;
-    voucherOwnership?: VoucherOwnership;
+    translatedDetailsByArgs: Record<string, RewardDetails>;
   };
 };
 
@@ -65,25 +67,36 @@ export function mapPartnerId(id: string | number): PartnerNode {
     locationsCount: 0,
     rewards: [],
     rewardsCount: 0,
-    _meta: { partnerId },
+    _meta: {
+      partnerId,
+      translatedDetailsByArgs: {},
+      locationsByArgs: {},
+      locationsCountByArgs: {},
+      rewardsByArgs: {},
+      rewardsCountByArgs: {},
+    },
   };
 }
 
 export function mapLocationRow(row: {
   id: string | number;
-  coordinates: Point;
   partner_id: number;
+  latitude?: number;
+  longitude?: number;
 }): LocationNode {
   const partner = mapPartnerId(row.partner_id);
 
   return {
     id: String(row.id),
-    coordinates: row.coordinates,
+    coordinates: {
+      latitude: row.latitude ?? 0,
+      longitude: row.longitude ?? 0,
+    },
     distance: 0,
     partner,
     _meta: {
       partnerId: row.partner_id,
-      coordinates: row.coordinates,
+      distanceByArgs: {},
     },
   };
 }
@@ -95,13 +108,19 @@ export function mapRewardRow(row: {
   voucher_type: 'MULTIPLE_USE' | 'SINGLE_USE' | 'ON_DEMAND' | 'MANUAL';
   earliest_expiration_date?: Date | null;
   has_usage_or_quantity_limit?: boolean;
-  voucher_ownership?: VoucherOwnership;
+  voucher_ownership?: VoucherOwnership | 'MULTI_USER' | 'SINGLE_USER';
 }): RewardNode {
   const partner = mapPartnerId(row.partner_id);
+  const resolvedVoucherOwnership =
+    row.voucher_ownership === 'MULTI_USER' ?
+      VoucherOwnershipEnum.MultiUser
+    : row.voucher_ownership === 'SINGLE_USER' ?
+      VoucherOwnershipEnum.SingleUser
+    : (row.voucher_ownership ?? mapVoucherOwnership(row.voucher_type));
 
-  const mapped: RewardNode = {
+  return {
     id: row.id,
-    voucherOwnership: row.voucher_ownership ?? mapVoucherOwnership(row.voucher_type),
+    voucherOwnership: resolvedVoucherOwnership,
     redemptionForums: mapRedemptionForums(row.redemption_forums),
     translatedDetails: EMPTY_REWARD_DETAILS,
     hasUsageOrQuantityLimit: row.has_usage_or_quantity_limit ?? false,
@@ -110,22 +129,9 @@ export function mapRewardRow(row: {
     _meta: {
       partnerId: row.partner_id,
       voucherType: row.voucher_type,
+      translatedDetailsByArgs: {},
     },
   };
-
-  if (row.earliest_expiration_date !== undefined) {
-    mapped._meta.earliestExpirationDate = row.earliest_expiration_date;
-  }
-
-  if (row.has_usage_or_quantity_limit !== undefined) {
-    mapped._meta.hasUsageOrQuantityLimit = row.has_usage_or_quantity_limit;
-  }
-
-  if (row.voucher_ownership !== undefined) {
-    mapped._meta.voucherOwnership = row.voucher_ownership;
-  }
-
-  return mapped;
 }
 
 function mapVoucherOwnership(

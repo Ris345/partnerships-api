@@ -1,0 +1,4 @@
+why are there other resolvers besides Query?
+how does the point serializer work in practice for inserts/updates/selects?
+get_latitude and get_longitude could be used to resolve latitude and get_longitude
+point could be serialized with make_geographic_point

@@ -9,7 +9,11 @@ CREATE FUNCTION make_geographic_point(
   END;
 $$ LANGUAGE plpgsql IMMUTABLE;
 
-COMMENT ON FUNCTION make_geographic_point IS '@introspeql-include';
+COMMENT ON FUNCTION make_geographic_point IS 
+$$
+@introspeql-include
+@introspeql-disable-nullable-return-types
+$$;
 
 CREATE FUNCTION convert_distance (
   distance DOUBLE PRECISION,
@@ -45,7 +49,11 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql IMMUTABLE;
 
-COMMENT ON FUNCTION convert_distance IS '@introspeql-include';
+COMMENT ON FUNCTION convert_distance IS
+$$
+@introspeql-include
+@introspeql-disable-nullable-return-types
+$$;
 
 CREATE FUNCTION calc_distance_with_units (
   pointA GEOGRAPHY (POINT, 4326),
@@ -60,7 +68,11 @@ CREATE FUNCTION calc_distance_with_units (
   END;
 $$ LANGUAGE plpgsql IMMUTABLE;
 
-COMMENT ON FUNCTION calc_distance_with_units IS '@introspeql-include';
+COMMENT ON FUNCTION calc_distance_with_units IS 
+$$
+@introspeql-include
+@introspeql-disable-nullable-return-types
+$$;
 
 CREATE FUNCTION get_latitude (point GEOGRAPHY (POINT, 4326)) RETURNS DOUBLE PRECISION AS $$
   BEGIN
@@ -68,7 +80,11 @@ CREATE FUNCTION get_latitude (point GEOGRAPHY (POINT, 4326)) RETURNS DOUBLE PREC
   END;
 $$ LANGUAGE plpgsql IMMUTABLE;
 
-COMMENT ON FUNCTION get_latitude IS '@introspeql-include';
+COMMENT ON FUNCTION get_latitude IS 
+$$
+@introspeql-include
+@introspeql-disable-nullable-return-types
+$$;
 
 CREATE FUNCTION get_longitude (point GEOGRAPHY (POINT, 4326)) RETURNS DOUBLE PRECISION AS $$
   BEGIN 
@@ -76,7 +92,11 @@ CREATE FUNCTION get_longitude (point GEOGRAPHY (POINT, 4326)) RETURNS DOUBLE PRE
   END;
 $$ LANGUAGE plpgsql IMMUTABLE;
 
-COMMENT ON FUNCTION get_longitude IS '@introspeql-include';
+COMMENT ON FUNCTION get_longitude IS
+$$
+@introspeql-include
+@introspeql-disable-nullable-return-types
+$$;
 
 -- migrate:down
 DROP FUNCTION get_longitude;

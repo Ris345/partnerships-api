@@ -1,125 +1,79 @@
-import { sql } from 'kysely';
-import { db } from '../../../db';
-import type {
-  PartnerResolvers,
-  PartnerDetails,
-  PartnerLocationsArgs,
-  PartnerRewardsArgs,
-} from '../../../model/generated/graphql/types';
-import { JsonbObjectBuilder } from '../helpers/jsonb-builder';
-import {
-  mapLocationRow,
-  mapRewardRow,
-  type PartnerNode,
-} from '../helpers/mappers';
-import {
-  applyLocationFilter,
-  applyLocationOrderBy,
-  applyRewardFilter,
-  applyRewardOrderBy,
-  normalizeTake,
-} from '../helpers/query-builders';
+import type { PartnerResolvers } from '../../../model/generated/graphql/types';
+import { argsSignature } from '../helpers/args-signature';
 import type { GraphQLContext } from '../helpers/types';
-
-type PartnerRewardRow = {
-  id: string;
-  partner_id: number;
-  redemption_forums: ('ONLINE' | 'IN_STORE')[];
-  voucher_type: 'MULTIPLE_USE' | 'SINGLE_USE' | 'ON_DEMAND' | 'MANUAL';
-};
+import type { PartnerNode } from '../helpers/mappers';
 
 const translatedDetails: NonNullable<
   PartnerResolvers<GraphQLContext, PartnerNode>['translatedDetails']
-> = async (parent, args) => {
-  const jsonBuilder = new JsonbObjectBuilder()
-    .add('name', sql.ref('pdt.name'))
-    .add('logoUrl', sql.ref('pdt.logo_url'))
-    .add('description', sql.ref('pdt.description'))
-    .add('webAddressUrl', sql.ref('pdt.web_address_url'))
-    .add('webAddressText', sql.ref('pdt.web_address_text'))
-    .add('reasonForSupporting8by8', sql.ref('pdt.reason_for_supporting_8by8'));
+> = (parent, args) => {
+  const details = parent._meta.translatedDetailsByArgs[argsSignature(args)];
 
-  const row = await db
-    .selectFrom('public.partner_details_translation as pdt')
-    .select(jsonBuilder.build<PartnerDetails>().as('details'))
-    .where('pdt.partner_id', '=', parent._meta.partnerId)
-    .where('pdt.language_code', '=', args.languageCode)
-    .executeTakeFirstOrThrow();
+  if (!details) {
+    throw new Error(
+      `Partner translatedDetails not loaded for partner ${parent.id} and args ${JSON.stringify(args)}`,
+    );
+  }
 
-  return row.details;
+  return details;
 };
 
-const locations: NonNullable<PartnerResolvers<GraphQLContext, PartnerNode>['locations']> = async (
+const locations: NonNullable<PartnerResolvers<GraphQLContext, PartnerNode>['locations']> = (
   parent,
   args,
-  context,
 ) => {
-  const typedArgs = args as PartnerLocationsArgs;
+  const value = parent._meta.locationsByArgs[argsSignature(args)];
 
-  let query = db
-    .selectFrom('public.location as l')
-    .leftJoin(
-      'public.partner as p_for_location_order',
-      'p_for_location_order.id',
-      'l.partner_id',
-    )
-    .select(['l.id', 'l.partner_id', 'l.coordinates'])
-    .where('l.partner_id', '=', parent._meta.partnerId);
+  if (!value) {
+    throw new Error(
+      `Partner locations not loaded for partner ${parent.id} and args ${JSON.stringify(args)}`,
+    );
+  }
 
-  query = applyLocationFilter(query, typedArgs.filter, 'l', context.timezone);
-  query = applyLocationOrderBy(query, typedArgs.orderBy, 'l');
-
-  const rows = await query.limit(normalizeTake(typedArgs.take)).execute();
-  return rows.map(row => mapLocationRow(row));
+  return value;
 };
 
 const locationsCount: NonNullable<
   PartnerResolvers<GraphQLContext, PartnerNode>['locationsCount']
-> = async (parent, args, context) => {
-  let query = db
-    .selectFrom('public.location as l')
-    .select(sql<number>`count(*)::int`.as('count'))
-    .where('l.partner_id', '=', parent._meta.partnerId);
+> = (parent, args) => {
+  const value = parent._meta.locationsCountByArgs[argsSignature(args)];
 
-  query = applyLocationFilter(query, args.filter, 'l', context.timezone);
+  if (value === undefined) {
+    throw new Error(
+      `Partner locationsCount not loaded for partner ${parent.id} and args ${JSON.stringify(args)}`,
+    );
+  }
 
-  const row = await query.executeTakeFirstOrThrow();
-  return row.count;
+  return value;
 };
 
-const rewards: NonNullable<PartnerResolvers<GraphQLContext, PartnerNode>['rewards']> = async (
+const rewards: NonNullable<PartnerResolvers<GraphQLContext, PartnerNode>['rewards']> = (
   parent,
   args,
-  context,
 ) => {
-  const typedArgs = args as PartnerRewardsArgs;
+  const value = parent._meta.rewardsByArgs[argsSignature(args)];
 
-  let query = db
-    .selectFrom('public.reward as r')
-    .select(['r.id', 'r.partner_id', 'r.redemption_forums', 'r.voucher_type'])
-    .where('r.partner_id', '=', parent._meta.partnerId);
+  if (!value) {
+    throw new Error(
+      `Partner rewards not loaded for partner ${parent.id} and args ${JSON.stringify(args)}`,
+    );
+  }
 
-  query = applyRewardFilter(query, typedArgs.filter, 'r', context.timezone);
-  query = applyRewardOrderBy(query, typedArgs.orderBy, 'r');
-
-  const rows = (await query.limit(normalizeTake(typedArgs.take)).execute()) as PartnerRewardRow[];
-  return rows.map(row => mapRewardRow(row));
+  return value;
 };
 
-const rewardsCount: NonNullable<PartnerResolvers<GraphQLContext, PartnerNode>['rewardsCount']> = async (
+const rewardsCount: NonNullable<PartnerResolvers<GraphQLContext, PartnerNode>['rewardsCount']> = (
   parent,
   args,
-  context,
 ) => {
-  let query = db
-    .selectFrom('public.reward as r')
-    .select(sql<number>`count(*)::int`.as('count'))
-    .where('r.partner_id', '=', parent._meta.partnerId);
+  const value = parent._meta.rewardsCountByArgs[argsSignature(args)];
 
-  query = applyRewardFilter(query, args.filter, 'r', context.timezone);
+  if (value === undefined) {
+    throw new Error(
+      `Partner rewardsCount not loaded for partner ${parent.id} and args ${JSON.stringify(args)}`,
+    );
+  }
 
-  const row = await query.executeTakeFirstOrThrow();
-  return row.count;
+  return value;
 };
 
 /**

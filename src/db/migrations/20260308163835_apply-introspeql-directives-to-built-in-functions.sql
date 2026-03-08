@@ -1,0 +1,20 @@
+-- migrate:up
+COMMENT ON FUNCTION public.st_dwithin(
+  GEOGRAPHY,
+  GEOGRAPHY,
+  DOUBLE PRECISION,
+  BOOLEAN
+) IS 
+$$
+@introspeql-include
+@introspeql-disable-nullable-return-types
+$$;
+
+-- migrate:down
+COMMENT ON FUNCTION public.st_dwithin(
+  GEOGRAPHY,
+  GEOGRAPHY,
+  DOUBLE PRECISION,
+  BOOLEAN
+) IS NULL;
+
