@@ -5,19 +5,19 @@ import {
   valueFromASTUntyped,
 } from 'graphql';
 
-interface FieldNode {
+export interface FieldNode {
   fieldName: string;
   alias: string | undefined;
   arguments: Record<string, any>;
   fields: QueryTreeNode[];
 }
 
-interface FragmentNode {
+export interface FragmentNode {
   typeConditionName: string | undefined;
   fields: QueryTreeNode[];
 }
 
-type QueryTreeNode = FieldNode | FragmentNode;
+export type QueryTreeNode = FieldNode | FragmentNode;
 
 export class QueryTreeExtractor {
   constructor(private info: GraphQLResolveInfo) {}

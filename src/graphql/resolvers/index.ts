@@ -1,7 +1,7 @@
 import path from 'path';
 import type { Resolvers } from '../../model/generated/graphql/types';
 import fs from 'fs';
-import { QueryTreeExtractor } from '../helpers/query-tree-extractor';
+import { QueryTreeExtractor } from '../query-tree/query-tree-extractor';
 
 export const resolvers: Resolvers = {
   Query: {
