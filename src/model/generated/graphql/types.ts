@@ -1,898 +1,1924 @@
-import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
-export type Maybe<T> = T | null;
-export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
-export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
-export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
-export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
-/** All built-in and custom scalars, mapped to their actual values */
-export type Scalars = {
-  ID: { input: string; output: string; }
-  String: { input: string; output: string; }
-  Boolean: { input: boolean; output: boolean; }
-  Int: { input: number; output: number; }
-  Float: { input: number; output: number; }
-  DateTime: { input: any; output: any; }
-};
+import {
+  Kind,
+  valueFromASTUntyped,
+  type GraphQLResolveInfo,
+  type SelectionNode,
+  type FieldNode,
+} from 'graphql';
+
+export type Flatten<T extends any[][]> = T[number][number][];
 
 export type BooleanFilter =
-  { _eq: Scalars['Boolean']['input']; _neq?: never; }
-  |  { _eq?: never; _neq: Scalars['Boolean']['input']; };
+  | {
+      _eq?: boolean;
+      _neq?: never;
+    }
+  | {
+      _neq?: boolean;
+      _eq?: never;
+    };
 
-export type CaseAwareStringArrayFilterValue = {
-  _ignoreCase?: InputMaybe<Scalars['Boolean']['input']>;
-  _value: Array<Scalars['String']['input']>;
-};
+export interface CaseAwareStringArrayFilterValue {
+  _value: string[];
+  _ignoreCase?: boolean;
+}
 
-export type CaseAwareStringFilterValue = {
-  _ignoreCase?: InputMaybe<Scalars['Boolean']['input']>;
-  _value: Scalars['String']['input'];
-};
-
-export type CodeVoucherDetails = VoucherDetails & {
-  __typename?: 'CodeVoucherDetails';
-  instructions: Scalars['String']['output'];
-  redemptionCode: Scalars['String']['output'];
-  redemptionMethod: RedemptionMethod;
-};
-
-export type Coordinates = {
-  __typename?: 'Coordinates';
-  latitude: Scalars['Float']['output'];
-  longitude: Scalars['Float']['output'];
-};
+export interface CaseAwareStringFilterValue {
+  _value: string;
+  _ignoreCase?: boolean;
+}
 
 export type DateTimeFilter =
-  { _eq: Scalars['DateTime']['input']; _gt?: never; _gte?: never; _lt?: never; _lte?: never; _neq?: never; }
-  |  { _eq?: never; _gt: Scalars['DateTime']['input']; _gte?: never; _lt?: never; _lte?: never; _neq?: never; }
-  |  { _eq?: never; _gt?: never; _gte: Scalars['DateTime']['input']; _lt?: never; _lte?: never; _neq?: never; }
-  |  { _eq?: never; _gt?: never; _gte?: never; _lt: Scalars['DateTime']['input']; _lte?: never; _neq?: never; }
-  |  { _eq?: never; _gt?: never; _gte?: never; _lt?: never; _lte: Scalars['DateTime']['input']; _neq?: never; }
-  |  { _eq?: never; _gt?: never; _gte?: never; _lt?: never; _lte?: never; _neq: Scalars['DateTime']['input']; };
+  | {
+      _eq?: any;
+      _neq?: never;
+      _gt?: never;
+      _lt?: never;
+      _gte?: never;
+      _lte?: never;
+    }
+  | {
+      _neq?: any;
+      _eq?: never;
+      _gt?: never;
+      _lt?: never;
+      _gte?: never;
+      _lte?: never;
+    }
+  | {
+      _gt?: any;
+      _eq?: never;
+      _neq?: never;
+      _lt?: never;
+      _gte?: never;
+      _lte?: never;
+    }
+  | {
+      _lt?: any;
+      _eq?: never;
+      _neq?: never;
+      _gt?: never;
+      _gte?: never;
+      _lte?: never;
+    }
+  | {
+      _gte?: any;
+      _eq?: never;
+      _neq?: never;
+      _gt?: never;
+      _lt?: never;
+      _lte?: never;
+    }
+  | {
+      _lte?: any;
+      _eq?: never;
+      _neq?: never;
+      _gt?: never;
+      _lt?: never;
+      _gte?: never;
+    };
 
-export type DistanceFilter =
-  { _within: DistanceWithinFilter; };
-
-export type DistanceOrderByCriteria = {
-  _from: InputCoordinates;
-  _sortOrder: SortOrder;
+export type DistanceFilter = {
+  _within?: DistanceWithinFilter;
 };
+
+export interface DistanceOrderByCriteria {
+  _from: InputCoordinates;
+  _sortOrder: any;
+}
 
 export enum DistanceUnits {
-  Kilometers = 'KILOMETERS',
-  Miles = 'MILES'
+  KILOMETERS = 'KILOMETERS',
+  MILES = 'MILES',
 }
 
-export type DistanceWithinFilter = {
+export interface DistanceWithinFilter {
+  _radius: number;
   _from: InputCoordinates;
-  _radius: Scalars['Float']['input'];
-  _units: DistanceUnits;
-};
+  _units: any;
+}
 
-export type IdFilter =
-  { _containedBy: Array<Scalars['ID']['input']>; _eq?: never; _gt?: never; _gte?: never; _lt?: never; _lte?: never; _neq?: never; }
-  |  { _containedBy?: never; _eq: Scalars['ID']['input']; _gt?: never; _gte?: never; _lt?: never; _lte?: never; _neq?: never; }
-  |  { _containedBy?: never; _eq?: never; _gt: Scalars['ID']['input']; _gte?: never; _lt?: never; _lte?: never; _neq?: never; }
-  |  { _containedBy?: never; _eq?: never; _gt?: never; _gte: Scalars['ID']['input']; _lt?: never; _lte?: never; _neq?: never; }
-  |  { _containedBy?: never; _eq?: never; _gt?: never; _gte?: never; _lt: Scalars['ID']['input']; _lte?: never; _neq?: never; }
-  |  { _containedBy?: never; _eq?: never; _gt?: never; _gte?: never; _lt?: never; _lte: Scalars['ID']['input']; _neq?: never; }
-  |  { _containedBy?: never; _eq?: never; _gt?: never; _gte?: never; _lt?: never; _lte?: never; _neq: Scalars['ID']['input']; };
+export type IDFilter =
+  | {
+      _eq?: string;
+      _neq?: never;
+      _gt?: never;
+      _lt?: never;
+      _gte?: never;
+      _lte?: never;
+      _containedBy?: never;
+    }
+  | {
+      _neq?: string;
+      _eq?: never;
+      _gt?: never;
+      _lt?: never;
+      _gte?: never;
+      _lte?: never;
+      _containedBy?: never;
+    }
+  | {
+      _gt?: string;
+      _eq?: never;
+      _neq?: never;
+      _lt?: never;
+      _gte?: never;
+      _lte?: never;
+      _containedBy?: never;
+    }
+  | {
+      _lt?: string;
+      _eq?: never;
+      _neq?: never;
+      _gt?: never;
+      _gte?: never;
+      _lte?: never;
+      _containedBy?: never;
+    }
+  | {
+      _gte?: string;
+      _eq?: never;
+      _neq?: never;
+      _gt?: never;
+      _lt?: never;
+      _lte?: never;
+      _containedBy?: never;
+    }
+  | {
+      _lte?: string;
+      _eq?: never;
+      _neq?: never;
+      _gt?: never;
+      _lt?: never;
+      _gte?: never;
+      _containedBy?: never;
+    }
+  | {
+      _containedBy?: string[];
+      _eq?: never;
+      _neq?: never;
+      _gt?: never;
+      _lt?: never;
+      _gte?: never;
+      _lte?: never;
+    };
 
-export type InputCoordinates = {
-  latitude: Scalars['Float']['input'];
-  longitude: Scalars['Float']['input'];
-};
+export interface InputCoordinates {
+  latitude: number;
+  longitude: number;
+}
 
 export type IntFilter =
-  { _eq: Scalars['Int']['input']; _gt?: never; _gte?: never; _lt?: never; _lte?: never; _neq?: never; }
-  |  { _eq?: never; _gt: Scalars['Int']['input']; _gte?: never; _lt?: never; _lte?: never; _neq?: never; }
-  |  { _eq?: never; _gt?: never; _gte: Scalars['Int']['input']; _lt?: never; _lte?: never; _neq?: never; }
-  |  { _eq?: never; _gt?: never; _gte?: never; _lt: Scalars['Int']['input']; _lte?: never; _neq?: never; }
-  |  { _eq?: never; _gt?: never; _gte?: never; _lt?: never; _lte: Scalars['Int']['input']; _neq?: never; }
-  |  { _eq?: never; _gt?: never; _gte?: never; _lt?: never; _lte?: never; _neq: Scalars['Int']['input']; };
+  | {
+      _eq?: number;
+      _neq?: never;
+      _gt?: never;
+      _lt?: never;
+      _gte?: never;
+      _lte?: never;
+    }
+  | {
+      _neq?: number;
+      _eq?: never;
+      _gt?: never;
+      _lt?: never;
+      _gte?: never;
+      _lte?: never;
+    }
+  | {
+      _gt?: number;
+      _eq?: never;
+      _neq?: never;
+      _lt?: never;
+      _gte?: never;
+      _lte?: never;
+    }
+  | {
+      _lt?: number;
+      _eq?: never;
+      _neq?: never;
+      _gt?: never;
+      _gte?: never;
+      _lte?: never;
+    }
+  | {
+      _gte?: number;
+      _eq?: never;
+      _neq?: never;
+      _gt?: never;
+      _lt?: never;
+      _lte?: never;
+    }
+  | {
+      _lte?: number;
+      _eq?: never;
+      _neq?: never;
+      _gt?: never;
+      _lt?: never;
+      _gte?: never;
+    };
 
 export enum LanguageCode {
-  En = 'EN',
-  Es = 'ES'
+  EN = 'EN',
+  ES = 'ES',
 }
 
-export type LinkVoucherDetails = VoucherDetails & {
-  __typename?: 'LinkVoucherDetails';
-  instructions: Scalars['String']['output'];
-  redemptionLinkText?: Maybe<Scalars['String']['output']>;
-  redemptionLinkUrl: Scalars['String']['output'];
-  redemptionMethod: RedemptionMethod;
-};
-
-export type Location = {
-  __typename?: 'Location';
-  coordinates: Coordinates;
-  distance: Scalars['Float']['output'];
-  id: Scalars['ID']['output'];
-  partner: Partner;
-};
-
-
-export type LocationDistanceArgs = {
-  from: InputCoordinates;
-  units: DistanceUnits;
-};
-
 export type LocationFilter =
-  { _and: Array<LocationFilter>; _not?: never; _or?: never; distance?: never; id?: never; partner?: never; }
-  |  { _and?: never; _not: LocationFilter; _or?: never; distance?: never; id?: never; partner?: never; }
-  |  { _and?: never; _not?: never; _or: Array<LocationFilter>; distance?: never; id?: never; partner?: never; }
-  |  { _and?: never; _not?: never; _or?: never; distance: DistanceFilter; id?: never; partner?: never; }
-  |  { _and?: never; _not?: never; _or?: never; distance?: never; id: IdFilter; partner?: never; }
-  |  { _and?: never; _not?: never; _or?: never; distance?: never; id?: never; partner: PartnerFilter; };
+  | {
+      id?: IDFilter;
+      distance?: never;
+      partner?: never;
+      _and?: never;
+      _or?: never;
+      _not?: never;
+    }
+  | {
+      distance?: DistanceFilter;
+      id?: never;
+      partner?: never;
+      _and?: never;
+      _or?: never;
+      _not?: never;
+    }
+  | {
+      partner?: PartnerFilter;
+      id?: never;
+      distance?: never;
+      _and?: never;
+      _or?: never;
+      _not?: never;
+    }
+  | {
+      _and?: LocationFilter[];
+      id?: never;
+      distance?: never;
+      partner?: never;
+      _or?: never;
+      _not?: never;
+    }
+  | {
+      _or?: LocationFilter[];
+      id?: never;
+      distance?: never;
+      partner?: never;
+      _and?: never;
+      _not?: never;
+    }
+  | {
+      _not?: LocationFilter;
+      id?: never;
+      distance?: never;
+      partner?: never;
+      _and?: never;
+      _or?: never;
+    };
 
 export type LocationOrderByCriteria =
-  { distance: DistanceOrderByCriteria; id?: never; partner?: never; }
-  |  { distance?: never; id: SortOrder; partner?: never; }
-  |  { distance?: never; id?: never; partner: PartnerOrderByCriteria; };
+  | {
+      id?: any;
+      distance?: never;
+      partner?: never;
+    }
+  | {
+      distance?: DistanceOrderByCriteria;
+      id?: never;
+      partner?: never;
+    }
+  | {
+      partner?: PartnerOrderByCriteria;
+      id?: never;
+      distance?: never;
+    };
 
-export type LocationsCountFilter = {
-  _filter?: InputMaybe<LocationFilter>;
+export interface LocationsCountFilter {
   _value: IntFilter;
-};
-
-export type ManualVoucherDetails = VoucherDetails & {
-  __typename?: 'ManualVoucherDetails';
-  instructions: Scalars['String']['output'];
-  redemptionMethod: RedemptionMethod;
-};
-
-export type Mutation = {
-  __typename?: 'Mutation';
-  retrieveVoucher?: Maybe<VoucherWithRewardSnapshot>;
-};
-
-
-export type MutationRetrieveVoucherArgs = {
-  id: Scalars['ID']['input'];
-};
-
-export type Partner = {
-  __typename?: 'Partner';
-  id: Scalars['ID']['output'];
-  locations: Array<Location>;
-  locationsCount: Scalars['Int']['output'];
-  rewards: Array<Reward>;
-  rewardsCount: Scalars['Int']['output'];
-  translatedDetails: PartnerDetails;
-};
-
-
-export type PartnerLocationsArgs = {
-  filter?: InputMaybe<LocationFilter>;
-  orderBy?: InputMaybe<Array<LocationOrderByCriteria>>;
-  take?: InputMaybe<Scalars['Int']['input']>;
-};
-
-
-export type PartnerLocationsCountArgs = {
-  filter?: InputMaybe<LocationFilter>;
-};
-
-
-export type PartnerRewardsArgs = {
-  filter?: InputMaybe<RewardFilter>;
-  orderBy?: InputMaybe<Array<RewardOrderByCriteria>>;
-  take?: InputMaybe<Scalars['Int']['input']>;
-};
-
-
-export type PartnerRewardsCountArgs = {
-  filter?: InputMaybe<RewardFilter>;
-};
-
-
-export type PartnerTranslatedDetailsArgs = {
-  languageCode: LanguageCode;
-};
-
-export type PartnerDetails = {
-  __typename?: 'PartnerDetails';
-  description: Scalars['String']['output'];
-  logoUrl: Scalars['String']['output'];
-  name: Scalars['String']['output'];
-  reasonForSupporting8by8?: Maybe<Scalars['String']['output']>;
-  webAddressText?: Maybe<Scalars['String']['output']>;
-  webAddressUrl?: Maybe<Scalars['String']['output']>;
-};
+  _filter?: LocationFilter;
+}
 
 export type PartnerDetailsFilter =
-  { _and: Array<PartnerDetailsFilter>; _not?: never; _or?: never; description?: never; logoUrl?: never; name?: never; reasonForSupporting8by8?: never; webAddressText?: never; webAddressUrl?: never; }
-  |  { _and?: never; _not: PartnerDetailsFilter; _or?: never; description?: never; logoUrl?: never; name?: never; reasonForSupporting8by8?: never; webAddressText?: never; webAddressUrl?: never; }
-  |  { _and?: never; _not?: never; _or: Array<PartnerDetailsFilter>; description?: never; logoUrl?: never; name?: never; reasonForSupporting8by8?: never; webAddressText?: never; webAddressUrl?: never; }
-  |  { _and?: never; _not?: never; _or?: never; description: StringFilter; logoUrl?: never; name?: never; reasonForSupporting8by8?: never; webAddressText?: never; webAddressUrl?: never; }
-  |  { _and?: never; _not?: never; _or?: never; description?: never; logoUrl: StringFilter; name?: never; reasonForSupporting8by8?: never; webAddressText?: never; webAddressUrl?: never; }
-  |  { _and?: never; _not?: never; _or?: never; description?: never; logoUrl?: never; name: StringFilter; reasonForSupporting8by8?: never; webAddressText?: never; webAddressUrl?: never; }
-  |  { _and?: never; _not?: never; _or?: never; description?: never; logoUrl?: never; name?: never; reasonForSupporting8by8: StringFilter; webAddressText?: never; webAddressUrl?: never; }
-  |  { _and?: never; _not?: never; _or?: never; description?: never; logoUrl?: never; name?: never; reasonForSupporting8by8?: never; webAddressText: StringFilter; webAddressUrl?: never; }
-  |  { _and?: never; _not?: never; _or?: never; description?: never; logoUrl?: never; name?: never; reasonForSupporting8by8?: never; webAddressText?: never; webAddressUrl: StringFilter; };
+  | {
+      name?: StringFilter;
+      logoUrl?: never;
+      description?: never;
+      webAddressUrl?: never;
+      webAddressText?: never;
+      reasonForSupporting8by8?: never;
+      _and?: never;
+      _or?: never;
+      _not?: never;
+    }
+  | {
+      logoUrl?: StringFilter;
+      name?: never;
+      description?: never;
+      webAddressUrl?: never;
+      webAddressText?: never;
+      reasonForSupporting8by8?: never;
+      _and?: never;
+      _or?: never;
+      _not?: never;
+    }
+  | {
+      description?: StringFilter;
+      name?: never;
+      logoUrl?: never;
+      webAddressUrl?: never;
+      webAddressText?: never;
+      reasonForSupporting8by8?: never;
+      _and?: never;
+      _or?: never;
+      _not?: never;
+    }
+  | {
+      webAddressUrl?: StringFilter;
+      name?: never;
+      logoUrl?: never;
+      description?: never;
+      webAddressText?: never;
+      reasonForSupporting8by8?: never;
+      _and?: never;
+      _or?: never;
+      _not?: never;
+    }
+  | {
+      webAddressText?: StringFilter;
+      name?: never;
+      logoUrl?: never;
+      description?: never;
+      webAddressUrl?: never;
+      reasonForSupporting8by8?: never;
+      _and?: never;
+      _or?: never;
+      _not?: never;
+    }
+  | {
+      reasonForSupporting8by8?: StringFilter;
+      name?: never;
+      logoUrl?: never;
+      description?: never;
+      webAddressUrl?: never;
+      webAddressText?: never;
+      _and?: never;
+      _or?: never;
+      _not?: never;
+    }
+  | {
+      _and?: PartnerDetailsFilter[];
+      name?: never;
+      logoUrl?: never;
+      description?: never;
+      webAddressUrl?: never;
+      webAddressText?: never;
+      reasonForSupporting8by8?: never;
+      _or?: never;
+      _not?: never;
+    }
+  | {
+      _or?: PartnerDetailsFilter[];
+      name?: never;
+      logoUrl?: never;
+      description?: never;
+      webAddressUrl?: never;
+      webAddressText?: never;
+      reasonForSupporting8by8?: never;
+      _and?: never;
+      _not?: never;
+    }
+  | {
+      _not?: PartnerDetailsFilter;
+      name?: never;
+      logoUrl?: never;
+      description?: never;
+      webAddressUrl?: never;
+      webAddressText?: never;
+      reasonForSupporting8by8?: never;
+      _and?: never;
+      _or?: never;
+    };
 
 export type PartnerDetailsOrderByCriteria =
-  { description: SortOrder; logoUrl?: never; name?: never; reasonForSupporting8by8?: never; webAddressText?: never; webAddressUrl?: never; }
-  |  { description?: never; logoUrl: SortOrder; name?: never; reasonForSupporting8by8?: never; webAddressText?: never; webAddressUrl?: never; }
-  |  { description?: never; logoUrl?: never; name: SortOrder; reasonForSupporting8by8?: never; webAddressText?: never; webAddressUrl?: never; }
-  |  { description?: never; logoUrl?: never; name?: never; reasonForSupporting8by8: SortOrder; webAddressText?: never; webAddressUrl?: never; }
-  |  { description?: never; logoUrl?: never; name?: never; reasonForSupporting8by8?: never; webAddressText: SortOrder; webAddressUrl?: never; }
-  |  { description?: never; logoUrl?: never; name?: never; reasonForSupporting8by8?: never; webAddressText?: never; webAddressUrl: SortOrder; };
+  | {
+      name?: any;
+      logoUrl?: never;
+      description?: never;
+      webAddressUrl?: never;
+      webAddressText?: never;
+      reasonForSupporting8by8?: never;
+    }
+  | {
+      logoUrl?: any;
+      name?: never;
+      description?: never;
+      webAddressUrl?: never;
+      webAddressText?: never;
+      reasonForSupporting8by8?: never;
+    }
+  | {
+      description?: any;
+      name?: never;
+      logoUrl?: never;
+      webAddressUrl?: never;
+      webAddressText?: never;
+      reasonForSupporting8by8?: never;
+    }
+  | {
+      webAddressUrl?: any;
+      name?: never;
+      logoUrl?: never;
+      description?: never;
+      webAddressText?: never;
+      reasonForSupporting8by8?: never;
+    }
+  | {
+      webAddressText?: any;
+      name?: never;
+      logoUrl?: never;
+      description?: never;
+      webAddressUrl?: never;
+      reasonForSupporting8by8?: never;
+    }
+  | {
+      reasonForSupporting8by8?: any;
+      name?: never;
+      logoUrl?: never;
+      description?: never;
+      webAddressUrl?: never;
+      webAddressText?: never;
+    };
 
 export type PartnerFilter =
-  { _and: Array<PartnerFilter>; _not?: never; _or?: never; id?: never; locationsCount?: never; rewardsCount?: never; translatedDetails?: never; }
-  |  { _and?: never; _not: PartnerFilter; _or?: never; id?: never; locationsCount?: never; rewardsCount?: never; translatedDetails?: never; }
-  |  { _and?: never; _not?: never; _or: Array<PartnerFilter>; id?: never; locationsCount?: never; rewardsCount?: never; translatedDetails?: never; }
-  |  { _and?: never; _not?: never; _or?: never; id: IdFilter; locationsCount?: never; rewardsCount?: never; translatedDetails?: never; }
-  |  { _and?: never; _not?: never; _or?: never; id?: never; locationsCount: LocationsCountFilter; rewardsCount?: never; translatedDetails?: never; }
-  |  { _and?: never; _not?: never; _or?: never; id?: never; locationsCount?: never; rewardsCount: RewardsCountFilter; translatedDetails?: never; }
-  |  { _and?: never; _not?: never; _or?: never; id?: never; locationsCount?: never; rewardsCount?: never; translatedDetails: TranslatedPartnerDetailsFilter; };
+  | {
+      id?: IDFilter;
+      translatedDetails?: never;
+      rewardsCount?: never;
+      locationsCount?: never;
+      _and?: never;
+      _or?: never;
+      _not?: never;
+    }
+  | {
+      translatedDetails?: TranslatedPartnerDetailsFilter;
+      id?: never;
+      rewardsCount?: never;
+      locationsCount?: never;
+      _and?: never;
+      _or?: never;
+      _not?: never;
+    }
+  | {
+      rewardsCount?: RewardsCountFilter;
+      id?: never;
+      translatedDetails?: never;
+      locationsCount?: never;
+      _and?: never;
+      _or?: never;
+      _not?: never;
+    }
+  | {
+      locationsCount?: LocationsCountFilter;
+      id?: never;
+      translatedDetails?: never;
+      rewardsCount?: never;
+      _and?: never;
+      _or?: never;
+      _not?: never;
+    }
+  | {
+      _and?: PartnerFilter[];
+      id?: never;
+      translatedDetails?: never;
+      rewardsCount?: never;
+      locationsCount?: never;
+      _or?: never;
+      _not?: never;
+    }
+  | {
+      _or?: PartnerFilter[];
+      id?: never;
+      translatedDetails?: never;
+      rewardsCount?: never;
+      locationsCount?: never;
+      _and?: never;
+      _not?: never;
+    }
+  | {
+      _not?: PartnerFilter;
+      id?: never;
+      translatedDetails?: never;
+      rewardsCount?: never;
+      locationsCount?: never;
+      _and?: never;
+      _or?: never;
+    };
 
 export type PartnerOrderByCriteria =
-  { id: SortOrder; translatedDetails?: never; }
-  |  { id?: never; translatedDetails: TranslatedPartnerDetailsOrderByCriteria; };
-
-export type PartnerSnapshot = {
-  __typename?: 'PartnerSnapshot';
-  id: Scalars['ID']['output'];
-  lastUpdatedAt: Scalars['DateTime']['output'];
-  translatedDetailsSnapshots: Array<TranslatedPartnerDetailsSnapshot>;
-};
-
-
-export type PartnerSnapshotTranslatedDetailsSnapshotsArgs = {
-  languageCodes?: InputMaybe<Array<LanguageCode>>;
-};
-
-export type QrCodeVoucherDetails = VoucherDetails & {
-  __typename?: 'QRCodeVoucherDetails';
-  instructions: Scalars['String']['output'];
-  redemptionMethod: RedemptionMethod;
-  redemptionQRCode: Scalars['String']['output'];
-};
-
-export type Query = {
-  __typename?: 'Query';
-  categories: Array<Scalars['String']['output']>;
-  location?: Maybe<Location>;
-  locations: Array<Location>;
-  locationsCount: Scalars['Int']['output'];
-  partner?: Maybe<Partner>;
-  partners: Array<Partner>;
-  partnersCount: Scalars['Int']['output'];
-  reward?: Maybe<Reward>;
-  rewards: Array<Reward>;
-  rewardsCount: Scalars['Int']['output'];
-};
-
-
-export type QueryCategoriesArgs = {
-  languageCode: LanguageCode;
-};
-
-
-export type QueryLocationArgs = {
-  id: Scalars['ID']['input'];
-};
-
-
-export type QueryLocationsArgs = {
-  filter?: InputMaybe<LocationFilter>;
-  orderBy?: InputMaybe<Array<LocationOrderByCriteria>>;
-  take?: InputMaybe<Scalars['Int']['input']>;
-};
-
-
-export type QueryLocationsCountArgs = {
-  filter?: InputMaybe<LocationFilter>;
-};
-
-
-export type QueryPartnerArgs = {
-  id: Scalars['ID']['input'];
-};
-
-
-export type QueryPartnersArgs = {
-  filter?: InputMaybe<PartnerFilter>;
-  orderBy?: InputMaybe<Array<PartnerOrderByCriteria>>;
-  take?: InputMaybe<Scalars['Int']['input']>;
-};
-
-
-export type QueryPartnersCountArgs = {
-  filter?: InputMaybe<PartnerFilter>;
-};
-
-
-export type QueryRewardArgs = {
-  id: Scalars['ID']['input'];
-};
-
-
-export type QueryRewardsArgs = {
-  filter?: InputMaybe<RewardFilter>;
-  orderBy?: InputMaybe<Array<RewardOrderByCriteria>>;
-  take?: InputMaybe<Scalars['Int']['input']>;
-};
-
-
-export type QueryRewardsCountArgs = {
-  filter?: InputMaybe<RewardFilter>;
-};
+  | {
+      id?: any;
+      translatedDetails?: never;
+    }
+  | {
+      translatedDetails?: TranslatedPartnerDetailsOrderByCriteria;
+      id?: never;
+    };
 
 export enum RedemptionForum {
-  InStore = 'IN_STORE',
-  Online = 'ONLINE'
+  ONLINE = 'ONLINE',
+  IN_STORE = 'IN_STORE',
 }
 
 export type RedemptionForumArrayFilter =
-  { _containedBy: Array<RedemptionForum>; _containsArr?: never; _containsEl?: never; _eq?: never; _neq?: never; _overlaps?: never; }
-  |  { _containedBy?: never; _containsArr: Array<RedemptionForum>; _containsEl?: never; _eq?: never; _neq?: never; _overlaps?: never; }
-  |  { _containedBy?: never; _containsArr?: never; _containsEl: RedemptionForum; _eq?: never; _neq?: never; _overlaps?: never; }
-  |  { _containedBy?: never; _containsArr?: never; _containsEl?: never; _eq: Array<RedemptionForum>; _neq?: never; _overlaps?: never; }
-  |  { _containedBy?: never; _containsArr?: never; _containsEl?: never; _eq?: never; _neq: Array<RedemptionForum>; _overlaps?: never; }
-  |  { _containedBy?: never; _containsArr?: never; _containsEl?: never; _eq?: never; _neq?: never; _overlaps: Array<RedemptionForum>; };
+  | {
+      _eq?: any[];
+      _neq?: never;
+      _containsEl?: never;
+      _containsArr?: never;
+      _containedBy?: never;
+      _overlaps?: never;
+    }
+  | {
+      _neq?: any[];
+      _eq?: never;
+      _containsEl?: never;
+      _containsArr?: never;
+      _containedBy?: never;
+      _overlaps?: never;
+    }
+  | {
+      _containsEl?: any;
+      _eq?: never;
+      _neq?: never;
+      _containsArr?: never;
+      _containedBy?: never;
+      _overlaps?: never;
+    }
+  | {
+      _containsArr?: any[];
+      _eq?: never;
+      _neq?: never;
+      _containsEl?: never;
+      _containedBy?: never;
+      _overlaps?: never;
+    }
+  | {
+      _containedBy?: any[];
+      _eq?: never;
+      _neq?: never;
+      _containsEl?: never;
+      _containsArr?: never;
+      _overlaps?: never;
+    }
+  | {
+      _overlaps?: any[];
+      _eq?: never;
+      _neq?: never;
+      _containsEl?: never;
+      _containsArr?: never;
+      _containedBy?: never;
+    };
 
 export enum RedemptionMethod {
-  Code = 'CODE',
-  Link = 'LINK',
-  Manual = 'MANUAL',
-  QrCode = 'QR_CODE'
+  CODE = 'CODE',
+  QR_CODE = 'QR_CODE',
+  LINK = 'LINK',
+  MANUAL = 'MANUAL',
 }
 
-export type Reward = {
-  __typename?: 'Reward';
-  earliestExpirationDate?: Maybe<Scalars['DateTime']['output']>;
-  hasUsageOrQuantityLimit: Scalars['Boolean']['output'];
-  id: Scalars['ID']['output'];
-  partner: Partner;
-  redemptionForums: Array<RedemptionForum>;
-  translatedDetails: RewardDetails;
-  voucherOwnership: VoucherOwnership;
-};
-
-
-export type RewardTranslatedDetailsArgs = {
-  languageCode: LanguageCode;
-};
-
-export type RewardDetails = {
-  __typename?: 'RewardDetails';
-  categories: Array<Scalars['String']['output']>;
-  longDescription?: Maybe<Scalars['String']['output']>;
-  shortDescription: Scalars['String']['output'];
-};
-
 export type RewardDetailsFilter =
-  { _and: Array<RewardDetailsFilter>; _not?: never; _or?: never; categories?: never; longDescription?: never; shortDescription?: never; }
-  |  { _and?: never; _not: RewardDetailsFilter; _or?: never; categories?: never; longDescription?: never; shortDescription?: never; }
-  |  { _and?: never; _not?: never; _or: Array<RewardDetailsFilter>; categories?: never; longDescription?: never; shortDescription?: never; }
-  |  { _and?: never; _not?: never; _or?: never; categories: StringArrayFilter; longDescription?: never; shortDescription?: never; }
-  |  { _and?: never; _not?: never; _or?: never; categories?: never; longDescription: StringFilter; shortDescription?: never; }
-  |  { _and?: never; _not?: never; _or?: never; categories?: never; longDescription?: never; shortDescription: StringFilter; };
+  | {
+      categories?: StringArrayFilter;
+      shortDescription?: never;
+      longDescription?: never;
+      _and?: never;
+      _or?: never;
+      _not?: never;
+    }
+  | {
+      shortDescription?: StringFilter;
+      categories?: never;
+      longDescription?: never;
+      _and?: never;
+      _or?: never;
+      _not?: never;
+    }
+  | {
+      longDescription?: StringFilter;
+      categories?: never;
+      shortDescription?: never;
+      _and?: never;
+      _or?: never;
+      _not?: never;
+    }
+  | {
+      _and?: RewardDetailsFilter[];
+      categories?: never;
+      shortDescription?: never;
+      longDescription?: never;
+      _or?: never;
+      _not?: never;
+    }
+  | {
+      _or?: RewardDetailsFilter[];
+      categories?: never;
+      shortDescription?: never;
+      longDescription?: never;
+      _and?: never;
+      _not?: never;
+    }
+  | {
+      _not?: RewardDetailsFilter;
+      categories?: never;
+      shortDescription?: never;
+      longDescription?: never;
+      _and?: never;
+      _or?: never;
+    };
 
 export type RewardDetailsOrderByCriteria =
-  { categories: SortOrder; longDescription?: never; shortDescription?: never; }
-  |  { categories?: never; longDescription: SortOrder; shortDescription?: never; }
-  |  { categories?: never; longDescription?: never; shortDescription: SortOrder; };
+  | {
+      categories?: any;
+      shortDescription?: never;
+      longDescription?: never;
+    }
+  | {
+      shortDescription?: any;
+      categories?: never;
+      longDescription?: never;
+    }
+  | {
+      longDescription?: any;
+      categories?: never;
+      shortDescription?: never;
+    };
 
 export type RewardFilter =
-  { _and: Array<RewardFilter>; _not?: never; _or?: never; earliestExpirationDate?: never; hasUsageOrQuantityLimit?: never; id?: never; partner?: never; redemptionForums?: never; translatedDetails?: never; voucherType?: never; }
-  |  { _and?: never; _not: RewardFilter; _or?: never; earliestExpirationDate?: never; hasUsageOrQuantityLimit?: never; id?: never; partner?: never; redemptionForums?: never; translatedDetails?: never; voucherType?: never; }
-  |  { _and?: never; _not?: never; _or: Array<RewardFilter>; earliestExpirationDate?: never; hasUsageOrQuantityLimit?: never; id?: never; partner?: never; redemptionForums?: never; translatedDetails?: never; voucherType?: never; }
-  |  { _and?: never; _not?: never; _or?: never; earliestExpirationDate: DateTimeFilter; hasUsageOrQuantityLimit?: never; id?: never; partner?: never; redemptionForums?: never; translatedDetails?: never; voucherType?: never; }
-  |  { _and?: never; _not?: never; _or?: never; earliestExpirationDate?: never; hasUsageOrQuantityLimit: BooleanFilter; id?: never; partner?: never; redemptionForums?: never; translatedDetails?: never; voucherType?: never; }
-  |  { _and?: never; _not?: never; _or?: never; earliestExpirationDate?: never; hasUsageOrQuantityLimit?: never; id: IdFilter; partner?: never; redemptionForums?: never; translatedDetails?: never; voucherType?: never; }
-  |  { _and?: never; _not?: never; _or?: never; earliestExpirationDate?: never; hasUsageOrQuantityLimit?: never; id?: never; partner: PartnerFilter; redemptionForums?: never; translatedDetails?: never; voucherType?: never; }
-  |  { _and?: never; _not?: never; _or?: never; earliestExpirationDate?: never; hasUsageOrQuantityLimit?: never; id?: never; partner?: never; redemptionForums: RedemptionForumArrayFilter; translatedDetails?: never; voucherType?: never; }
-  |  { _and?: never; _not?: never; _or?: never; earliestExpirationDate?: never; hasUsageOrQuantityLimit?: never; id?: never; partner?: never; redemptionForums?: never; translatedDetails: TranslatedRewardDetailsFilter; voucherType?: never; }
-  |  { _and?: never; _not?: never; _or?: never; earliestExpirationDate?: never; hasUsageOrQuantityLimit?: never; id?: never; partner?: never; redemptionForums?: never; translatedDetails?: never; voucherType: VoucherOwnershipFilter; };
+  | {
+      id?: IDFilter;
+      voucherType?: never;
+      redemptionForums?: never;
+      translatedDetails?: never;
+      hasUsageOrQuantityLimit?: never;
+      earliestExpirationDate?: never;
+      partner?: never;
+      _and?: never;
+      _or?: never;
+      _not?: never;
+    }
+  | {
+      voucherType?: VoucherOwnershipFilter;
+      id?: never;
+      redemptionForums?: never;
+      translatedDetails?: never;
+      hasUsageOrQuantityLimit?: never;
+      earliestExpirationDate?: never;
+      partner?: never;
+      _and?: never;
+      _or?: never;
+      _not?: never;
+    }
+  | {
+      redemptionForums?: RedemptionForumArrayFilter;
+      id?: never;
+      voucherType?: never;
+      translatedDetails?: never;
+      hasUsageOrQuantityLimit?: never;
+      earliestExpirationDate?: never;
+      partner?: never;
+      _and?: never;
+      _or?: never;
+      _not?: never;
+    }
+  | {
+      translatedDetails?: TranslatedRewardDetailsFilter;
+      id?: never;
+      voucherType?: never;
+      redemptionForums?: never;
+      hasUsageOrQuantityLimit?: never;
+      earliestExpirationDate?: never;
+      partner?: never;
+      _and?: never;
+      _or?: never;
+      _not?: never;
+    }
+  | {
+      hasUsageOrQuantityLimit?: BooleanFilter;
+      id?: never;
+      voucherType?: never;
+      redemptionForums?: never;
+      translatedDetails?: never;
+      earliestExpirationDate?: never;
+      partner?: never;
+      _and?: never;
+      _or?: never;
+      _not?: never;
+    }
+  | {
+      earliestExpirationDate?: DateTimeFilter;
+      id?: never;
+      voucherType?: never;
+      redemptionForums?: never;
+      translatedDetails?: never;
+      hasUsageOrQuantityLimit?: never;
+      partner?: never;
+      _and?: never;
+      _or?: never;
+      _not?: never;
+    }
+  | {
+      partner?: PartnerFilter;
+      id?: never;
+      voucherType?: never;
+      redemptionForums?: never;
+      translatedDetails?: never;
+      hasUsageOrQuantityLimit?: never;
+      earliestExpirationDate?: never;
+      _and?: never;
+      _or?: never;
+      _not?: never;
+    }
+  | {
+      _and?: RewardFilter[];
+      id?: never;
+      voucherType?: never;
+      redemptionForums?: never;
+      translatedDetails?: never;
+      hasUsageOrQuantityLimit?: never;
+      earliestExpirationDate?: never;
+      partner?: never;
+      _or?: never;
+      _not?: never;
+    }
+  | {
+      _or?: RewardFilter[];
+      id?: never;
+      voucherType?: never;
+      redemptionForums?: never;
+      translatedDetails?: never;
+      hasUsageOrQuantityLimit?: never;
+      earliestExpirationDate?: never;
+      partner?: never;
+      _and?: never;
+      _not?: never;
+    }
+  | {
+      _not?: RewardFilter;
+      id?: never;
+      voucherType?: never;
+      redemptionForums?: never;
+      translatedDetails?: never;
+      hasUsageOrQuantityLimit?: never;
+      earliestExpirationDate?: never;
+      partner?: never;
+      _and?: never;
+      _or?: never;
+    };
 
 export type RewardOrderByCriteria =
-  { id: SortOrder; partner?: never; translatedDetails?: never; }
-  |  { id?: never; partner: PartnerOrderByCriteria; translatedDetails?: never; }
-  |  { id?: never; partner?: never; translatedDetails: TranslatedRewardDetailsOrderByCriteria; };
+  | {
+      id?: any;
+      partner?: never;
+      translatedDetails?: never;
+    }
+  | {
+      partner?: PartnerOrderByCriteria;
+      id?: never;
+      translatedDetails?: never;
+    }
+  | {
+      translatedDetails?: TranslatedRewardDetailsOrderByCriteria;
+      id?: never;
+      partner?: never;
+    };
 
-export type RewardSnapshot = {
-  __typename?: 'RewardSnapshot';
-  id: Scalars['ID']['output'];
-  lastUpdatedAt: Scalars['DateTime']['output'];
-  partnerSnapshot: PartnerSnapshot;
-  redemptionForums: Array<RedemptionForum>;
-  translatedDetailsSnapshots: Array<TranslatedRewardDetailsSnapshot>;
-};
-
-
-export type RewardSnapshotTranslatedDetailsSnapshotsArgs = {
-  languageCodes?: InputMaybe<Array<LanguageCode>>;
-};
-
-export type RewardsCountFilter = {
-  _filter?: InputMaybe<RewardFilter>;
+export interface RewardsCountFilter {
   _value: IntFilter;
-};
+  _filter?: RewardFilter;
+}
 
 export enum SortOrder {
-  Asc = 'ASC',
-  Desc = 'DESC'
+  ASC = 'ASC',
+  DESC = 'DESC',
 }
 
 export type StringArrayFilter =
-  { _containedBy: CaseAwareStringArrayFilterValue; _containsArr?: never; _containsEl?: never; _eq?: never; _neq?: never; _overlaps?: never; }
-  |  { _containedBy?: never; _containsArr: CaseAwareStringArrayFilterValue; _containsEl?: never; _eq?: never; _neq?: never; _overlaps?: never; }
-  |  { _containedBy?: never; _containsArr?: never; _containsEl: CaseAwareStringFilterValue; _eq?: never; _neq?: never; _overlaps?: never; }
-  |  { _containedBy?: never; _containsArr?: never; _containsEl?: never; _eq: CaseAwareStringArrayFilterValue; _neq?: never; _overlaps?: never; }
-  |  { _containedBy?: never; _containsArr?: never; _containsEl?: never; _eq?: never; _neq: CaseAwareStringArrayFilterValue; _overlaps?: never; }
-  |  { _containedBy?: never; _containsArr?: never; _containsEl?: never; _eq?: never; _neq?: never; _overlaps: CaseAwareStringArrayFilterValue; };
+  | {
+      _eq?: CaseAwareStringArrayFilterValue;
+      _neq?: never;
+      _containsEl?: never;
+      _containsArr?: never;
+      _containedBy?: never;
+      _overlaps?: never;
+    }
+  | {
+      _neq?: CaseAwareStringArrayFilterValue;
+      _eq?: never;
+      _containsEl?: never;
+      _containsArr?: never;
+      _containedBy?: never;
+      _overlaps?: never;
+    }
+  | {
+      _containsEl?: CaseAwareStringFilterValue;
+      _eq?: never;
+      _neq?: never;
+      _containsArr?: never;
+      _containedBy?: never;
+      _overlaps?: never;
+    }
+  | {
+      _containsArr?: CaseAwareStringArrayFilterValue;
+      _eq?: never;
+      _neq?: never;
+      _containsEl?: never;
+      _containedBy?: never;
+      _overlaps?: never;
+    }
+  | {
+      _containedBy?: CaseAwareStringArrayFilterValue;
+      _eq?: never;
+      _neq?: never;
+      _containsEl?: never;
+      _containsArr?: never;
+      _overlaps?: never;
+    }
+  | {
+      _overlaps?: CaseAwareStringArrayFilterValue;
+      _eq?: never;
+      _neq?: never;
+      _containsEl?: never;
+      _containsArr?: never;
+      _containedBy?: never;
+    };
 
 export type StringFilter =
-  { _containedBy: CaseAwareStringArrayFilterValue; _eq?: never; _gt?: never; _gte?: never; _includes?: never; _like?: never; _lt?: never; _lte?: never; _neq?: never; }
-  |  { _containedBy?: never; _eq: CaseAwareStringFilterValue; _gt?: never; _gte?: never; _includes?: never; _like?: never; _lt?: never; _lte?: never; _neq?: never; }
-  |  { _containedBy?: never; _eq?: never; _gt: Scalars['String']['input']; _gte?: never; _includes?: never; _like?: never; _lt?: never; _lte?: never; _neq?: never; }
-  |  { _containedBy?: never; _eq?: never; _gt?: never; _gte: Scalars['String']['input']; _includes?: never; _like?: never; _lt?: never; _lte?: never; _neq?: never; }
-  |  { _containedBy?: never; _eq?: never; _gt?: never; _gte?: never; _includes: CaseAwareStringFilterValue; _like?: never; _lt?: never; _lte?: never; _neq?: never; }
-  |  { _containedBy?: never; _eq?: never; _gt?: never; _gte?: never; _includes?: never; _like: CaseAwareStringFilterValue; _lt?: never; _lte?: never; _neq?: never; }
-  |  { _containedBy?: never; _eq?: never; _gt?: never; _gte?: never; _includes?: never; _like?: never; _lt: Scalars['String']['input']; _lte?: never; _neq?: never; }
-  |  { _containedBy?: never; _eq?: never; _gt?: never; _gte?: never; _includes?: never; _like?: never; _lt?: never; _lte: Scalars['String']['input']; _neq?: never; }
-  |  { _containedBy?: never; _eq?: never; _gt?: never; _gte?: never; _includes?: never; _like?: never; _lt?: never; _lte?: never; _neq: CaseAwareStringFilterValue; };
+  | {
+      _eq?: CaseAwareStringFilterValue;
+      _neq?: never;
+      _lt?: never;
+      _gt?: never;
+      _gte?: never;
+      _lte?: never;
+      _includes?: never;
+      _like?: never;
+      _containedBy?: never;
+    }
+  | {
+      _neq?: CaseAwareStringFilterValue;
+      _eq?: never;
+      _lt?: never;
+      _gt?: never;
+      _gte?: never;
+      _lte?: never;
+      _includes?: never;
+      _like?: never;
+      _containedBy?: never;
+    }
+  | {
+      _lt?: string;
+      _eq?: never;
+      _neq?: never;
+      _gt?: never;
+      _gte?: never;
+      _lte?: never;
+      _includes?: never;
+      _like?: never;
+      _containedBy?: never;
+    }
+  | {
+      _gt?: string;
+      _eq?: never;
+      _neq?: never;
+      _lt?: never;
+      _gte?: never;
+      _lte?: never;
+      _includes?: never;
+      _like?: never;
+      _containedBy?: never;
+    }
+  | {
+      _gte?: string;
+      _eq?: never;
+      _neq?: never;
+      _lt?: never;
+      _gt?: never;
+      _lte?: never;
+      _includes?: never;
+      _like?: never;
+      _containedBy?: never;
+    }
+  | {
+      _lte?: string;
+      _eq?: never;
+      _neq?: never;
+      _lt?: never;
+      _gt?: never;
+      _gte?: never;
+      _includes?: never;
+      _like?: never;
+      _containedBy?: never;
+    }
+  | {
+      _includes?: CaseAwareStringFilterValue;
+      _eq?: never;
+      _neq?: never;
+      _lt?: never;
+      _gt?: never;
+      _gte?: never;
+      _lte?: never;
+      _like?: never;
+      _containedBy?: never;
+    }
+  | {
+      _like?: CaseAwareStringFilterValue;
+      _eq?: never;
+      _neq?: never;
+      _lt?: never;
+      _gt?: never;
+      _gte?: never;
+      _lte?: never;
+      _includes?: never;
+      _containedBy?: never;
+    }
+  | {
+      _containedBy?: CaseAwareStringArrayFilterValue;
+      _eq?: never;
+      _neq?: never;
+      _lt?: never;
+      _gt?: never;
+      _gte?: never;
+      _lte?: never;
+      _includes?: never;
+      _like?: never;
+    };
 
-export type TranslatedPartnerDetailsFilter = {
+export interface TranslatedPartnerDetailsFilter {
+  _languageCode: any;
   _filter: PartnerDetailsFilter;
-  _languageCode: LanguageCode;
-};
+}
 
-export type TranslatedPartnerDetailsOrderByCriteria = {
-  _languageCode: LanguageCode;
+export interface TranslatedPartnerDetailsOrderByCriteria {
+  _languageCode: any;
   _orderBy: PartnerDetailsOrderByCriteria;
-};
+}
 
-export type TranslatedPartnerDetailsSnapshot = {
-  __typename?: 'TranslatedPartnerDetailsSnapshot';
-  description: Scalars['String']['output'];
-  languageCode: LanguageCode;
-  lastUpdatedAt: Scalars['DateTime']['output'];
-  logoUrl: Scalars['String']['output'];
-  name: Scalars['String']['output'];
-  reasonForSupporting8by8?: Maybe<Scalars['String']['output']>;
-  webAddressText?: Maybe<Scalars['String']['output']>;
-  webAddressUrl?: Maybe<Scalars['String']['output']>;
-};
-
-export type TranslatedRewardDetailsFilter = {
+export interface TranslatedRewardDetailsFilter {
+  _languageCode: any;
   _filter: RewardDetailsFilter;
-  _languageCode: LanguageCode;
-};
+}
 
-export type TranslatedRewardDetailsOrderByCriteria = {
-  _languageCode: LanguageCode;
+export interface TranslatedRewardDetailsOrderByCriteria {
+  _languageCode: any;
   _orderBy: RewardDetailsOrderByCriteria;
-};
-
-export type TranslatedRewardDetailsSnapshot = {
-  __typename?: 'TranslatedRewardDetailsSnapshot';
-  categories: Array<Scalars['String']['output']>;
-  languageCode: LanguageCode;
-  lastUpdatedAt: Scalars['DateTime']['output'];
-  longDescription?: Maybe<Scalars['String']['output']>;
-  shortDescription: Scalars['String']['output'];
-};
-
-export type TranslatedVoucherDetails = {
-  __typename?: 'TranslatedVoucherDetails';
-  languageCode: LanguageCode;
-  voucherDetails: Array<VoucherDetails>;
-};
-
-export type Voucher = {
-  __typename?: 'Voucher';
-  expirationDate?: Maybe<Scalars['DateTime']['output']>;
-  translatedDetails: Array<TranslatedVoucherDetails>;
-};
-
-
-export type VoucherTranslatedDetailsArgs = {
-  languageCodes?: InputMaybe<Array<LanguageCode>>;
-};
-
-export type VoucherDetails = {
-  instructions: Scalars['String']['output'];
-  redemptionMethod: RedemptionMethod;
-};
+}
 
 export enum VoucherOwnership {
-  MultiUser = 'MULTI_USER',
-  SingleUser = 'SINGLE_USER'
+  MULTI_USER = 'MULTI_USER',
+  SINGLE_USER = 'SINGLE_USER',
 }
 
 export type VoucherOwnershipFilter =
-  { _eq: VoucherOwnership; _neq?: never; }
-  |  { _eq?: never; _neq: VoucherOwnership; };
+  | {
+      _eq?: any;
+      _neq?: never;
+    }
+  | {
+      _neq?: any;
+      _eq?: never;
+    };
 
-export type VoucherWithRewardSnapshot = {
-  __typename?: 'VoucherWithRewardSnapshot';
-  rewardSnapshot: RewardSnapshot;
-  voucher: Voucher;
+export type CodeVoucherDetailsFields = (
+  | {
+      name: 'redemptionMethod';
+      on: 'CodeVoucherDetails';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: 'instructions';
+      on: 'CodeVoucherDetails';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: 'redemptionCode';
+      on: 'CodeVoucherDetails';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: '__typename';
+      on: 'CodeVoucherDetails';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+)[];
+
+export type CoordinatesFields = (
+  | {
+      name: 'latitude';
+      on: 'Coordinates';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: 'longitude';
+      on: 'Coordinates';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: '__typename';
+      on: 'Coordinates';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+)[];
+
+export type LinkVoucherDetailsFields = (
+  | {
+      name: 'redemptionMethod';
+      on: 'LinkVoucherDetails';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: 'instructions';
+      on: 'LinkVoucherDetails';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: 'redemptionLinkUrl';
+      on: 'LinkVoucherDetails';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: 'redemptionLinkText';
+      on: 'LinkVoucherDetails';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: '__typename';
+      on: 'LinkVoucherDetails';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+)[];
+
+export type LocationFields = (
+  | {
+      name: 'id';
+      on: 'Location';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: 'coordinates';
+      on: 'Location';
+      alias: string;
+      arguments: {};
+      fields: CoordinatesFields;
+    }
+  | {
+      name: 'distance';
+      on: 'Location';
+      alias: string;
+      arguments: {
+        from: InputCoordinates;
+        units: DistanceUnits;
+      };
+      fields: never;
+    }
+  | {
+      name: 'partner';
+      on: 'Location';
+      alias: string;
+      arguments: {};
+      fields: PartnerFields;
+    }
+  | {
+      name: '__typename';
+      on: 'Location';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+)[];
+
+export type ManualVoucherDetailsFields = (
+  | {
+      name: 'redemptionMethod';
+      on: 'ManualVoucherDetails';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: 'instructions';
+      on: 'ManualVoucherDetails';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: '__typename';
+      on: 'ManualVoucherDetails';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+)[];
+
+export type MutationFields = (
+  | {
+      name: 'retrieveVoucher';
+      on: 'Mutation';
+      alias: string;
+      arguments: {
+        id: string;
+      };
+      fields: VoucherWithRewardSnapshotFields;
+    }
+  | {
+      name: '__typename';
+      on: 'Mutation';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+)[];
+
+export type PartnerFields = (
+  | {
+      name: 'id';
+      on: 'Partner';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: 'translatedDetails';
+      on: 'Partner';
+      alias: string;
+      arguments: {
+        languageCode: LanguageCode;
+      };
+      fields: PartnerDetailsFields;
+    }
+  | {
+      name: 'locations';
+      on: 'Partner';
+      alias: string;
+      arguments: {
+        filter?: LocationFilter;
+        orderBy?: LocationOrderByCriteria[];
+        take?: number;
+      };
+      fields: LocationFields;
+    }
+  | {
+      name: 'locationsCount';
+      on: 'Partner';
+      alias: string;
+      arguments: {
+        filter?: LocationFilter;
+      };
+      fields: never;
+    }
+  | {
+      name: 'rewards';
+      on: 'Partner';
+      alias: string;
+      arguments: {
+        filter?: RewardFilter;
+        orderBy?: RewardOrderByCriteria[];
+        take?: number;
+      };
+      fields: RewardFields;
+    }
+  | {
+      name: 'rewardsCount';
+      on: 'Partner';
+      alias: string;
+      arguments: {
+        filter?: RewardFilter;
+      };
+      fields: never;
+    }
+  | {
+      name: '__typename';
+      on: 'Partner';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+)[];
+
+export type PartnerDetailsFields = (
+  | {
+      name: 'name';
+      on: 'PartnerDetails';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: 'logoUrl';
+      on: 'PartnerDetails';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: 'description';
+      on: 'PartnerDetails';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: 'webAddressUrl';
+      on: 'PartnerDetails';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: 'webAddressText';
+      on: 'PartnerDetails';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: 'reasonForSupporting8by8';
+      on: 'PartnerDetails';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: '__typename';
+      on: 'PartnerDetails';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+)[];
+
+export type PartnerSnapshotFields = (
+  | {
+      name: 'id';
+      on: 'PartnerSnapshot';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: 'translatedDetailsSnapshots';
+      on: 'PartnerSnapshot';
+      alias: string;
+      arguments: {
+        languageCodes?: LanguageCode[];
+      };
+      fields: TranslatedPartnerDetailsSnapshotFields;
+    }
+  | {
+      name: 'lastUpdatedAt';
+      on: 'PartnerSnapshot';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: '__typename';
+      on: 'PartnerSnapshot';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+)[];
+
+export type QRCodeVoucherDetailsFields = (
+  | {
+      name: 'redemptionMethod';
+      on: 'QRCodeVoucherDetails';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: 'instructions';
+      on: 'QRCodeVoucherDetails';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: 'redemptionQRCode';
+      on: 'QRCodeVoucherDetails';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: '__typename';
+      on: 'QRCodeVoucherDetails';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+)[];
+
+export type QueryFields = (
+  | {
+      name: 'partner';
+      on: 'Query';
+      alias: string;
+      arguments: {
+        id: string;
+      };
+      fields: PartnerFields;
+    }
+  | {
+      name: 'partners';
+      on: 'Query';
+      alias: string;
+      arguments: {
+        filter?: PartnerFilter;
+        orderBy?: PartnerOrderByCriteria[];
+        take?: number;
+      };
+      fields: PartnerFields;
+    }
+  | {
+      name: 'partnersCount';
+      on: 'Query';
+      alias: string;
+      arguments: {
+        filter?: PartnerFilter;
+      };
+      fields: never;
+    }
+  | {
+      name: 'location';
+      on: 'Query';
+      alias: string;
+      arguments: {
+        id: string;
+      };
+      fields: LocationFields;
+    }
+  | {
+      name: 'locations';
+      on: 'Query';
+      alias: string;
+      arguments: {
+        filter?: LocationFilter;
+        orderBy?: LocationOrderByCriteria[];
+        take?: number;
+      };
+      fields: LocationFields;
+    }
+  | {
+      name: 'locationsCount';
+      on: 'Query';
+      alias: string;
+      arguments: {
+        filter?: LocationFilter;
+      };
+      fields: never;
+    }
+  | {
+      name: 'reward';
+      on: 'Query';
+      alias: string;
+      arguments: {
+        id: string;
+      };
+      fields: RewardFields;
+    }
+  | {
+      name: 'rewards';
+      on: 'Query';
+      alias: string;
+      arguments: {
+        filter?: RewardFilter;
+        orderBy?: RewardOrderByCriteria[];
+        take?: number;
+      };
+      fields: RewardFields;
+    }
+  | {
+      name: 'rewardsCount';
+      on: 'Query';
+      alias: string;
+      arguments: {
+        filter?: RewardFilter;
+      };
+      fields: never;
+    }
+  | {
+      name: 'categories';
+      on: 'Query';
+      alias: string;
+      arguments: {
+        languageCode: LanguageCode;
+      };
+      fields: never;
+    }
+  | {
+      name: '__typename';
+      on: 'Query';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+)[];
+
+export type RewardFields = (
+  | {
+      name: 'id';
+      on: 'Reward';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: 'voucherOwnership';
+      on: 'Reward';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: 'redemptionForums';
+      on: 'Reward';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: 'translatedDetails';
+      on: 'Reward';
+      alias: string;
+      arguments: {
+        languageCode: LanguageCode;
+      };
+      fields: RewardDetailsFields;
+    }
+  | {
+      name: 'hasUsageOrQuantityLimit';
+      on: 'Reward';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: 'earliestExpirationDate';
+      on: 'Reward';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: 'partner';
+      on: 'Reward';
+      alias: string;
+      arguments: {};
+      fields: PartnerFields;
+    }
+  | {
+      name: '__typename';
+      on: 'Reward';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+)[];
+
+export type RewardDetailsFields = (
+  | {
+      name: 'categories';
+      on: 'RewardDetails';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: 'shortDescription';
+      on: 'RewardDetails';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: 'longDescription';
+      on: 'RewardDetails';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: '__typename';
+      on: 'RewardDetails';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+)[];
+
+export type RewardSnapshotFields = (
+  | {
+      name: 'id';
+      on: 'RewardSnapshot';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: 'redemptionForums';
+      on: 'RewardSnapshot';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: 'translatedDetailsSnapshots';
+      on: 'RewardSnapshot';
+      alias: string;
+      arguments: {
+        languageCodes?: LanguageCode[];
+      };
+      fields: TranslatedRewardDetailsSnapshotFields;
+    }
+  | {
+      name: 'partnerSnapshot';
+      on: 'RewardSnapshot';
+      alias: string;
+      arguments: {};
+      fields: PartnerSnapshotFields;
+    }
+  | {
+      name: 'lastUpdatedAt';
+      on: 'RewardSnapshot';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: '__typename';
+      on: 'RewardSnapshot';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+)[];
+
+export type TranslatedPartnerDetailsSnapshotFields = (
+  | {
+      name: 'languageCode';
+      on: 'TranslatedPartnerDetailsSnapshot';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: 'name';
+      on: 'TranslatedPartnerDetailsSnapshot';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: 'logoUrl';
+      on: 'TranslatedPartnerDetailsSnapshot';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: 'description';
+      on: 'TranslatedPartnerDetailsSnapshot';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: 'webAddressUrl';
+      on: 'TranslatedPartnerDetailsSnapshot';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: 'webAddressText';
+      on: 'TranslatedPartnerDetailsSnapshot';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: 'reasonForSupporting8by8';
+      on: 'TranslatedPartnerDetailsSnapshot';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: 'lastUpdatedAt';
+      on: 'TranslatedPartnerDetailsSnapshot';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: '__typename';
+      on: 'TranslatedPartnerDetailsSnapshot';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+)[];
+
+export type TranslatedRewardDetailsSnapshotFields = (
+  | {
+      name: 'languageCode';
+      on: 'TranslatedRewardDetailsSnapshot';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: 'categories';
+      on: 'TranslatedRewardDetailsSnapshot';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: 'shortDescription';
+      on: 'TranslatedRewardDetailsSnapshot';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: 'longDescription';
+      on: 'TranslatedRewardDetailsSnapshot';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: 'lastUpdatedAt';
+      on: 'TranslatedRewardDetailsSnapshot';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: '__typename';
+      on: 'TranslatedRewardDetailsSnapshot';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+)[];
+
+export type TranslatedVoucherDetailsFields = (
+  | {
+      name: 'languageCode';
+      on: 'TranslatedVoucherDetails';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: 'voucherDetails';
+      on: 'TranslatedVoucherDetails';
+      alias: string;
+      arguments: {};
+      fields: VoucherDetailsFields;
+    }
+  | {
+      name: '__typename';
+      on: 'TranslatedVoucherDetails';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+)[];
+
+export type VoucherFields = (
+  | {
+      name: 'translatedDetails';
+      on: 'Voucher';
+      alias: string;
+      arguments: {
+        languageCodes?: LanguageCode[];
+      };
+      fields: TranslatedVoucherDetailsFields;
+    }
+  | {
+      name: 'expirationDate';
+      on: 'Voucher';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: '__typename';
+      on: 'Voucher';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+)[];
+
+export type VoucherDetailsFields = Flatten<
+  [
+    (
+      | {
+          name: 'redemptionMethod';
+          on: 'VoucherDetails';
+          alias: string;
+          arguments: {};
+          fields: never;
+        }
+      | {
+          name: 'instructions';
+          on: 'VoucherDetails';
+          alias: string;
+          arguments: {};
+          fields: never;
+        }
+      | {
+          name: '__typename';
+          on: 'VoucherDetails';
+          alias: string;
+          arguments: {};
+          fields: never;
+        }
+    )[],
+    CodeVoucherDetailsFields,
+    LinkVoucherDetailsFields,
+    ManualVoucherDetailsFields,
+    QRCodeVoucherDetailsFields,
+  ]
+>;
+
+export type VoucherWithRewardSnapshotFields = (
+  | {
+      name: 'voucher';
+      on: 'VoucherWithRewardSnapshot';
+      alias: string;
+      arguments: {};
+      fields: VoucherFields;
+    }
+  | {
+      name: 'rewardSnapshot';
+      on: 'VoucherWithRewardSnapshot';
+      alias: string;
+      arguments: {};
+      fields: RewardSnapshotFields;
+    }
+  | {
+      name: '__typename';
+      on: 'VoucherWithRewardSnapshot';
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+)[];
+
+export const gqlarr = {
+  getQueryField<T extends QueryFields[number]['name']>(
+    info: GraphQLResolveInfo,
+    fieldName: T,
+  ): Extract<QueryFields[number], { name: T }> | undefined {
+    const node = info.fieldNodes
+      .find(node => node.name.value === 'Query')
+      ?.selectionSet?.selections.find(node =>
+        isFieldNodeWithName(node, fieldName),
+      );
+
+    if (!node) return undefined;
+
+    return extractField<Extract<QueryFields[number], { name: T }>>(
+      node,
+      'Query',
+      info,
+    );
+  },
+  getMutationField<T extends MutationFields[number]['name']>(
+    info: GraphQLResolveInfo,
+    fieldName: T,
+  ): Extract<MutationFields[number], { name: T }> | undefined {
+    const node = info.fieldNodes
+      .find(node => node.name.value === 'Mutation')
+      ?.selectionSet?.selections.find(node =>
+        isFieldNodeWithName(node, fieldName),
+      );
+
+    if (!node) return undefined;
+
+    return extractField<Extract<MutationFields[number], { name: T }>>(
+      node,
+      'Mutation',
+      info,
+    );
+  },
 };
 
-
-
-export type ResolverTypeWrapper<T> = Promise<T> | T;
-
-
-export type ResolverWithResolve<TResult, TParent, TContext, TArgs> = {
-  resolve: ResolverFn<TResult, TParent, TContext, TArgs>;
-};
-export type Resolver<TResult, TParent = Record<PropertyKey, never>, TContext = Record<PropertyKey, never>, TArgs = Record<PropertyKey, never>> = ResolverFn<TResult, TParent, TContext, TArgs> | ResolverWithResolve<TResult, TParent, TContext, TArgs>;
-
-export type ResolverFn<TResult, TParent, TContext, TArgs> = (
-  parent: TParent,
-  args: TArgs,
-  context: TContext,
-  info: GraphQLResolveInfo
-) => Promise<TResult> | TResult;
-
-export type SubscriptionSubscribeFn<TResult, TParent, TContext, TArgs> = (
-  parent: TParent,
-  args: TArgs,
-  context: TContext,
-  info: GraphQLResolveInfo
-) => AsyncIterable<TResult> | Promise<AsyncIterable<TResult>>;
-
-export type SubscriptionResolveFn<TResult, TParent, TContext, TArgs> = (
-  parent: TParent,
-  args: TArgs,
-  context: TContext,
-  info: GraphQLResolveInfo
-) => TResult | Promise<TResult>;
-
-export interface SubscriptionSubscriberObject<TResult, TKey extends string, TParent, TContext, TArgs> {
-  subscribe: SubscriptionSubscribeFn<{ [key in TKey]: TResult }, TParent, TContext, TArgs>;
-  resolve?: SubscriptionResolveFn<TResult, { [key in TKey]: TResult }, TContext, TArgs>;
+interface Field {
+  name: string;
+  on: string;
+  alias: string;
+  arguments: Record<string, unknown>;
+  fields: Field[];
 }
 
-export interface SubscriptionResolverObject<TResult, TParent, TContext, TArgs> {
-  subscribe: SubscriptionSubscribeFn<any, TParent, TContext, TArgs>;
-  resolve: SubscriptionResolveFn<TResult, any, TContext, TArgs>;
+function isFieldNodeWithName(
+  node: SelectionNode,
+  name: string,
+): node is FieldNode {
+  return node.kind === Kind.FIELD && node.name.value === name;
 }
 
-export type SubscriptionObject<TResult, TKey extends string, TParent, TContext, TArgs> =
-  | SubscriptionSubscriberObject<TResult, TKey, TParent, TContext, TArgs>
-  | SubscriptionResolverObject<TResult, TParent, TContext, TArgs>;
-
-export type SubscriptionResolver<TResult, TKey extends string, TParent = Record<PropertyKey, never>, TContext = Record<PropertyKey, never>, TArgs = Record<PropertyKey, never>> =
-  | ((...args: any[]) => SubscriptionObject<TResult, TKey, TParent, TContext, TArgs>)
-  | SubscriptionObject<TResult, TKey, TParent, TContext, TArgs>;
-
-export type TypeResolveFn<TTypes, TParent = Record<PropertyKey, never>, TContext = Record<PropertyKey, never>> = (
-  parent: TParent,
-  context: TContext,
-  info: GraphQLResolveInfo
-) => Maybe<TTypes> | Promise<Maybe<TTypes>>;
-
-export type IsTypeOfResolverFn<T = Record<PropertyKey, never>, TContext = Record<PropertyKey, never>> = (obj: T, context: TContext, info: GraphQLResolveInfo) => boolean | Promise<boolean>;
-
-export type NextResolverFn<T> = () => Promise<T>;
-
-export type DirectiveResolverFn<TResult = Record<PropertyKey, never>, TParent = Record<PropertyKey, never>, TContext = Record<PropertyKey, never>, TArgs = Record<PropertyKey, never>> = (
-  next: NextResolverFn<TResult>,
-  parent: TParent,
-  args: TArgs,
-  context: TContext,
-  info: GraphQLResolveInfo
-) => TResult | Promise<TResult>;
-
-
-
-
-/** Mapping of interface types */
-export type ResolversInterfaceTypes<_RefType extends Record<string, unknown>> = {
-  VoucherDetails:
-    | ( CodeVoucherDetails )
-    | ( LinkVoucherDetails )
-    | ( ManualVoucherDetails )
-    | ( QrCodeVoucherDetails )
-  ;
-};
-
-/** Mapping between all available schema types and the resolvers types */
-export type ResolversTypes = {
-  Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
-  BooleanFilter: BooleanFilter;
-  CaseAwareStringArrayFilterValue: CaseAwareStringArrayFilterValue;
-  CaseAwareStringFilterValue: CaseAwareStringFilterValue;
-  CodeVoucherDetails: ResolverTypeWrapper<CodeVoucherDetails>;
-  Coordinates: ResolverTypeWrapper<Coordinates>;
-  DateTime: ResolverTypeWrapper<Scalars['DateTime']['output']>;
-  DateTimeFilter: DateTimeFilter;
-  DistanceFilter: DistanceFilter;
-  DistanceOrderByCriteria: DistanceOrderByCriteria;
-  DistanceUnits: DistanceUnits;
-  DistanceWithinFilter: DistanceWithinFilter;
-  Float: ResolverTypeWrapper<Scalars['Float']['output']>;
-  ID: ResolverTypeWrapper<Scalars['ID']['output']>;
-  IDFilter: IdFilter;
-  InputCoordinates: InputCoordinates;
-  Int: ResolverTypeWrapper<Scalars['Int']['output']>;
-  IntFilter: IntFilter;
-  LanguageCode: LanguageCode;
-  LinkVoucherDetails: ResolverTypeWrapper<LinkVoucherDetails>;
-  Location: ResolverTypeWrapper<Location>;
-  LocationFilter: LocationFilter;
-  LocationOrderByCriteria: LocationOrderByCriteria;
-  LocationsCountFilter: LocationsCountFilter;
-  ManualVoucherDetails: ResolverTypeWrapper<ManualVoucherDetails>;
-  Mutation: ResolverTypeWrapper<Record<PropertyKey, never>>;
-  Partner: ResolverTypeWrapper<Partner>;
-  PartnerDetails: ResolverTypeWrapper<PartnerDetails>;
-  PartnerDetailsFilter: PartnerDetailsFilter;
-  PartnerDetailsOrderByCriteria: PartnerDetailsOrderByCriteria;
-  PartnerFilter: PartnerFilter;
-  PartnerOrderByCriteria: PartnerOrderByCriteria;
-  PartnerSnapshot: ResolverTypeWrapper<PartnerSnapshot>;
-  QRCodeVoucherDetails: ResolverTypeWrapper<QrCodeVoucherDetails>;
-  Query: ResolverTypeWrapper<Record<PropertyKey, never>>;
-  RedemptionForum: RedemptionForum;
-  RedemptionForumArrayFilter: RedemptionForumArrayFilter;
-  RedemptionMethod: RedemptionMethod;
-  Reward: ResolverTypeWrapper<Reward>;
-  RewardDetails: ResolverTypeWrapper<RewardDetails>;
-  RewardDetailsFilter: RewardDetailsFilter;
-  RewardDetailsOrderByCriteria: RewardDetailsOrderByCriteria;
-  RewardFilter: RewardFilter;
-  RewardOrderByCriteria: RewardOrderByCriteria;
-  RewardSnapshot: ResolverTypeWrapper<RewardSnapshot>;
-  RewardsCountFilter: RewardsCountFilter;
-  SortOrder: SortOrder;
-  String: ResolverTypeWrapper<Scalars['String']['output']>;
-  StringArrayFilter: StringArrayFilter;
-  StringFilter: StringFilter;
-  TranslatedPartnerDetailsFilter: TranslatedPartnerDetailsFilter;
-  TranslatedPartnerDetailsOrderByCriteria: TranslatedPartnerDetailsOrderByCriteria;
-  TranslatedPartnerDetailsSnapshot: ResolverTypeWrapper<TranslatedPartnerDetailsSnapshot>;
-  TranslatedRewardDetailsFilter: TranslatedRewardDetailsFilter;
-  TranslatedRewardDetailsOrderByCriteria: TranslatedRewardDetailsOrderByCriteria;
-  TranslatedRewardDetailsSnapshot: ResolverTypeWrapper<TranslatedRewardDetailsSnapshot>;
-  TranslatedVoucherDetails: ResolverTypeWrapper<Omit<TranslatedVoucherDetails, 'voucherDetails'> & { voucherDetails: Array<ResolversTypes['VoucherDetails']> }>;
-  Voucher: ResolverTypeWrapper<Omit<Voucher, 'translatedDetails'> & { translatedDetails: Array<ResolversTypes['TranslatedVoucherDetails']> }>;
-  VoucherDetails: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['VoucherDetails']>;
-  VoucherOwnership: VoucherOwnership;
-  VoucherOwnershipFilter: VoucherOwnershipFilter;
-  VoucherWithRewardSnapshot: ResolverTypeWrapper<Omit<VoucherWithRewardSnapshot, 'voucher'> & { voucher: ResolversTypes['Voucher'] }>;
-};
-
-/** Mapping between all available schema types and the resolvers parents */
-export type ResolversParentTypes = {
-  Boolean: Scalars['Boolean']['output'];
-  BooleanFilter: BooleanFilter;
-  CaseAwareStringArrayFilterValue: CaseAwareStringArrayFilterValue;
-  CaseAwareStringFilterValue: CaseAwareStringFilterValue;
-  CodeVoucherDetails: CodeVoucherDetails;
-  Coordinates: Coordinates;
-  DateTime: Scalars['DateTime']['output'];
-  DateTimeFilter: DateTimeFilter;
-  DistanceFilter: DistanceFilter;
-  DistanceOrderByCriteria: DistanceOrderByCriteria;
-  DistanceWithinFilter: DistanceWithinFilter;
-  Float: Scalars['Float']['output'];
-  ID: Scalars['ID']['output'];
-  IDFilter: IdFilter;
-  InputCoordinates: InputCoordinates;
-  Int: Scalars['Int']['output'];
-  IntFilter: IntFilter;
-  LinkVoucherDetails: LinkVoucherDetails;
-  Location: Location;
-  LocationFilter: LocationFilter;
-  LocationOrderByCriteria: LocationOrderByCriteria;
-  LocationsCountFilter: LocationsCountFilter;
-  ManualVoucherDetails: ManualVoucherDetails;
-  Mutation: Record<PropertyKey, never>;
-  Partner: Partner;
-  PartnerDetails: PartnerDetails;
-  PartnerDetailsFilter: PartnerDetailsFilter;
-  PartnerDetailsOrderByCriteria: PartnerDetailsOrderByCriteria;
-  PartnerFilter: PartnerFilter;
-  PartnerOrderByCriteria: PartnerOrderByCriteria;
-  PartnerSnapshot: PartnerSnapshot;
-  QRCodeVoucherDetails: QrCodeVoucherDetails;
-  Query: Record<PropertyKey, never>;
-  RedemptionForumArrayFilter: RedemptionForumArrayFilter;
-  Reward: Reward;
-  RewardDetails: RewardDetails;
-  RewardDetailsFilter: RewardDetailsFilter;
-  RewardDetailsOrderByCriteria: RewardDetailsOrderByCriteria;
-  RewardFilter: RewardFilter;
-  RewardOrderByCriteria: RewardOrderByCriteria;
-  RewardSnapshot: RewardSnapshot;
-  RewardsCountFilter: RewardsCountFilter;
-  String: Scalars['String']['output'];
-  StringArrayFilter: StringArrayFilter;
-  StringFilter: StringFilter;
-  TranslatedPartnerDetailsFilter: TranslatedPartnerDetailsFilter;
-  TranslatedPartnerDetailsOrderByCriteria: TranslatedPartnerDetailsOrderByCriteria;
-  TranslatedPartnerDetailsSnapshot: TranslatedPartnerDetailsSnapshot;
-  TranslatedRewardDetailsFilter: TranslatedRewardDetailsFilter;
-  TranslatedRewardDetailsOrderByCriteria: TranslatedRewardDetailsOrderByCriteria;
-  TranslatedRewardDetailsSnapshot: TranslatedRewardDetailsSnapshot;
-  TranslatedVoucherDetails: Omit<TranslatedVoucherDetails, 'voucherDetails'> & { voucherDetails: Array<ResolversParentTypes['VoucherDetails']> };
-  Voucher: Omit<Voucher, 'translatedDetails'> & { translatedDetails: Array<ResolversParentTypes['TranslatedVoucherDetails']> };
-  VoucherDetails: ResolversInterfaceTypes<ResolversParentTypes>['VoucherDetails'];
-  VoucherOwnershipFilter: VoucherOwnershipFilter;
-  VoucherWithRewardSnapshot: Omit<VoucherWithRewardSnapshot, 'voucher'> & { voucher: ResolversParentTypes['Voucher'] };
-};
-
-export type CodeVoucherDetailsResolvers<ContextType = any, ParentType extends ResolversParentTypes['CodeVoucherDetails'] = ResolversParentTypes['CodeVoucherDetails']> = {
-  instructions?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  redemptionCode?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  redemptionMethod?: Resolver<ResolversTypes['RedemptionMethod'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type CoordinatesResolvers<ContextType = any, ParentType extends ResolversParentTypes['Coordinates'] = ResolversParentTypes['Coordinates']> = {
-  latitude?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
-  longitude?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
-};
-
-export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
-  name: 'DateTime';
+function extractField<T extends Field>(
+  node: FieldNode,
+  on: string,
+  info: GraphQLResolveInfo,
+) {
+  return {
+    name: node.name.value,
+    alias: node.alias?.value ?? node.name.value,
+    on,
+    arguments: Object.fromEntries(
+      node.arguments?.map(arg => [
+        arg.name.value,
+        valueFromASTUntyped(arg.value, info.variableValues),
+      ]) ?? [],
+    ),
+    fields:
+      node.selectionSet?.selections.flatMap(selectionNode =>
+        extractFields(selectionNode, node.name.value, info),
+      ) ?? [],
+  } as T;
 }
 
-export type LinkVoucherDetailsResolvers<ContextType = any, ParentType extends ResolversParentTypes['LinkVoucherDetails'] = ResolversParentTypes['LinkVoucherDetails']> = {
-  instructions?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  redemptionLinkText?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  redemptionLinkUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  redemptionMethod?: Resolver<ResolversTypes['RedemptionMethod'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type LocationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Location'] = ResolversParentTypes['Location']> = {
-  coordinates?: Resolver<ResolversTypes['Coordinates'], ParentType, ContextType>;
-  distance?: Resolver<ResolversTypes['Float'], ParentType, ContextType, RequireFields<LocationDistanceArgs, 'from' | 'units'>>;
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  partner?: Resolver<ResolversTypes['Partner'], ParentType, ContextType>;
-};
-
-export type ManualVoucherDetailsResolvers<ContextType = any, ParentType extends ResolversParentTypes['ManualVoucherDetails'] = ResolversParentTypes['ManualVoucherDetails']> = {
-  instructions?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  redemptionMethod?: Resolver<ResolversTypes['RedemptionMethod'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  retrieveVoucher?: Resolver<Maybe<ResolversTypes['VoucherWithRewardSnapshot']>, ParentType, ContextType, RequireFields<MutationRetrieveVoucherArgs, 'id'>>;
-};
-
-export type PartnerResolvers<ContextType = any, ParentType extends ResolversParentTypes['Partner'] = ResolversParentTypes['Partner']> = {
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  locations?: Resolver<Array<ResolversTypes['Location']>, ParentType, ContextType, Partial<PartnerLocationsArgs>>;
-  locationsCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType, Partial<PartnerLocationsCountArgs>>;
-  rewards?: Resolver<Array<ResolversTypes['Reward']>, ParentType, ContextType, Partial<PartnerRewardsArgs>>;
-  rewardsCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType, Partial<PartnerRewardsCountArgs>>;
-  translatedDetails?: Resolver<ResolversTypes['PartnerDetails'], ParentType, ContextType, RequireFields<PartnerTranslatedDetailsArgs, 'languageCode'>>;
-};
-
-export type PartnerDetailsResolvers<ContextType = any, ParentType extends ResolversParentTypes['PartnerDetails'] = ResolversParentTypes['PartnerDetails']> = {
-  description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  logoUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  reasonForSupporting8by8?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  webAddressText?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  webAddressUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-};
-
-export type PartnerSnapshotResolvers<ContextType = any, ParentType extends ResolversParentTypes['PartnerSnapshot'] = ResolversParentTypes['PartnerSnapshot']> = {
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  lastUpdatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  translatedDetailsSnapshots?: Resolver<Array<ResolversTypes['TranslatedPartnerDetailsSnapshot']>, ParentType, ContextType, Partial<PartnerSnapshotTranslatedDetailsSnapshotsArgs>>;
-};
-
-export type QrCodeVoucherDetailsResolvers<ContextType = any, ParentType extends ResolversParentTypes['QRCodeVoucherDetails'] = ResolversParentTypes['QRCodeVoucherDetails']> = {
-  instructions?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  redemptionMethod?: Resolver<ResolversTypes['RedemptionMethod'], ParentType, ContextType>;
-  redemptionQRCode?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  categories?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType, RequireFields<QueryCategoriesArgs, 'languageCode'>>;
-  location?: Resolver<Maybe<ResolversTypes['Location']>, ParentType, ContextType, RequireFields<QueryLocationArgs, 'id'>>;
-  locations?: Resolver<Array<ResolversTypes['Location']>, ParentType, ContextType, RequireFields<QueryLocationsArgs, 'take'>>;
-  locationsCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType, Partial<QueryLocationsCountArgs>>;
-  partner?: Resolver<Maybe<ResolversTypes['Partner']>, ParentType, ContextType, RequireFields<QueryPartnerArgs, 'id'>>;
-  partners?: Resolver<Array<ResolversTypes['Partner']>, ParentType, ContextType, RequireFields<QueryPartnersArgs, 'take'>>;
-  partnersCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType, Partial<QueryPartnersCountArgs>>;
-  reward?: Resolver<Maybe<ResolversTypes['Reward']>, ParentType, ContextType, RequireFields<QueryRewardArgs, 'id'>>;
-  rewards?: Resolver<Array<ResolversTypes['Reward']>, ParentType, ContextType, RequireFields<QueryRewardsArgs, 'take'>>;
-  rewardsCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType, Partial<QueryRewardsCountArgs>>;
-};
-
-export type RewardResolvers<ContextType = any, ParentType extends ResolversParentTypes['Reward'] = ResolversParentTypes['Reward']> = {
-  earliestExpirationDate?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
-  hasUsageOrQuantityLimit?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  partner?: Resolver<ResolversTypes['Partner'], ParentType, ContextType>;
-  redemptionForums?: Resolver<Array<ResolversTypes['RedemptionForum']>, ParentType, ContextType>;
-  translatedDetails?: Resolver<ResolversTypes['RewardDetails'], ParentType, ContextType, RequireFields<RewardTranslatedDetailsArgs, 'languageCode'>>;
-  voucherOwnership?: Resolver<ResolversTypes['VoucherOwnership'], ParentType, ContextType>;
-};
-
-export type RewardDetailsResolvers<ContextType = any, ParentType extends ResolversParentTypes['RewardDetails'] = ResolversParentTypes['RewardDetails']> = {
-  categories?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
-  longDescription?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  shortDescription?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-};
-
-export type RewardSnapshotResolvers<ContextType = any, ParentType extends ResolversParentTypes['RewardSnapshot'] = ResolversParentTypes['RewardSnapshot']> = {
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  lastUpdatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  partnerSnapshot?: Resolver<ResolversTypes['PartnerSnapshot'], ParentType, ContextType>;
-  redemptionForums?: Resolver<Array<ResolversTypes['RedemptionForum']>, ParentType, ContextType>;
-  translatedDetailsSnapshots?: Resolver<Array<ResolversTypes['TranslatedRewardDetailsSnapshot']>, ParentType, ContextType, Partial<RewardSnapshotTranslatedDetailsSnapshotsArgs>>;
-};
-
-export type TranslatedPartnerDetailsSnapshotResolvers<ContextType = any, ParentType extends ResolversParentTypes['TranslatedPartnerDetailsSnapshot'] = ResolversParentTypes['TranslatedPartnerDetailsSnapshot']> = {
-  description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  languageCode?: Resolver<ResolversTypes['LanguageCode'], ParentType, ContextType>;
-  lastUpdatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  logoUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  reasonForSupporting8by8?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  webAddressText?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  webAddressUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-};
-
-export type TranslatedRewardDetailsSnapshotResolvers<ContextType = any, ParentType extends ResolversParentTypes['TranslatedRewardDetailsSnapshot'] = ResolversParentTypes['TranslatedRewardDetailsSnapshot']> = {
-  categories?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
-  languageCode?: Resolver<ResolversTypes['LanguageCode'], ParentType, ContextType>;
-  lastUpdatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  longDescription?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  shortDescription?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-};
-
-export type TranslatedVoucherDetailsResolvers<ContextType = any, ParentType extends ResolversParentTypes['TranslatedVoucherDetails'] = ResolversParentTypes['TranslatedVoucherDetails']> = {
-  languageCode?: Resolver<ResolversTypes['LanguageCode'], ParentType, ContextType>;
-  voucherDetails?: Resolver<Array<ResolversTypes['VoucherDetails']>, ParentType, ContextType>;
-};
-
-export type VoucherResolvers<ContextType = any, ParentType extends ResolversParentTypes['Voucher'] = ResolversParentTypes['Voucher']> = {
-  expirationDate?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
-  translatedDetails?: Resolver<Array<ResolversTypes['TranslatedVoucherDetails']>, ParentType, ContextType, Partial<VoucherTranslatedDetailsArgs>>;
-};
-
-export type VoucherDetailsResolvers<ContextType = any, ParentType extends ResolversParentTypes['VoucherDetails'] = ResolversParentTypes['VoucherDetails']> = {
-  __resolveType: TypeResolveFn<'CodeVoucherDetails' | 'LinkVoucherDetails' | 'ManualVoucherDetails' | 'QRCodeVoucherDetails', ParentType, ContextType>;
-};
-
-export type VoucherWithRewardSnapshotResolvers<ContextType = any, ParentType extends ResolversParentTypes['VoucherWithRewardSnapshot'] = ResolversParentTypes['VoucherWithRewardSnapshot']> = {
-  rewardSnapshot?: Resolver<ResolversTypes['RewardSnapshot'], ParentType, ContextType>;
-  voucher?: Resolver<ResolversTypes['Voucher'], ParentType, ContextType>;
-};
-
-export type Resolvers<ContextType = any> = {
-  CodeVoucherDetails?: CodeVoucherDetailsResolvers<ContextType>;
-  Coordinates?: CoordinatesResolvers<ContextType>;
-  DateTime?: GraphQLScalarType;
-  LinkVoucherDetails?: LinkVoucherDetailsResolvers<ContextType>;
-  Location?: LocationResolvers<ContextType>;
-  ManualVoucherDetails?: ManualVoucherDetailsResolvers<ContextType>;
-  Mutation?: MutationResolvers<ContextType>;
-  Partner?: PartnerResolvers<ContextType>;
-  PartnerDetails?: PartnerDetailsResolvers<ContextType>;
-  PartnerSnapshot?: PartnerSnapshotResolvers<ContextType>;
-  QRCodeVoucherDetails?: QrCodeVoucherDetailsResolvers<ContextType>;
-  Query?: QueryResolvers<ContextType>;
-  Reward?: RewardResolvers<ContextType>;
-  RewardDetails?: RewardDetailsResolvers<ContextType>;
-  RewardSnapshot?: RewardSnapshotResolvers<ContextType>;
-  TranslatedPartnerDetailsSnapshot?: TranslatedPartnerDetailsSnapshotResolvers<ContextType>;
-  TranslatedRewardDetailsSnapshot?: TranslatedRewardDetailsSnapshotResolvers<ContextType>;
-  TranslatedVoucherDetails?: TranslatedVoucherDetailsResolvers<ContextType>;
-  Voucher?: VoucherResolvers<ContextType>;
-  VoucherDetails?: VoucherDetailsResolvers<ContextType>;
-  VoucherWithRewardSnapshot?: VoucherWithRewardSnapshotResolvers<ContextType>;
-};
-
+function extractFields<T extends Field[]>(
+  node: SelectionNode,
+  typeCondition: string,
+  info: GraphQLResolveInfo,
+): T {
+  if (node.kind === Kind.FRAGMENT_SPREAD) {
+    const fragment = info.fragments[node.name.value];
+    if (fragment) {
+      return fragment.selectionSet.selections.flatMap(selectionNode =>
+        extractFields(selectionNode, fragment.typeCondition.name.value, info),
+      ) as T;
+    } else return [] as unknown as T;
+  } else if (node.kind === Kind.INLINE_FRAGMENT) {
+    return node.selectionSet.selections.flatMap(selectionNode =>
+      extractFields(
+        selectionNode,
+        node.typeCondition?.name.value ?? typeCondition,
+        info,
+      ),
+    ) as T;
+  } else {
+    return [
+      {
+        name: node.name.value,
+        alias: node.alias?.value ?? node.name.value,
+        on: typeCondition,
+        arguments: Object.fromEntries(
+          node.arguments?.map(arg => [
+            arg.name.value,
+            valueFromASTUntyped(arg.value, info.variableValues),
+          ]) ?? [],
+        ),
+        fields:
+          node.selectionSet?.selections.flatMap(selectionNode =>
+            extractFields(selectionNode, node.name.value, info),
+          ) ?? [],
+      },
+    ] as T;
+  }
+}
