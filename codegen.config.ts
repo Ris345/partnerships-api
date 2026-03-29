@@ -1,4 +1,11 @@
 import { CodegenConfig } from '@graphql-codegen/cli';
+import { GQLARRConfig } from 'gqlarr';
+
+const gqlarrConfig: GQLARRConfig = {
+  types: {
+    DateTime: 'string',
+  },
+};
 
 const config: CodegenConfig = {
   overwrite: true,
@@ -8,6 +15,7 @@ const config: CodegenConfig = {
       plugins: ['gqlarr'],
     },
   },
+  config: gqlarrConfig,
 };
 
 export default config;
