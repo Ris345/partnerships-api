@@ -1,3 +1,4 @@
+import pg from 'pg';
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@as-integrations/express5';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
@@ -6,10 +7,13 @@ import http from 'http';
 import cors from 'cors';
 import { parse as parseContentType } from 'content-type';
 import { typeDefs, resolvers } from './graphql';
+import { setGeographyTypeParser } from './util/set-geography-type-parser';
 
 interface MyContext {
   token?: String;
 }
+
+await setGeographyTypeParser();
 
 const app = express();
 const httpServer = http.createServer(app);

@@ -1,3 +1,5 @@
+import { Point } from '../point';
+
 import { sql, type Expression, type RawBuilder, type Generated } from "kysely";
 
 export interface DB {
@@ -68,7 +70,7 @@ export interface DB {
     updated_at: Generated<Date>;
   };
   "public.location": {
-    coordinates: string;
+    coordinates: Point;
     created_at: Generated<Date>;
     id: Generated<string>;
     partner_id: number;
@@ -189,8 +191,8 @@ type PgFnParams<T extends PgFnNames> = T extends "pg_catalog.jsonb_build_object"
   ? [...Expression<any>[]]
   : T extends "public.calc_distance_with_units"
     ? [
-        Expression<string>,
-        Expression<string>,
+        Expression<Point>,
+        Expression<Point>,
         Expression<"METERS" | "KILOMETERS" | "MILES">,
       ]
     : T extends "public.convert_distance"
@@ -200,17 +202,17 @@ type PgFnParams<T extends PgFnNames> = T extends "pg_catalog.jsonb_build_object"
           Expression<"METERS" | "KILOMETERS" | "MILES">,
         ]
       : T extends "public.get_latitude"
-        ? [Expression<string>]
+        ? [Expression<Point>]
         : T extends "public.get_longitude"
-          ? [Expression<string>]
+          ? [Expression<Point>]
           : T extends "public.make_geographic_point"
             ? [Expression<number>, Expression<number>]
             : T extends "public.st_dwithin"
               ?
-                  | [Expression<string>, Expression<string>, Expression<number>]
+                  | [Expression<Point>, Expression<Point>, Expression<number>]
                   | [
-                      Expression<string>,
-                      Expression<string>,
+                      Expression<Point>,
+                      Expression<Point>,
                       Expression<number>,
                       Expression<boolean>,
                     ]
@@ -225,8 +227,8 @@ type PgFnReturnTypes<
     : never
   : T extends "public.calc_distance_with_units"
     ? V extends [
-        Expression<string>,
-        Expression<string>,
+        Expression<Point>,
+        Expression<Point>,
         Expression<"METERS" | "KILOMETERS" | "MILES">,
       ]
       ? number
@@ -240,27 +242,27 @@ type PgFnReturnTypes<
         ? number
         : never
       : T extends "public.get_latitude"
-        ? V extends [Expression<string>]
+        ? V extends [Expression<Point>]
           ? number
           : never
         : T extends "public.get_longitude"
-          ? V extends [Expression<string>]
+          ? V extends [Expression<Point>]
             ? number
             : never
           : T extends "public.make_geographic_point"
             ? V extends [Expression<number>, Expression<number>]
-              ? string
+              ? Point
               : never
             : T extends "public.st_dwithin"
               ? V extends [
-                  Expression<string>,
-                  Expression<string>,
+                  Expression<Point>,
+                  Expression<Point>,
                   Expression<number>,
                 ]
                 ? boolean
                 : V extends [
-                      Expression<string>,
-                      Expression<string>,
+                      Expression<Point>,
+                      Expression<Point>,
                       Expression<number>,
                       Expression<boolean>,
                     ]

@@ -11,7 +11,7 @@ const config: CodegenConfig = {
   overwrite: true,
   schema: './src/graphql/**/*.graphql',
   generates: {
-    'src/model/generated/graphql/types.ts': {
+    'src/model/graphql/generated/types.ts': {
       plugins: ['gqlarr'],
     },
   },

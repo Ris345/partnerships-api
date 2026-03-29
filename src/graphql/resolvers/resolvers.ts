@@ -1,5 +1,5 @@
 import { GraphQLResolveInfo } from 'graphql';
-import { gqlarr } from '../model/generated/graphql/types';
+import { gqlarr } from '../../model/graphql/generated/types';
 
 export const resolvers = {
   Query: {

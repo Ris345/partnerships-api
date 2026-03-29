@@ -5,7 +5,7 @@ import {
   type IntrospeqlKyselyConfig,
 } from 'introspeql-kysely';
 
-const outFile = '/model/generated/db/types.ts';
+const outFile = '/model/db/generated/types.ts';
 
 const config: IntrospeqlKyselyConfig = {
   dbConnectionParams: {
@@ -29,8 +29,10 @@ const config: IntrospeqlKyselyConfig = {
   functions: {
     mode: 'exclusive',
   },
+  header: "import { Point } from '../point';",
   types: {
     'pg_catalog.any': 'any',
+    'public.geography': 'Point',
   },
 };
 

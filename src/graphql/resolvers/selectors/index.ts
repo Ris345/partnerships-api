@@ -1,6 +1,6 @@
 import { sql } from 'kysely';
-import { pgFn, db } from '../../db';
-import { LocationFields } from '../../model/generated/graphql/types';
+import { pgFn } from '../../../model/db/generated/types';
+import { LocationFields } from '../../../model/graphql/generated/types';
 
 // needs to be able to apply filter, order by (joining if necessary)
 export function location(fields: LocationFields) {
@@ -31,8 +31,4 @@ export function location(fields: LocationFields) {
       }
     }),
   );
-}
-
-function coordinates() {
-  return sql`select something`;
 }
