@@ -1,17 +1,24 @@
 import { GraphQLResolveInfo } from 'graphql';
 import { gqlarr } from '../../model/graphql/generated/types';
+import { Location } from './selectors/Location';
 
 export const resolvers = {
   Query: {
-    reward: (
+    location: (
       _parent: unknown,
       _args: unknown,
       _context: unknown,
       info: GraphQLResolveInfo,
     ) => {
-      console.log(JSON.stringify(info, null, 2));
+      const locationField = gqlarr.getQueryField(info, 'location')!;
 
-      return null;
+      const query = Location(locationField.fields).where(
+        'id',
+        '=',
+        locationField.arguments.id,
+      );
+
+      return query;
     },
   },
 };

@@ -1807,7 +1807,7 @@ export const gqlarr = {
     fieldName: T,
   ):
     | Extract<
-        QueryFields,
+        QueryFields[number],
         {
           name: T;
         }
@@ -1821,7 +1821,7 @@ export const gqlarr = {
       return undefined;
     }
     return extractField(node, queryType.name, info) as Extract<
-      QueryFields,
+      QueryFields[number],
       {
         name: T;
       }
@@ -1832,7 +1832,7 @@ export const gqlarr = {
     fieldName: T,
   ):
     | Extract<
-        MutationFields,
+        MutationFields[number],
         {
           name: T;
         }
@@ -1846,7 +1846,7 @@ export const gqlarr = {
       return undefined;
     }
     return extractField(node, mutationType.name, info) as Extract<
-      MutationFields,
+      MutationFields[number],
       {
         name: T;
       }
