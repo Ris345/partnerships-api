@@ -4,7 +4,7 @@ import { Location } from './selectors/Location';
 
 export const resolvers = {
   Query: {
-    location: (
+    location: async (
       _parent: unknown,
       _args: unknown,
       _context: unknown,
@@ -18,7 +18,11 @@ export const resolvers = {
         locationField.arguments.id,
       );
 
-      return query;
+      console.log(query.compile().sql);
+
+      const result = await query.executeTakeFirst();
+      console.log(result);
+      return result;
     },
   },
 };

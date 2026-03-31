@@ -3,7 +3,6 @@ import { jsonBuildObject } from 'kysely/helpers/postgres';
 import { db, pgFn } from '../../../db';
 import { LocationFields } from '../../../model/graphql/generated/types';
 
-// needs to be able to apply filter, order by (joining if necessary)
 export function Location(fields: LocationFields) {
   return db.selectFrom('public.location').select(({ eb }) => {
     return fields.map(field => {
@@ -11,7 +10,7 @@ export function Location(fields: LocationFields) {
         case '__typename':
           return sql.val('Location').as(field.alias);
         case 'id':
-          sql<string>`CAST(${eb.ref('id')} AS VARCHAR)`.as(field.alias);
+          return sql<string>`CAST(${eb.ref('id')} AS VARCHAR)`.as(field.alias);
         case 'coordinates':
           return jsonBuildObject(
             Object.fromEntries(
@@ -27,7 +26,7 @@ export function Location(fields: LocationFields) {
                   case 'longitude':
                     return [
                       coordsField.alias,
-                      pgFn('public.get_latitude', [eb.ref('coordinates')]),
+                      pgFn('public.get_longitude', [eb.ref('coordinates')]),
                     ];
                 }
               }),
