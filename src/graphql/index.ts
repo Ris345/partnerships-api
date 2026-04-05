@@ -1,2 +1,2 @@
 export { typeDefs } from './schema';
-export { resolvers } from './resolvers/resolvers';
+export { resolvers } from './resolvers';
