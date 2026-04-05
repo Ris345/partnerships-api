@@ -1,4 +1,12 @@
 import {
+  type LocationFields,
+  type LocationFilter,
+  type LocationOrderByCriteria,
+  SortOrder,
+} from '../../../model/graphql';
+import type { DB } from '../../../model/db';
+
+import {
   Expression,
   ExpressionBuilder,
   SelectQueryBuilder,
@@ -7,22 +15,15 @@ import {
 } from 'kysely';
 import { jsonBuildObject } from 'kysely/helpers/postgres';
 import { db, pgFn } from '../../../db';
-import {
-  LocationFields,
-  LocationFilter,
-  LocationOrderByCriteria,
-  SortOrder,
-} from '../../../model/graphql/generated/types';
-import { DB } from '../../../model/db/generated/types';
 
-export class LocationQueryFactory {
-  static createCountStatement() {
+export class LocationRepository {
+  static count() {
     return db
       .selectFrom('public.location')
-      .select(({ eb }) => [eb.fn.countAll().as('locations_count')]);
+      .select(({ eb }) => [eb.fn.countAll().as('location_count')]);
   }
 
-  static createSelectStatement(fields: LocationFields) {
+  static select(fields: LocationFields) {
     return db.selectFrom('public.location').select(({ eb }) => {
       return fields.map(field => {
         switch (field.name) {
@@ -69,26 +70,22 @@ export class LocationQueryFactory {
     });
   }
 
-  static createWhereCondition(
+  static filter(
     eb: ExpressionBuilder<DB, 'public.location'>,
     filter?: LocationFilter,
   ): Expression<SqlBool> {
     if (filter?._and) {
-      const conditions = filter._and.map(f =>
-        LocationQueryFactory.createWhereCondition(eb, f),
-      );
+      const conditions = filter._and.map(f => LocationRepository.filter(eb, f));
       return conditions.length ? eb.and(conditions) : eb.val(true);
     }
 
     if (filter?._or) {
-      const conditions = filter._or.map(f =>
-        LocationQueryFactory.createWhereCondition(eb, f),
-      );
+      const conditions = filter._or.map(f => LocationRepository.filter(eb, f));
       return conditions.length ? eb.or(conditions) : eb.val(true);
     }
 
     if (filter?._not) {
-      return eb.not(LocationQueryFactory.createWhereCondition(eb, filter._not));
+      return eb.not(LocationRepository.filter(eb, filter._not));
     }
 
     if (filter?.id?._eq) {
@@ -148,7 +145,7 @@ export class LocationQueryFactory {
     return eb.val(true);
   }
 
-  static withOrderBy(
+  static sort(
     qb: SelectQueryBuilder<DB, 'public.location', any>,
     orderByClauses: LocationOrderByCriteria[],
   ) {

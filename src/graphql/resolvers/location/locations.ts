@@ -1,10 +1,9 @@
-import type { AppResolver } from '../../../model/graphql';
-
-import { gqlarr } from '../../../model/graphql/generated/types';
-import { LocationQueryFactory } from './location-query-factory';
+import { gqlarr, QueryLocationsResolver } from '../../../model/graphql';
+import { LocationRepository } from './location-repository';
 import { clampedOrDefault } from '../../../util/clamped-or-default';
+import { AppContext } from '../../../model/graphql';
 
-export const locations: AppResolver<object[]> = (
+export const locations: QueryLocationsResolver<AppContext> = (
   _parent,
   _args,
   _context,
@@ -12,20 +11,12 @@ export const locations: AppResolver<object[]> = (
 ) => {
   const locationsField = gqlarr.getQueryField(info, 'locations')!;
 
-  let query = LocationQueryFactory.createSelectStatement(
-    locationsField.fields,
-  ).where(eb => {
-    return LocationQueryFactory.createWhereCondition(
-      eb,
-      locationsField.arguments.filter,
-    );
+  let query = LocationRepository.select(locationsField.fields).where(eb => {
+    return LocationRepository.filter(eb, locationsField.arguments.filter);
   });
 
   if (locationsField.arguments.orderBy) {
-    query = LocationQueryFactory.withOrderBy(
-      query,
-      locationsField.arguments.orderBy,
-    );
+    query = LocationRepository.sort(query, locationsField.arguments.orderBy);
   }
 
   query = query.limit(

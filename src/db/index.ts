@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { Kysely, PostgresDialect } from 'kysely';
 import { Pool } from 'pg';
-import { DB, pgFn } from '../model/db/generated/types';
+import { DB, pgFn } from '../model/db';
 
 const db = new Kysely<DB>({
   dialect: new PostgresDialect({

@@ -6,7 +6,7 @@ type Partner {
     orderBy: [LocationOrderByCriteria!]
     take: Int
   ): [Location!]!
-  locationsCount(filter: LocationFilter): Int!
+  locationCount(filter: LocationFilter): Int!
   rewards(
     filter: RewardFilter
     orderBy: [RewardOrderByCriteria!]
@@ -27,8 +27,8 @@ type PartnerDetails {
 input PartnerFilter @oneOf {
   id: IDFilter
   translatedDetails: TranslatedPartnerDetailsFilter
-  rewardsCount: RewardsCountFilter
-  locationsCount: LocationsCountFilter
+  rewardCount: RewardCountFilter
+  locationCount: LocationCountFilter
   _and: [PartnerFilter!]
   _or: [PartnerFilter!]
   _not: PartnerFilter
@@ -51,12 +51,12 @@ input PartnerDetailsFilter @oneOf {
   _not: PartnerDetailsFilter
 }
 
-input LocationsCountFilter {
+input LocationCountFilter {
   _value: IntFilter!
   _filter: LocationFilter
 }
 
-input RewardsCountFilter {
+input RewardCountFilter {
   _value: IntFilter!
   _filter: RewardFilter
 }

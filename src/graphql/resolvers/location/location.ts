@@ -1,10 +1,10 @@
-import type { AppResolver } from '../../../model/graphql';
+import type { AppContext } from '../../../model/graphql';
 
 import { sql } from 'kysely';
-import { gqlarr } from '../../../model/graphql/generated/types';
-import { LocationQueryFactory } from './location-query-factory';
+import { gqlarr, QueryLocationResolver } from '../../../model/graphql';
+import { LocationRepository } from './location-repository';
 
-export const location: AppResolver<object> = (
+export const location: QueryLocationResolver<AppContext> = (
   _parent,
   _args,
   _context,
@@ -12,7 +12,7 @@ export const location: AppResolver<object> = (
 ) => {
   const locationField = gqlarr.getQueryField(info, 'location')!;
 
-  return LocationQueryFactory.createSelectStatement(locationField.fields)
+  return LocationRepository.select(locationField.fields)
     .where(
       'id',
       '=',

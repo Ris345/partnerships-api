@@ -5,7 +5,7 @@ import {
   type IntrospeqlKyselyConfig,
 } from 'introspeql-kysely';
 
-const outFile = '/model/db/generated/types.ts';
+const outFile = '/model/db/generated-types.ts';
 
 const config: IntrospeqlKyselyConfig = {
   dbConnectionParams: {

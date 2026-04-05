@@ -1,9 +1,24 @@
-import { location, locations, locationsCount } from './location';
+import type { Resolvers } from '../../model/graphql';
 
-export const resolvers = {
+import { location, locations, locationCount } from './location';
+import { partner, partners, partnerCount } from './partner';
+import { reward, rewards, rewardCount, categories } from './reward';
+import { retrieveVoucher } from './voucher';
+
+export const resolvers: Resolvers = {
   Query: {
     location,
     locations,
-    locationsCount,
+    locationCount,
+    partner,
+    partners,
+    partnerCount,
+    reward,
+    rewards,
+    rewardCount,
+    categories,
+  },
+  Mutation: {
+    retrieveVoucher,
   },
 };

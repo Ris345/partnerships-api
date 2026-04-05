@@ -1,2 +1,2 @@
-export * from './app-context';
 export * from './generated-types';
+export * from './point';

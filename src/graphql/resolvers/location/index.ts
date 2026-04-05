@@ -1,4 +1,4 @@
-export { LocationQueryFactory } from './location-query-factory';
-export { location } from './location';
-export { locationsCount } from './locations-count';
-export { locations } from './locations';
+export * from './location-repository';
+export * from './location';
+export * from './location-count';
+export * from './locations';

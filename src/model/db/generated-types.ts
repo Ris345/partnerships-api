@@ -1,24 +1,18 @@
 import { Point } from '../point';
 
-import {
-  sql,
-  type Expression,
-  type RawBuilder,
-  type Generated,
-  ExpressionWrapper,
-} from 'kysely';
+import { sql, type Expression, type RawBuilder, type Generated } from "kysely";
 
 export interface DB {
-  'public.base_entity': {
+  "public.base_entity": {
     created_at: Generated<Date>;
     updated_at: Generated<Date>;
   };
-  'public.base_voucher': {
+  "public.base_voucher": {
     created_at: Generated<Date>;
     redeemable_until: Date;
     updated_at: Generated<Date>;
   };
-  'public.base_voucher_stub': {
+  "public.base_voucher_stub": {
     created_at: Generated<Date>;
     redeemable_for: string;
     redeemable_until_exact: Date;
@@ -26,19 +20,19 @@ export interface DB {
     updated_at: Generated<Date>;
     vouchers_remaining: number;
   };
-  'public.category': {
+  "public.category": {
     created_at: Generated<Date>;
     id: Generated<number>;
     updated_at: Generated<Date>;
   };
-  'public.category_translation': {
+  "public.category_translation": {
     category_id: number;
     category_name: string;
     created_at: Generated<Date>;
     language_code: string;
     updated_at: Generated<Date>;
   };
-  'public.code_based_voucher_value': {
+  "public.code_based_voucher_value": {
     created_at: Generated<Date>;
     id: Generated<bigint>;
     multiple_use_voucher_id: number;
@@ -46,27 +40,27 @@ export interface DB {
     single_use_voucher_id: bigint;
     updated_at: Generated<Date>;
   };
-  'public.code_based_voucher_value_details_translation': {
+  "public.code_based_voucher_value_details_translation": {
     code_based_voucher_value_id: bigint;
     created_at: Generated<Date>;
     instructions: string;
     language_code: string;
     updated_at: Generated<Date>;
   };
-  'public.language': {
+  "public.language": {
     created_at: Generated<Date>;
     language_code: string;
     language_name: string;
     updated_at: Generated<Date>;
   };
-  'public.link_based_voucher_value': {
+  "public.link_based_voucher_value": {
     created_at: Generated<Date>;
     id: Generated<bigint>;
     multiple_use_voucher_id: number;
     single_use_voucher_id: bigint;
     updated_at: Generated<Date>;
   };
-  'public.link_based_voucher_value_details_translation': {
+  "public.link_based_voucher_value_details_translation": {
     created_at: Generated<Date>;
     instructions: string;
     language_code: string;
@@ -75,14 +69,14 @@ export interface DB {
     redemption_link_url: string;
     updated_at: Generated<Date>;
   };
-  'public.location': {
+  "public.location": {
     coordinates: Point;
     created_at: Generated<Date>;
     id: Generated<bigint>;
     partner_id: number;
     updated_at: Generated<Date>;
   };
-  'public.manual_voucher_stub': {
+  "public.manual_voucher_stub": {
     created_at: Generated<Date>;
     id: Generated<number>;
     redeemable_for: string;
@@ -92,14 +86,14 @@ export interface DB {
     updated_at: Generated<Date>;
     vouchers_remaining: number;
   };
-  'public.manual_voucher_stub_details_translation': {
+  "public.manual_voucher_stub_details_translation": {
     created_at: Generated<Date>;
     instructions: string;
     language_code: string;
     manual_voucher_stub_id: number;
     updated_at: Generated<Date>;
   };
-  'public.multiple_use_voucher': {
+  "public.multiple_use_voucher": {
     created_at: Generated<Date>;
     has_usage_cap: boolean;
     id: Generated<number>;
@@ -107,7 +101,7 @@ export interface DB {
     reward_id: string;
     updated_at: Generated<Date>;
   };
-  'public.on_demand_voucher_stub': {
+  "public.on_demand_voucher_stub": {
     created_at: Generated<Date>;
     id: Generated<number>;
     redeemable_for: string;
@@ -117,12 +111,12 @@ export interface DB {
     updated_at: Generated<Date>;
     vouchers_remaining: number;
   };
-  'public.partner': {
+  "public.partner": {
     created_at: Generated<Date>;
     id: Generated<number>;
     updated_at: Generated<Date>;
   };
-  'public.partner_details_translation': {
+  "public.partner_details_translation": {
     created_at: Generated<Date>;
     description: string;
     language_code: string;
@@ -134,7 +128,7 @@ export interface DB {
     web_address_text: string;
     web_address_url: string;
   };
-  'public.qr_code_based_voucher_value': {
+  "public.qr_code_based_voucher_value": {
     created_at: Generated<Date>;
     id: Generated<bigint>;
     multiple_use_voucher_id: number;
@@ -142,14 +136,14 @@ export interface DB {
     single_use_voucher_id: bigint;
     updated_at: Generated<Date>;
   };
-  'public.qr_code_based_voucher_value_details_translation': {
+  "public.qr_code_based_voucher_value_details_translation": {
     created_at: Generated<Date>;
     instructions: string;
     language_code: string;
     qr_code_based_voucher_value_id: bigint;
     updated_at: Generated<Date>;
   };
-  'public.reward': {
+  "public.reward": {
     available_from_exact: Date;
     available_from_local: Date;
     available_until_exact: Date;
@@ -157,17 +151,17 @@ export interface DB {
     created_at: Generated<Date>;
     id: Generated<string>;
     partner_id: number;
-    redemption_forums: ('ONLINE' | 'IN_STORE')[];
+    redemption_forums: ("ONLINE" | "IN_STORE")[];
     updated_at: Generated<Date>;
-    voucher_type: 'MULTIPLE_USE' | 'SINGLE_USE' | 'ON_DEMAND' | 'MANUAL';
+    voucher_type: "MULTIPLE_USE" | "SINGLE_USE" | "ON_DEMAND" | "MANUAL";
   };
-  'public.reward_category': {
+  "public.reward_category": {
     category_id: number;
     created_at: Generated<Date>;
     reward_id: string;
     updated_at: Generated<Date>;
   };
-  'public.reward_details_translation': {
+  "public.reward_details_translation": {
     created_at: Generated<Date>;
     language_code: string;
     long_description: string;
@@ -175,7 +169,7 @@ export interface DB {
     short_description: string;
     updated_at: Generated<Date>;
   };
-  'public.single_use_voucher': {
+  "public.single_use_voucher": {
     created_at: Generated<Date>;
     id: Generated<bigint>;
     redeemable_until: Date;
@@ -184,96 +178,97 @@ export interface DB {
   };
 }
 
-// type Expression<T> = Expression<T> | ExpressionWrapper<any, any, T>;
-
 type PgFnNames =
-  | 'pg_catalog.jsonb_build_object'
-  | 'public.calc_distance_with_units'
-  | 'public.convert_distance'
-  | 'public.get_latitude'
-  | 'public.get_longitude'
-  | 'public.make_geographic_point'
-  | 'public.st_dwithin';
+  | "pg_catalog.jsonb_build_object"
+  | "public.calc_distance_with_units"
+  | "public.convert_distance"
+  | "public.get_latitude"
+  | "public.get_longitude"
+  | "public.make_geographic_point"
+  | "public.st_dwithin";
 
-type PgFnParams<T extends PgFnNames> =
-  T extends 'pg_catalog.jsonb_build_object' ? [...Expression<any>[]]
-  : T extends 'public.calc_distance_with_units' ?
-    [
-      Expression<Point>,
-      Expression<Point>,
-      Expression<'METERS' | 'KILOMETERS' | 'MILES'>,
-    ]
-  : T extends 'public.convert_distance' ?
-    [
-      Expression<number>,
-      Expression<'METERS' | 'KILOMETERS' | 'MILES'>,
-      Expression<'METERS' | 'KILOMETERS' | 'MILES'>,
-    ]
-  : T extends 'public.get_latitude' ? [Expression<Point>]
-  : T extends 'public.get_longitude' ? [Expression<Point>]
-  : T extends 'public.make_geographic_point' ?
-    [Expression<number>, Expression<number>]
-  : T extends 'public.st_dwithin' ?
-    | [Expression<Point>, Expression<Point>, Expression<number>]
-    | [
+type PgFnParams<T extends PgFnNames> = T extends "pg_catalog.jsonb_build_object"
+  ? [...Expression<any>[]]
+  : T extends "public.calc_distance_with_units"
+    ? [
         Expression<Point>,
         Expression<Point>,
-        Expression<number>,
-        Expression<boolean>,
+        Expression<"METERS" | "KILOMETERS" | "MILES">,
       ]
-  : never;
+    : T extends "public.convert_distance"
+      ? [
+          Expression<number>,
+          Expression<"METERS" | "KILOMETERS" | "MILES">,
+          Expression<"METERS" | "KILOMETERS" | "MILES">,
+        ]
+      : T extends "public.get_latitude"
+        ? [Expression<Point>]
+        : T extends "public.get_longitude"
+          ? [Expression<Point>]
+          : T extends "public.make_geographic_point"
+            ? [Expression<number>, Expression<number>]
+            : T extends "public.st_dwithin"
+              ?
+                  | [Expression<Point>, Expression<Point>, Expression<number>]
+                  | [
+                      Expression<Point>,
+                      Expression<Point>,
+                      Expression<number>,
+                      Expression<boolean>,
+                    ]
+              : never;
 
-type PgFnReturnTypes<T extends PgFnNames, V extends PgFnParams<T>> =
-  T extends 'pg_catalog.jsonb_build_object' ?
-    V extends [...Expression<any>[]] ?
-      object
+type PgFnReturnTypes<
+  T extends PgFnNames,
+  V extends PgFnParams<T>,
+> = T extends "pg_catalog.jsonb_build_object"
+  ? V extends [...Expression<any>[]]
+    ? object
     : never
-  : T extends 'public.calc_distance_with_units' ?
-    V extends (
-      [
+  : T extends "public.calc_distance_with_units"
+    ? V extends [
         Expression<Point>,
         Expression<Point>,
-        Expression<'METERS' | 'KILOMETERS' | 'MILES'>,
+        Expression<"METERS" | "KILOMETERS" | "MILES">,
       ]
-    ) ?
-      number
-    : never
-  : T extends 'public.convert_distance' ?
-    V extends (
-      [
-        Expression<number>,
-        Expression<'METERS' | 'KILOMETERS' | 'MILES'>,
-        Expression<'METERS' | 'KILOMETERS' | 'MILES'>,
-      ]
-    ) ?
-      number
-    : never
-  : T extends 'public.get_latitude' ?
-    V extends [Expression<Point>] ?
-      number
-    : never
-  : T extends 'public.get_longitude' ?
-    V extends [Expression<Point>] ?
-      number
-    : never
-  : T extends 'public.make_geographic_point' ?
-    V extends [Expression<number>, Expression<number>] ?
-      Point
-    : never
-  : T extends 'public.st_dwithin' ?
-    V extends [Expression<Point>, Expression<Point>, Expression<number>] ?
-      boolean
-    : V extends (
-      [
-        Expression<Point>,
-        Expression<Point>,
-        Expression<number>,
-        Expression<boolean>,
-      ]
-    ) ?
-      boolean
-    : never
-  : never;
+      ? number
+      : never
+    : T extends "public.convert_distance"
+      ? V extends [
+          Expression<number>,
+          Expression<"METERS" | "KILOMETERS" | "MILES">,
+          Expression<"METERS" | "KILOMETERS" | "MILES">,
+        ]
+        ? number
+        : never
+      : T extends "public.get_latitude"
+        ? V extends [Expression<Point>]
+          ? number
+          : never
+        : T extends "public.get_longitude"
+          ? V extends [Expression<Point>]
+            ? number
+            : never
+          : T extends "public.make_geographic_point"
+            ? V extends [Expression<number>, Expression<number>]
+              ? Point
+              : never
+            : T extends "public.st_dwithin"
+              ? V extends [
+                  Expression<Point>,
+                  Expression<Point>,
+                  Expression<number>,
+                ]
+                ? boolean
+                : V extends [
+                      Expression<Point>,
+                      Expression<Point>,
+                      Expression<number>,
+                      Expression<boolean>,
+                    ]
+                  ? boolean
+                  : never
+              : never;
 
 export function pgFn<T extends PgFnNames, V extends PgFnParams<T>>(
   fn: T,
