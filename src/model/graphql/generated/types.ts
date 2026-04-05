@@ -1,5 +1,5 @@
-import type { GraphQLResolveInfo } from "graphql";
-import { isNamedFieldNode, extractField } from "gqlarr";
+import type { GraphQLResolveInfo } from 'graphql';
+import { isNamedFieldNode, extractField } from 'gqlarr';
 
 export type Flatten<T extends any[][]> = T[number][number][];
 
@@ -79,18 +79,18 @@ export type DistanceFilter = {
 
 export interface DistanceOrderByCriteria {
   _from: InputCoordinates;
-  _sortOrder: any;
+  _sortOrder: SortOrder;
 }
 
 export enum DistanceUnits {
-  KILOMETERS = "KILOMETERS",
-  MILES = "MILES",
+  KILOMETERS = 'KILOMETERS',
+  MILES = 'MILES',
 }
 
 export interface DistanceWithinFilter {
   _radius: number;
   _from: InputCoordinates;
-  _units: any;
+  _units: DistanceUnits;
 }
 
 export type IDFilter =
@@ -214,8 +214,8 @@ export type IntFilter =
     };
 
 export enum LanguageCode {
-  EN = "EN",
-  ES = "ES",
+  EN = 'EN',
+  ES = 'ES',
 }
 
 export type LocationFilter =
@@ -270,7 +270,7 @@ export type LocationFilter =
 
 export type LocationOrderByCriteria =
   | {
-      id?: any;
+      id?: SortOrder;
       distance?: never;
       partner?: never;
     }
@@ -393,7 +393,7 @@ export type PartnerDetailsFilter =
 
 export type PartnerDetailsOrderByCriteria =
   | {
-      name?: any;
+      name?: SortOrder;
       logoUrl?: never;
       description?: never;
       webAddressUrl?: never;
@@ -401,7 +401,7 @@ export type PartnerDetailsOrderByCriteria =
       reasonForSupporting8by8?: never;
     }
   | {
-      logoUrl?: any;
+      logoUrl?: SortOrder;
       name?: never;
       description?: never;
       webAddressUrl?: never;
@@ -409,7 +409,7 @@ export type PartnerDetailsOrderByCriteria =
       reasonForSupporting8by8?: never;
     }
   | {
-      description?: any;
+      description?: SortOrder;
       name?: never;
       logoUrl?: never;
       webAddressUrl?: never;
@@ -417,7 +417,7 @@ export type PartnerDetailsOrderByCriteria =
       reasonForSupporting8by8?: never;
     }
   | {
-      webAddressUrl?: any;
+      webAddressUrl?: SortOrder;
       name?: never;
       logoUrl?: never;
       description?: never;
@@ -425,7 +425,7 @@ export type PartnerDetailsOrderByCriteria =
       reasonForSupporting8by8?: never;
     }
   | {
-      webAddressText?: any;
+      webAddressText?: SortOrder;
       name?: never;
       logoUrl?: never;
       description?: never;
@@ -433,7 +433,7 @@ export type PartnerDetailsOrderByCriteria =
       reasonForSupporting8by8?: never;
     }
   | {
-      reasonForSupporting8by8?: any;
+      reasonForSupporting8by8?: SortOrder;
       name?: never;
       logoUrl?: never;
       description?: never;
@@ -508,7 +508,7 @@ export type PartnerFilter =
 
 export type PartnerOrderByCriteria =
   | {
-      id?: any;
+      id?: SortOrder;
       translatedDetails?: never;
     }
   | {
@@ -517,13 +517,13 @@ export type PartnerOrderByCriteria =
     };
 
 export enum RedemptionForum {
-  ONLINE = "ONLINE",
-  IN_STORE = "IN_STORE",
+  ONLINE = 'ONLINE',
+  IN_STORE = 'IN_STORE',
 }
 
 export type RedemptionForumArrayFilter =
   | {
-      _eq?: any[];
+      _eq?: RedemptionForum[];
       _neq?: never;
       _containsEl?: never;
       _containsArr?: never;
@@ -531,7 +531,7 @@ export type RedemptionForumArrayFilter =
       _overlaps?: never;
     }
   | {
-      _neq?: any[];
+      _neq?: RedemptionForum[];
       _eq?: never;
       _containsEl?: never;
       _containsArr?: never;
@@ -539,7 +539,7 @@ export type RedemptionForumArrayFilter =
       _overlaps?: never;
     }
   | {
-      _containsEl?: any;
+      _containsEl?: RedemptionForum;
       _eq?: never;
       _neq?: never;
       _containsArr?: never;
@@ -547,7 +547,7 @@ export type RedemptionForumArrayFilter =
       _overlaps?: never;
     }
   | {
-      _containsArr?: any[];
+      _containsArr?: RedemptionForum[];
       _eq?: never;
       _neq?: never;
       _containsEl?: never;
@@ -555,7 +555,7 @@ export type RedemptionForumArrayFilter =
       _overlaps?: never;
     }
   | {
-      _containedBy?: any[];
+      _containedBy?: RedemptionForum[];
       _eq?: never;
       _neq?: never;
       _containsEl?: never;
@@ -563,7 +563,7 @@ export type RedemptionForumArrayFilter =
       _overlaps?: never;
     }
   | {
-      _overlaps?: any[];
+      _overlaps?: RedemptionForum[];
       _eq?: never;
       _neq?: never;
       _containsEl?: never;
@@ -572,10 +572,10 @@ export type RedemptionForumArrayFilter =
     };
 
 export enum RedemptionMethod {
-  CODE = "CODE",
-  QR_CODE = "QR_CODE",
-  LINK = "LINK",
-  MANUAL = "MANUAL",
+  CODE = 'CODE',
+  QR_CODE = 'QR_CODE',
+  LINK = 'LINK',
+  MANUAL = 'MANUAL',
 }
 
 export type RewardDetailsFilter =
@@ -630,17 +630,17 @@ export type RewardDetailsFilter =
 
 export type RewardDetailsOrderByCriteria =
   | {
-      categories?: any;
+      categories?: SortOrder;
       shortDescription?: never;
       longDescription?: never;
     }
   | {
-      shortDescription?: any;
+      shortDescription?: SortOrder;
       categories?: never;
       longDescription?: never;
     }
   | {
-      longDescription?: any;
+      longDescription?: SortOrder;
       categories?: never;
       shortDescription?: never;
     };
@@ -769,7 +769,7 @@ export type RewardFilter =
 
 export type RewardOrderByCriteria =
   | {
-      id?: any;
+      id?: SortOrder;
       partner?: never;
       translatedDetails?: never;
     }
@@ -790,8 +790,8 @@ export interface RewardsCountFilter {
 }
 
 export enum SortOrder {
-  ASC = "ASC",
-  DESC = "DESC",
+  ASC = 'ASC',
+  DESC = 'DESC',
 }
 
 export type StringArrayFilter =
@@ -946,65 +946,65 @@ export type StringFilter =
     };
 
 export interface TranslatedPartnerDetailsFilter {
-  _languageCode: any;
+  _languageCode: LanguageCode;
   _filter: PartnerDetailsFilter;
 }
 
 export interface TranslatedPartnerDetailsOrderByCriteria {
-  _languageCode: any;
+  _languageCode: LanguageCode;
   _orderBy: PartnerDetailsOrderByCriteria;
 }
 
 export interface TranslatedRewardDetailsFilter {
-  _languageCode: any;
+  _languageCode: LanguageCode;
   _filter: RewardDetailsFilter;
 }
 
 export interface TranslatedRewardDetailsOrderByCriteria {
-  _languageCode: any;
+  _languageCode: LanguageCode;
   _orderBy: RewardDetailsOrderByCriteria;
 }
 
 export enum VoucherOwnership {
-  MULTI_USER = "MULTI_USER",
-  SINGLE_USER = "SINGLE_USER",
+  MULTI_USER = 'MULTI_USER',
+  SINGLE_USER = 'SINGLE_USER',
 }
 
 export type VoucherOwnershipFilter =
   | {
-      _eq?: any;
+      _eq?: VoucherOwnership;
       _neq?: never;
     }
   | {
-      _neq?: any;
+      _neq?: VoucherOwnership;
       _eq?: never;
     };
 
 export type CodeVoucherDetailsFields = (
   | {
-      name: "redemptionMethod";
-      on: "CodeVoucherDetails";
+      name: 'redemptionMethod';
+      on: 'CodeVoucherDetails';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "instructions";
-      on: "CodeVoucherDetails";
+      name: 'instructions';
+      on: 'CodeVoucherDetails';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "redemptionCode";
-      on: "CodeVoucherDetails";
+      name: 'redemptionCode';
+      on: 'CodeVoucherDetails';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "__typename";
-      on: "CodeVoucherDetails";
+      name: '__typename';
+      on: 'CodeVoucherDetails';
       alias: string;
       arguments: {};
       fields: never;
@@ -1013,22 +1013,22 @@ export type CodeVoucherDetailsFields = (
 
 export type CoordinatesFields = (
   | {
-      name: "latitude";
-      on: "Coordinates";
+      name: 'latitude';
+      on: 'Coordinates';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "longitude";
-      on: "Coordinates";
+      name: 'longitude';
+      on: 'Coordinates';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "__typename";
-      on: "Coordinates";
+      name: '__typename';
+      on: 'Coordinates';
       alias: string;
       arguments: {};
       fields: never;
@@ -1037,36 +1037,36 @@ export type CoordinatesFields = (
 
 export type LinkVoucherDetailsFields = (
   | {
-      name: "redemptionMethod";
-      on: "LinkVoucherDetails";
+      name: 'redemptionMethod';
+      on: 'LinkVoucherDetails';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "instructions";
-      on: "LinkVoucherDetails";
+      name: 'instructions';
+      on: 'LinkVoucherDetails';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "redemptionLinkUrl";
-      on: "LinkVoucherDetails";
+      name: 'redemptionLinkUrl';
+      on: 'LinkVoucherDetails';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "redemptionLinkText";
-      on: "LinkVoucherDetails";
+      name: 'redemptionLinkText';
+      on: 'LinkVoucherDetails';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "__typename";
-      on: "LinkVoucherDetails";
+      name: '__typename';
+      on: 'LinkVoucherDetails';
       alias: string;
       arguments: {};
       fields: never;
@@ -1075,22 +1075,22 @@ export type LinkVoucherDetailsFields = (
 
 export type LocationFields = (
   | {
-      name: "id";
-      on: "Location";
+      name: 'id';
+      on: 'Location';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "coordinates";
-      on: "Location";
+      name: 'coordinates';
+      on: 'Location';
       alias: string;
       arguments: {};
       fields: CoordinatesFields;
     }
   | {
-      name: "distance";
-      on: "Location";
+      name: 'distance';
+      on: 'Location';
       alias: string;
       arguments: {
         from: InputCoordinates;
@@ -1099,15 +1099,15 @@ export type LocationFields = (
       fields: never;
     }
   | {
-      name: "partner";
-      on: "Location";
+      name: 'partner';
+      on: 'Location';
       alias: string;
       arguments: {};
       fields: PartnerFields;
     }
   | {
-      name: "__typename";
-      on: "Location";
+      name: '__typename';
+      on: 'Location';
       alias: string;
       arguments: {};
       fields: never;
@@ -1116,22 +1116,22 @@ export type LocationFields = (
 
 export type ManualVoucherDetailsFields = (
   | {
-      name: "redemptionMethod";
-      on: "ManualVoucherDetails";
+      name: 'redemptionMethod';
+      on: 'ManualVoucherDetails';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "instructions";
-      on: "ManualVoucherDetails";
+      name: 'instructions';
+      on: 'ManualVoucherDetails';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "__typename";
-      on: "ManualVoucherDetails";
+      name: '__typename';
+      on: 'ManualVoucherDetails';
       alias: string;
       arguments: {};
       fields: never;
@@ -1140,8 +1140,8 @@ export type ManualVoucherDetailsFields = (
 
 export type MutationFields = (
   | {
-      name: "retrieveVoucher";
-      on: "Mutation";
+      name: 'retrieveVoucher';
+      on: 'Mutation';
       alias: string;
       arguments: {
         id: string;
@@ -1149,8 +1149,8 @@ export type MutationFields = (
       fields: VoucherWithRewardSnapshotFields;
     }
   | {
-      name: "__typename";
-      on: "Mutation";
+      name: '__typename';
+      on: 'Mutation';
       alias: string;
       arguments: {};
       fields: never;
@@ -1159,15 +1159,15 @@ export type MutationFields = (
 
 export type PartnerFields = (
   | {
-      name: "id";
-      on: "Partner";
+      name: 'id';
+      on: 'Partner';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "translatedDetails";
-      on: "Partner";
+      name: 'translatedDetails';
+      on: 'Partner';
       alias: string;
       arguments: {
         languageCode: LanguageCode;
@@ -1175,8 +1175,8 @@ export type PartnerFields = (
       fields: PartnerDetailsFields;
     }
   | {
-      name: "locations";
-      on: "Partner";
+      name: 'locations';
+      on: 'Partner';
       alias: string;
       arguments: {
         filter?: LocationFilter;
@@ -1186,8 +1186,8 @@ export type PartnerFields = (
       fields: LocationFields;
     }
   | {
-      name: "locationsCount";
-      on: "Partner";
+      name: 'locationsCount';
+      on: 'Partner';
       alias: string;
       arguments: {
         filter?: LocationFilter;
@@ -1195,8 +1195,8 @@ export type PartnerFields = (
       fields: never;
     }
   | {
-      name: "rewards";
-      on: "Partner";
+      name: 'rewards';
+      on: 'Partner';
       alias: string;
       arguments: {
         filter?: RewardFilter;
@@ -1206,8 +1206,8 @@ export type PartnerFields = (
       fields: RewardFields;
     }
   | {
-      name: "rewardsCount";
-      on: "Partner";
+      name: 'rewardsCount';
+      on: 'Partner';
       alias: string;
       arguments: {
         filter?: RewardFilter;
@@ -1215,8 +1215,8 @@ export type PartnerFields = (
       fields: never;
     }
   | {
-      name: "__typename";
-      on: "Partner";
+      name: '__typename';
+      on: 'Partner';
       alias: string;
       arguments: {};
       fields: never;
@@ -1225,50 +1225,50 @@ export type PartnerFields = (
 
 export type PartnerDetailsFields = (
   | {
-      name: "name";
-      on: "PartnerDetails";
+      name: 'name';
+      on: 'PartnerDetails';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "logoUrl";
-      on: "PartnerDetails";
+      name: 'logoUrl';
+      on: 'PartnerDetails';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "description";
-      on: "PartnerDetails";
+      name: 'description';
+      on: 'PartnerDetails';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "webAddressUrl";
-      on: "PartnerDetails";
+      name: 'webAddressUrl';
+      on: 'PartnerDetails';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "webAddressText";
-      on: "PartnerDetails";
+      name: 'webAddressText';
+      on: 'PartnerDetails';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "reasonForSupporting8by8";
-      on: "PartnerDetails";
+      name: 'reasonForSupporting8by8';
+      on: 'PartnerDetails';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "__typename";
-      on: "PartnerDetails";
+      name: '__typename';
+      on: 'PartnerDetails';
       alias: string;
       arguments: {};
       fields: never;
@@ -1277,15 +1277,15 @@ export type PartnerDetailsFields = (
 
 export type PartnerSnapshotFields = (
   | {
-      name: "id";
-      on: "PartnerSnapshot";
+      name: 'id';
+      on: 'PartnerSnapshot';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "translatedDetailsSnapshots";
-      on: "PartnerSnapshot";
+      name: 'translatedDetailsSnapshots';
+      on: 'PartnerSnapshot';
       alias: string;
       arguments: {
         languageCodes?: LanguageCode[];
@@ -1293,15 +1293,15 @@ export type PartnerSnapshotFields = (
       fields: TranslatedPartnerDetailsSnapshotFields;
     }
   | {
-      name: "lastUpdatedAt";
-      on: "PartnerSnapshot";
+      name: 'lastUpdatedAt';
+      on: 'PartnerSnapshot';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "__typename";
-      on: "PartnerSnapshot";
+      name: '__typename';
+      on: 'PartnerSnapshot';
       alias: string;
       arguments: {};
       fields: never;
@@ -1310,29 +1310,29 @@ export type PartnerSnapshotFields = (
 
 export type QRCodeVoucherDetailsFields = (
   | {
-      name: "redemptionMethod";
-      on: "QRCodeVoucherDetails";
+      name: 'redemptionMethod';
+      on: 'QRCodeVoucherDetails';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "instructions";
-      on: "QRCodeVoucherDetails";
+      name: 'instructions';
+      on: 'QRCodeVoucherDetails';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "redemptionQRCode";
-      on: "QRCodeVoucherDetails";
+      name: 'redemptionQRCode';
+      on: 'QRCodeVoucherDetails';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "__typename";
-      on: "QRCodeVoucherDetails";
+      name: '__typename';
+      on: 'QRCodeVoucherDetails';
       alias: string;
       arguments: {};
       fields: never;
@@ -1341,8 +1341,8 @@ export type QRCodeVoucherDetailsFields = (
 
 export type QueryFields = (
   | {
-      name: "partner";
-      on: "Query";
+      name: 'partner';
+      on: 'Query';
       alias: string;
       arguments: {
         id: string;
@@ -1350,8 +1350,8 @@ export type QueryFields = (
       fields: PartnerFields;
     }
   | {
-      name: "partners";
-      on: "Query";
+      name: 'partners';
+      on: 'Query';
       alias: string;
       arguments: {
         filter?: PartnerFilter;
@@ -1361,8 +1361,8 @@ export type QueryFields = (
       fields: PartnerFields;
     }
   | {
-      name: "partnersCount";
-      on: "Query";
+      name: 'partnersCount';
+      on: 'Query';
       alias: string;
       arguments: {
         filter?: PartnerFilter;
@@ -1370,8 +1370,8 @@ export type QueryFields = (
       fields: never;
     }
   | {
-      name: "location";
-      on: "Query";
+      name: 'location';
+      on: 'Query';
       alias: string;
       arguments: {
         id: string;
@@ -1379,8 +1379,8 @@ export type QueryFields = (
       fields: LocationFields;
     }
   | {
-      name: "locations";
-      on: "Query";
+      name: 'locations';
+      on: 'Query';
       alias: string;
       arguments: {
         filter?: LocationFilter;
@@ -1390,8 +1390,8 @@ export type QueryFields = (
       fields: LocationFields;
     }
   | {
-      name: "locationsCount";
-      on: "Query";
+      name: 'locationsCount';
+      on: 'Query';
       alias: string;
       arguments: {
         filter?: LocationFilter;
@@ -1399,8 +1399,8 @@ export type QueryFields = (
       fields: never;
     }
   | {
-      name: "reward";
-      on: "Query";
+      name: 'reward';
+      on: 'Query';
       alias: string;
       arguments: {
         id: string;
@@ -1408,8 +1408,8 @@ export type QueryFields = (
       fields: RewardFields;
     }
   | {
-      name: "rewards";
-      on: "Query";
+      name: 'rewards';
+      on: 'Query';
       alias: string;
       arguments: {
         filter?: RewardFilter;
@@ -1419,8 +1419,8 @@ export type QueryFields = (
       fields: RewardFields;
     }
   | {
-      name: "rewardsCount";
-      on: "Query";
+      name: 'rewardsCount';
+      on: 'Query';
       alias: string;
       arguments: {
         filter?: RewardFilter;
@@ -1428,8 +1428,8 @@ export type QueryFields = (
       fields: never;
     }
   | {
-      name: "categories";
-      on: "Query";
+      name: 'categories';
+      on: 'Query';
       alias: string;
       arguments: {
         languageCode: LanguageCode;
@@ -1437,8 +1437,8 @@ export type QueryFields = (
       fields: never;
     }
   | {
-      name: "__typename";
-      on: "Query";
+      name: '__typename';
+      on: 'Query';
       alias: string;
       arguments: {};
       fields: never;
@@ -1447,29 +1447,29 @@ export type QueryFields = (
 
 export type RewardFields = (
   | {
-      name: "id";
-      on: "Reward";
+      name: 'id';
+      on: 'Reward';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "voucherOwnership";
-      on: "Reward";
+      name: 'voucherOwnership';
+      on: 'Reward';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "redemptionForums";
-      on: "Reward";
+      name: 'redemptionForums';
+      on: 'Reward';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "translatedDetails";
-      on: "Reward";
+      name: 'translatedDetails';
+      on: 'Reward';
       alias: string;
       arguments: {
         languageCode: LanguageCode;
@@ -1477,29 +1477,29 @@ export type RewardFields = (
       fields: RewardDetailsFields;
     }
   | {
-      name: "hasUsageOrQuantityLimit";
-      on: "Reward";
+      name: 'hasUsageOrQuantityLimit';
+      on: 'Reward';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "earliestExpirationDate";
-      on: "Reward";
+      name: 'earliestExpirationDate';
+      on: 'Reward';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "partner";
-      on: "Reward";
+      name: 'partner';
+      on: 'Reward';
       alias: string;
       arguments: {};
       fields: PartnerFields;
     }
   | {
-      name: "__typename";
-      on: "Reward";
+      name: '__typename';
+      on: 'Reward';
       alias: string;
       arguments: {};
       fields: never;
@@ -1508,29 +1508,29 @@ export type RewardFields = (
 
 export type RewardDetailsFields = (
   | {
-      name: "categories";
-      on: "RewardDetails";
+      name: 'categories';
+      on: 'RewardDetails';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "shortDescription";
-      on: "RewardDetails";
+      name: 'shortDescription';
+      on: 'RewardDetails';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "longDescription";
-      on: "RewardDetails";
+      name: 'longDescription';
+      on: 'RewardDetails';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "__typename";
-      on: "RewardDetails";
+      name: '__typename';
+      on: 'RewardDetails';
       alias: string;
       arguments: {};
       fields: never;
@@ -1539,22 +1539,22 @@ export type RewardDetailsFields = (
 
 export type RewardSnapshotFields = (
   | {
-      name: "id";
-      on: "RewardSnapshot";
+      name: 'id';
+      on: 'RewardSnapshot';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "redemptionForums";
-      on: "RewardSnapshot";
+      name: 'redemptionForums';
+      on: 'RewardSnapshot';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "translatedDetailsSnapshots";
-      on: "RewardSnapshot";
+      name: 'translatedDetailsSnapshots';
+      on: 'RewardSnapshot';
       alias: string;
       arguments: {
         languageCodes?: LanguageCode[];
@@ -1562,22 +1562,22 @@ export type RewardSnapshotFields = (
       fields: TranslatedRewardDetailsSnapshotFields;
     }
   | {
-      name: "partnerSnapshot";
-      on: "RewardSnapshot";
+      name: 'partnerSnapshot';
+      on: 'RewardSnapshot';
       alias: string;
       arguments: {};
       fields: PartnerSnapshotFields;
     }
   | {
-      name: "lastUpdatedAt";
-      on: "RewardSnapshot";
+      name: 'lastUpdatedAt';
+      on: 'RewardSnapshot';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "__typename";
-      on: "RewardSnapshot";
+      name: '__typename';
+      on: 'RewardSnapshot';
       alias: string;
       arguments: {};
       fields: never;
@@ -1586,64 +1586,64 @@ export type RewardSnapshotFields = (
 
 export type TranslatedPartnerDetailsSnapshotFields = (
   | {
-      name: "languageCode";
-      on: "TranslatedPartnerDetailsSnapshot";
+      name: 'languageCode';
+      on: 'TranslatedPartnerDetailsSnapshot';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "name";
-      on: "TranslatedPartnerDetailsSnapshot";
+      name: 'name';
+      on: 'TranslatedPartnerDetailsSnapshot';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "logoUrl";
-      on: "TranslatedPartnerDetailsSnapshot";
+      name: 'logoUrl';
+      on: 'TranslatedPartnerDetailsSnapshot';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "description";
-      on: "TranslatedPartnerDetailsSnapshot";
+      name: 'description';
+      on: 'TranslatedPartnerDetailsSnapshot';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "webAddressUrl";
-      on: "TranslatedPartnerDetailsSnapshot";
+      name: 'webAddressUrl';
+      on: 'TranslatedPartnerDetailsSnapshot';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "webAddressText";
-      on: "TranslatedPartnerDetailsSnapshot";
+      name: 'webAddressText';
+      on: 'TranslatedPartnerDetailsSnapshot';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "reasonForSupporting8by8";
-      on: "TranslatedPartnerDetailsSnapshot";
+      name: 'reasonForSupporting8by8';
+      on: 'TranslatedPartnerDetailsSnapshot';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "lastUpdatedAt";
-      on: "TranslatedPartnerDetailsSnapshot";
+      name: 'lastUpdatedAt';
+      on: 'TranslatedPartnerDetailsSnapshot';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "__typename";
-      on: "TranslatedPartnerDetailsSnapshot";
+      name: '__typename';
+      on: 'TranslatedPartnerDetailsSnapshot';
       alias: string;
       arguments: {};
       fields: never;
@@ -1652,43 +1652,43 @@ export type TranslatedPartnerDetailsSnapshotFields = (
 
 export type TranslatedRewardDetailsSnapshotFields = (
   | {
-      name: "languageCode";
-      on: "TranslatedRewardDetailsSnapshot";
+      name: 'languageCode';
+      on: 'TranslatedRewardDetailsSnapshot';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "categories";
-      on: "TranslatedRewardDetailsSnapshot";
+      name: 'categories';
+      on: 'TranslatedRewardDetailsSnapshot';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "shortDescription";
-      on: "TranslatedRewardDetailsSnapshot";
+      name: 'shortDescription';
+      on: 'TranslatedRewardDetailsSnapshot';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "longDescription";
-      on: "TranslatedRewardDetailsSnapshot";
+      name: 'longDescription';
+      on: 'TranslatedRewardDetailsSnapshot';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "lastUpdatedAt";
-      on: "TranslatedRewardDetailsSnapshot";
+      name: 'lastUpdatedAt';
+      on: 'TranslatedRewardDetailsSnapshot';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "__typename";
-      on: "TranslatedRewardDetailsSnapshot";
+      name: '__typename';
+      on: 'TranslatedRewardDetailsSnapshot';
       alias: string;
       arguments: {};
       fields: never;
@@ -1697,22 +1697,22 @@ export type TranslatedRewardDetailsSnapshotFields = (
 
 export type TranslatedVoucherDetailsFields = (
   | {
-      name: "languageCode";
-      on: "TranslatedVoucherDetails";
+      name: 'languageCode';
+      on: 'TranslatedVoucherDetails';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "voucherDetails";
-      on: "TranslatedVoucherDetails";
+      name: 'voucherDetails';
+      on: 'TranslatedVoucherDetails';
       alias: string;
       arguments: {};
       fields: VoucherDetailsFields;
     }
   | {
-      name: "__typename";
-      on: "TranslatedVoucherDetails";
+      name: '__typename';
+      on: 'TranslatedVoucherDetails';
       alias: string;
       arguments: {};
       fields: never;
@@ -1721,8 +1721,8 @@ export type TranslatedVoucherDetailsFields = (
 
 export type VoucherFields = (
   | {
-      name: "translatedDetails";
-      on: "Voucher";
+      name: 'translatedDetails';
+      on: 'Voucher';
       alias: string;
       arguments: {
         languageCodes?: LanguageCode[];
@@ -1730,15 +1730,15 @@ export type VoucherFields = (
       fields: TranslatedVoucherDetailsFields;
     }
   | {
-      name: "expirationDate";
-      on: "Voucher";
+      name: 'expirationDate';
+      on: 'Voucher';
       alias: string;
       arguments: {};
       fields: never;
     }
   | {
-      name: "__typename";
-      on: "Voucher";
+      name: '__typename';
+      on: 'Voucher';
       alias: string;
       arguments: {};
       fields: never;
@@ -1749,22 +1749,22 @@ export type VoucherDetailsFields = Flatten<
   [
     (
       | {
-          name: "redemptionMethod";
-          on: "VoucherDetails";
+          name: 'redemptionMethod';
+          on: 'VoucherDetails';
           alias: string;
           arguments: {};
           fields: never;
         }
       | {
-          name: "instructions";
-          on: "VoucherDetails";
+          name: 'instructions';
+          on: 'VoucherDetails';
           alias: string;
           arguments: {};
           fields: never;
         }
       | {
-          name: "__typename";
-          on: "VoucherDetails";
+          name: '__typename';
+          on: 'VoucherDetails';
           alias: string;
           arguments: {};
           fields: never;
@@ -1779,22 +1779,22 @@ export type VoucherDetailsFields = Flatten<
 
 export type VoucherWithRewardSnapshotFields = (
   | {
-      name: "voucher";
-      on: "VoucherWithRewardSnapshot";
+      name: 'voucher';
+      on: 'VoucherWithRewardSnapshot';
       alias: string;
       arguments: {};
       fields: VoucherFields;
     }
   | {
-      name: "rewardSnapshot";
-      on: "VoucherWithRewardSnapshot";
+      name: 'rewardSnapshot';
+      on: 'VoucherWithRewardSnapshot';
       alias: string;
       arguments: {};
       fields: RewardSnapshotFields;
     }
   | {
-      name: "__typename";
-      on: "VoucherWithRewardSnapshot";
+      name: '__typename';
+      on: 'VoucherWithRewardSnapshot';
       alias: string;
       arguments: {};
       fields: never;
@@ -1802,7 +1802,7 @@ export type VoucherWithRewardSnapshotFields = (
 )[];
 
 export const gqlarr = {
-  getQueryField: <T extends QueryFields[number]["name"]>(
+  getQueryField: <T extends QueryFields[number]['name']>(
     info: GraphQLResolveInfo,
     fieldName: T,
   ):
@@ -1814,7 +1814,7 @@ export const gqlarr = {
       >
     | undefined => {
     const queryType = info.schema.getQueryType();
-    const node = info.fieldNodes.find((node) =>
+    const node = info.fieldNodes.find(node =>
       isNamedFieldNode(node, fieldName),
     );
     if (!queryType || !node) {
@@ -1827,7 +1827,7 @@ export const gqlarr = {
       }
     >;
   },
-  getMutationField: <T extends MutationFields[number]["name"]>(
+  getMutationField: <T extends MutationFields[number]['name']>(
     info: GraphQLResolveInfo,
     fieldName: T,
   ):
@@ -1839,7 +1839,7 @@ export const gqlarr = {
       >
     | undefined => {
     const mutationType = info.schema.getMutationType();
-    const node = info.fieldNodes.find((node) =>
+    const node = info.fieldNodes.find(node =>
       isNamedFieldNode(node, fieldName),
     );
     if (!mutationType || !node) {

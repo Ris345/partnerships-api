@@ -1,6 +1,12 @@
 import { Point } from '../point';
 
-import { sql, type Expression, type RawBuilder, type Generated } from 'kysely';
+import {
+  sql,
+  type Expression,
+  type RawBuilder,
+  type Generated,
+  ExpressionWrapper,
+} from 'kysely';
 
 export interface DB {
   'public.base_entity': {
@@ -34,14 +40,14 @@ export interface DB {
   };
   'public.code_based_voucher_value': {
     created_at: Generated<Date>;
-    id: Generated<string>;
+    id: Generated<bigint>;
     multiple_use_voucher_id: number;
     redemption_code: string;
-    single_use_voucher_id: string;
+    single_use_voucher_id: bigint;
     updated_at: Generated<Date>;
   };
   'public.code_based_voucher_value_details_translation': {
-    code_based_voucher_value_id: string;
+    code_based_voucher_value_id: bigint;
     created_at: Generated<Date>;
     instructions: string;
     language_code: string;
@@ -55,16 +61,16 @@ export interface DB {
   };
   'public.link_based_voucher_value': {
     created_at: Generated<Date>;
-    id: Generated<string>;
+    id: Generated<bigint>;
     multiple_use_voucher_id: number;
-    single_use_voucher_id: string;
+    single_use_voucher_id: bigint;
     updated_at: Generated<Date>;
   };
   'public.link_based_voucher_value_details_translation': {
     created_at: Generated<Date>;
     instructions: string;
     language_code: string;
-    link_based_voucher_value_id: string;
+    link_based_voucher_value_id: bigint;
     redemption_link_text: string;
     redemption_link_url: string;
     updated_at: Generated<Date>;
@@ -72,7 +78,7 @@ export interface DB {
   'public.location': {
     coordinates: Point;
     created_at: Generated<Date>;
-    id: Generated<string>;
+    id: Generated<bigint>;
     partner_id: number;
     updated_at: Generated<Date>;
   };
@@ -130,17 +136,17 @@ export interface DB {
   };
   'public.qr_code_based_voucher_value': {
     created_at: Generated<Date>;
-    id: Generated<string>;
+    id: Generated<bigint>;
     multiple_use_voucher_id: number;
     redemption_qr_code: string;
-    single_use_voucher_id: string;
+    single_use_voucher_id: bigint;
     updated_at: Generated<Date>;
   };
   'public.qr_code_based_voucher_value_details_translation': {
     created_at: Generated<Date>;
     instructions: string;
     language_code: string;
-    qr_code_based_voucher_value_id: string;
+    qr_code_based_voucher_value_id: bigint;
     updated_at: Generated<Date>;
   };
   'public.reward': {
@@ -171,12 +177,14 @@ export interface DB {
   };
   'public.single_use_voucher': {
     created_at: Generated<Date>;
-    id: Generated<string>;
+    id: Generated<bigint>;
     redeemable_until: Date;
     reward_id: string;
     updated_at: Generated<Date>;
   };
 }
+
+// type Expression<T> = Expression<T> | ExpressionWrapper<any, any, T>;
 
 type PgFnNames =
   | 'pg_catalog.jsonb_build_object'

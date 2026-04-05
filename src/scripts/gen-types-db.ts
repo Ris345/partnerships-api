@@ -33,6 +33,7 @@ const config: IntrospeqlKyselyConfig = {
   types: {
     'pg_catalog.any': 'any',
     'public.geography': 'Point',
+    'pg_catalog.int8': 'bigint',
   },
 };
 

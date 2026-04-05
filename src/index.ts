@@ -7,13 +7,13 @@ import http from 'http';
 import cors from 'cors';
 import { parse as parseContentType } from 'content-type';
 import { typeDefs, resolvers } from './graphql';
-import { setGeographyTypeParser } from './util/set-geography-type-parser';
+import { setCustomTypeParsers } from './util/set-type-parsers';
 
 interface MyContext {
   token?: String;
 }
 
-await setGeographyTypeParser();
+await setCustomTypeParsers();
 
 const app = express();
 const httpServer = http.createServer(app);
