@@ -1876,7 +1876,7 @@ export type MutationRetrieveVoucherResolver<TContext = any> = (
   info: GraphQLResolveInfo,
 ) => (object | null) | Promise<object | null>;
 
-export interface Resolvers {
+export type Resolvers = {
   Query: {
     partner: QueryPartnerResolver;
     partners: QueryPartnersResolver;
@@ -1892,7 +1892,7 @@ export interface Resolvers {
   Mutation: {
     retrieveVoucher: MutationRetrieveVoucherResolver;
   };
-}
+};
 
 export const gqlarr = {
   getQueryField: <T extends QueryFields[number]["name"]>(

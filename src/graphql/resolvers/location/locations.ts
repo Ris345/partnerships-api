@@ -1,6 +1,6 @@
 import { gqlarr, QueryLocationsResolver } from '../../../model/graphql';
 import { LocationRepository } from './location-repository';
-import { clampedOrDefault } from '../../../util/clamped-or-default';
+import { clampedOrDefault } from '../../../util';
 import { AppContext } from '../../../model/graphql';
 
 export const locations: QueryLocationsResolver<AppContext> = (
