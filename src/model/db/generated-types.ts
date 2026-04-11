@@ -50,7 +50,10 @@ export interface DB {
   "public.language": {
     created_at: Generated<Date>;
     language_code: string;
-    language_name: string;
+    /** The name of the language in English. */
+    language_name_en: string;
+    /** The native name of the language. */
+    language_name_native: string;
     updated_at: Generated<Date>;
   };
   "public.link_based_voucher_value": {
@@ -184,6 +187,7 @@ type PgFnNames =
   | "public.convert_distance"
   | "public.get_latitude"
   | "public.get_longitude"
+  | "public.get_translated_reward_categories"
   | "public.make_geographic_point"
   | "public.st_dwithin";
 
@@ -205,18 +209,20 @@ type PgFnParams<T extends PgFnNames> = T extends "pg_catalog.jsonb_build_object"
         ? [Expression<Point>]
         : T extends "public.get_longitude"
           ? [Expression<Point>]
-          : T extends "public.make_geographic_point"
-            ? [Expression<number>, Expression<number>]
-            : T extends "public.st_dwithin"
-              ?
-                  | [Expression<Point>, Expression<Point>, Expression<number>]
-                  | [
-                      Expression<Point>,
-                      Expression<Point>,
-                      Expression<number>,
-                      Expression<boolean>,
-                    ]
-              : never;
+          : T extends "public.get_translated_reward_categories"
+            ? [Expression<string>, Expression<string>]
+            : T extends "public.make_geographic_point"
+              ? [Expression<number>, Expression<number>]
+              : T extends "public.st_dwithin"
+                ?
+                    | [Expression<Point>, Expression<Point>, Expression<number>]
+                    | [
+                        Expression<Point>,
+                        Expression<Point>,
+                        Expression<number>,
+                        Expression<boolean>,
+                      ]
+                : never;
 
 type PgFnReturnTypes<
   T extends PgFnNames,
@@ -249,26 +255,30 @@ type PgFnReturnTypes<
           ? V extends [Expression<Point>]
             ? number
             : never
-          : T extends "public.make_geographic_point"
-            ? V extends [Expression<number>, Expression<number>]
-              ? Point
+          : T extends "public.get_translated_reward_categories"
+            ? V extends [Expression<string>, Expression<string>]
+              ? string[]
               : never
-            : T extends "public.st_dwithin"
-              ? V extends [
-                  Expression<Point>,
-                  Expression<Point>,
-                  Expression<number>,
-                ]
-                ? boolean
-                : V extends [
-                      Expression<Point>,
-                      Expression<Point>,
-                      Expression<number>,
-                      Expression<boolean>,
-                    ]
+            : T extends "public.make_geographic_point"
+              ? V extends [Expression<number>, Expression<number>]
+                ? Point
+                : never
+              : T extends "public.st_dwithin"
+                ? V extends [
+                    Expression<Point>,
+                    Expression<Point>,
+                    Expression<number>,
+                  ]
                   ? boolean
-                  : never
-              : never;
+                  : V extends [
+                        Expression<Point>,
+                        Expression<Point>,
+                        Expression<number>,
+                        Expression<boolean>,
+                      ]
+                    ? boolean
+                    : never
+                : never;
 
 export function pgFn<T extends PgFnNames, V extends PgFnParams<T>>(
   fn: T,

@@ -153,8 +153,9 @@ BEGIN
     'ON_DEMAND'
   ) RETURNING id INTO test_reward_id;
 
-  INSERT INTO language (language_code, language_name) VALUES (
+  INSERT INTO language (language_code, language_name_en, language_name_native) VALUES (
     test_language_code,
+    'English',
     'English'
   );
 

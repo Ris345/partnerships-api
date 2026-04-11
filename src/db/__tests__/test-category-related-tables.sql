@@ -7,9 +7,10 @@ DECLARE
   new_updated_at TIMESTAMPTZ;
 BEGIN 
 INSERT INTO category DEFAULT VALUES RETURNING id INTO test_category_id;
-INSERT INTO language (language_code, language_name) VALUES (
+INSERT INTO language (language_code, language_name_en, language_name_native) VALUES (
   test_language_code,
-  'Spanish'
+  'Spanish',
+  'Espagnol'
 );
 
 INSERT INTO category_translation (category_id, language_code, category_name) 

@@ -15,6 +15,7 @@ import {
 } from 'kysely';
 import { jsonBuildObject } from 'kysely/helpers/postgres';
 import { db, pgFn } from '../../../db';
+import { PartnerRepository } from '../partner';
 
 export class LocationRepository {
   static count() {
@@ -24,7 +25,7 @@ export class LocationRepository {
   }
 
   static select(fields: LocationFields) {
-    return db.selectFrom('public.location').select(({ eb }) => {
+    return db.selectFrom('public.location').select(eb => {
       return fields.map(field => {
         switch (field.name) {
           case '__typename':
@@ -64,7 +65,9 @@ export class LocationRepository {
               eb.val(field.arguments.units),
             ]).as(field.alias);
           case 'partner':
-            return eb.val(null).as(field.alias);
+            return PartnerRepository.select(field.fields)
+              .where('id', '=', eb.ref('partner_id'))
+              .as(field.alias);
         }
       });
     });
@@ -121,7 +124,7 @@ export class LocationRepository {
     }
 
     if (filter?.partner) {
-      // use the partner builder to create a select exists? or something...will need to figure this out
+      // yes, each repository should have an exists method on it
       return eb.val(true);
     }
 

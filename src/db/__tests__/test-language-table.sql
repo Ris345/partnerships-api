@@ -4,12 +4,11 @@ DECLARE
   original_updated_at TIMESTAMPTZ;
   new_updated_at TIMESTAMPTZ;
 BEGIN 
-INSERT INTO language (language_code, language_name) VALUES (
-  'EN',
-  'Anglais'
+INSERT INTO language (language_code, language_name_en, language_name_native) VALUES (
+  'EN', 'English', ''
 ) RETURNING updated_at INTO original_updated_at;
 
-UPDATE language SET language_name = 'English'
+UPDATE language SET language_name_native = 'English'
 WHERE language_code = 'EN' 
 RETURNING updated_at INTO new_updated_at;
 
@@ -28,9 +27,10 @@ BEGIN
 RETURN QUERY (
   SELECT throws_ok(
     $insert_statement$
-      INSERT INTO language (language_code, language_name) VALUES (
+      INSERT INTO language (language_code, language_name_en, language_name_native) VALUES (
         'fr',
-        'French'
+        'French',
+        'Français'
       );
     $insert_statement$
   )

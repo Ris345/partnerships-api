@@ -12,7 +12,7 @@ type Reward {
   id: ID!
   voucherOwnership: VoucherOwnership!
   redemptionForums: [RedemptionForum!]!
-  translatedDetails(languageCode: LanguageCode!): RewardDetails!
+  translatedDetails(languageCode: String!): RewardDetails!
   hasUsageOrQuantityLimit: Boolean!
   earliestExpirationDate: DateTime
   partner: Partner!
@@ -47,7 +47,7 @@ input RedemptionForumArrayFilter @oneOf {
 }
 
 input TranslatedRewardDetailsFilter {
-  _languageCode: LanguageCode!
+  _languageCode: String!
   _filter: RewardDetailsFilter!
 }
 
@@ -72,7 +72,7 @@ input RewardOrderByCriteria @oneOf {
 }
 
 input TranslatedRewardDetailsOrderByCriteria {
-  _languageCode: LanguageCode!
+  _languageCode: String!
   _orderBy: RewardDetailsOrderByCriteria!
 }
 

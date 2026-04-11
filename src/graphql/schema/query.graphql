@@ -29,5 +29,7 @@ type Query {
 
   rewardCount(filter: RewardFilter): Int!
 
-  categories(languageCode: LanguageCode!): [String!]!
+  categories(languageCode: String!): [String!]!
+
+  languages: [Language!]!
 }

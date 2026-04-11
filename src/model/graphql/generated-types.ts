@@ -211,11 +211,6 @@ export type IntFilter =
       _gte?: never;
     };
 
-export enum LanguageCode {
-  EN = "EN",
-  ES = "ES",
-}
-
 export interface LocationCountFilter {
   _value: IntFilter;
   _filter?: LocationFilter;
@@ -944,22 +939,22 @@ export type StringFilter =
     };
 
 export interface TranslatedPartnerDetailsFilter {
-  _languageCode: LanguageCode;
+  _languageCode: string;
   _filter: PartnerDetailsFilter;
 }
 
 export interface TranslatedPartnerDetailsOrderByCriteria {
-  _languageCode: LanguageCode;
+  _languageCode: string;
   _orderBy: PartnerDetailsOrderByCriteria;
 }
 
 export interface TranslatedRewardDetailsFilter {
-  _languageCode: LanguageCode;
+  _languageCode: string;
   _filter: RewardDetailsFilter;
 }
 
 export interface TranslatedRewardDetailsOrderByCriteria {
-  _languageCode: LanguageCode;
+  _languageCode: string;
   _orderBy: RewardDetailsOrderByCriteria;
 }
 
@@ -1027,6 +1022,37 @@ export type CoordinatesFields = (
   | {
       name: "__typename";
       on: "Coordinates";
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+)[];
+
+export type LanguageFields = (
+  | {
+      name: "languageCode";
+      on: "Language";
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: "languageNameEn";
+      on: "Language";
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: "languageNameNative";
+      on: "Language";
+      alias: string;
+      arguments: {};
+      fields: never;
+    }
+  | {
+      name: "__typename";
+      on: "Language";
       alias: string;
       arguments: {};
       fields: never;
@@ -1168,7 +1194,7 @@ export type PartnerFields = (
       on: "Partner";
       alias: string;
       arguments: {
-        languageCode: LanguageCode;
+        languageCode: string;
       };
       fields: PartnerDetailsFields;
     }
@@ -1286,7 +1312,7 @@ export type PartnerSnapshotFields = (
       on: "PartnerSnapshot";
       alias: string;
       arguments: {
-        languageCodes?: LanguageCode[];
+        languageCodes?: string[];
       };
       fields: TranslatedPartnerDetailsSnapshotFields;
     }
@@ -1430,9 +1456,16 @@ export type QueryFields = (
       on: "Query";
       alias: string;
       arguments: {
-        languageCode: LanguageCode;
+        languageCode: string;
       };
       fields: never;
+    }
+  | {
+      name: "languages";
+      on: "Query";
+      alias: string;
+      arguments: {};
+      fields: LanguageFields;
     }
   | {
       name: "__typename";
@@ -1470,7 +1503,7 @@ export type RewardFields = (
       on: "Reward";
       alias: string;
       arguments: {
-        languageCode: LanguageCode;
+        languageCode: string;
       };
       fields: RewardDetailsFields;
     }
@@ -1555,7 +1588,7 @@ export type RewardSnapshotFields = (
       on: "RewardSnapshot";
       alias: string;
       arguments: {
-        languageCodes?: LanguageCode[];
+        languageCodes?: string[];
       };
       fields: TranslatedRewardDetailsSnapshotFields;
     }
@@ -1723,7 +1756,7 @@ export type VoucherFields = (
       on: "Voucher";
       alias: string;
       arguments: {
-        languageCodes?: LanguageCode[];
+        languageCodes?: string[];
       };
       fields: TranslatedVoucherDetailsFields;
     }
@@ -1869,6 +1902,13 @@ export type QueryCategoriesResolver<TContext = any> = (
   info: GraphQLResolveInfo,
 ) => string[] | Promise<string[]>;
 
+export type QueryLanguagesResolver<TContext = any> = (
+  _parent: unknown,
+  _args: Record<string, unknown>,
+  context: TContext,
+  info: GraphQLResolveInfo,
+) => object[] | Promise<object[]>;
+
 export type MutationRetrieveVoucherResolver<TContext = any> = (
   _parent: unknown,
   _args: Record<string, unknown>,
@@ -1888,6 +1928,7 @@ export type Resolvers = {
     rewards: QueryRewardsResolver;
     rewardCount: QueryRewardCountResolver;
     categories: QueryCategoriesResolver;
+    languages: QueryLanguagesResolver;
   };
   Mutation: {
     retrieveVoucher: MutationRetrieveVoucherResolver;

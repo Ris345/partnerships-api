@@ -56,7 +56,30 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+CREATE FUNCTION get_translated_reward_categories(reward_id UUID, language_code CHAR(2))
+RETURNS TEXT[] AS $$
+  DECLARE category_translations TEXT[];
+  BEGIN
+    SELECT ARRAY_AGG(c.category_name) 
+    INTO category_translations
+    FROM category_translation c
+    INNER JOIN reward_category r ON c.id = r.category_id
+    WHERE r.reward_id = get_translated_reward_categories.reward_id
+      AND c.language_code = get_translated_reward_categories.language_code;
+
+    RETURN category_translations;
+  END;
+$$ LANGUAGE plpgsql;
+
+COMMENT ON FUNCTION get_translated_reward_categories IS 
+$$
+@introspeql-include
+@introspeql-disable-nullable-return-types
+$$;
+
+
 -- migrate:down
+DROP FUNCTION get_translated_reward_categories;
 DROP FUNCTION reward_voucher_type_matches;
 DROP TABLE reward_details_translation;
 DROP TABLE reward_category;

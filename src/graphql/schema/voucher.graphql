@@ -11,14 +11,12 @@ type VoucherWithRewardSnapshot {
 }
 
 type Voucher {
-  translatedDetails(
-    languageCodes: [LanguageCode!]
-  ): [TranslatedVoucherDetails!]!
+  translatedDetails(languageCodes: [String!]): [TranslatedVoucherDetails!]!
   expirationDate: DateTime
 }
 
 type TranslatedVoucherDetails {
-  languageCode: LanguageCode!
+  languageCode: String!
   voucherDetails: [VoucherDetails!]!
 }
 
@@ -55,14 +53,14 @@ type RewardSnapshot {
   id: ID!
   redemptionForums: [RedemptionForum!]!
   translatedDetailsSnapshots(
-    languageCodes: [LanguageCode!]
+    languageCodes: [String!]
   ): [TranslatedRewardDetailsSnapshot!]!
   partnerSnapshot: PartnerSnapshot!
   lastUpdatedAt: DateTime!
 }
 
 type TranslatedRewardDetailsSnapshot {
-  languageCode: LanguageCode!
+  languageCode: String!
   categories: [String!]!
   shortDescription: String!
   longDescription: String
@@ -72,13 +70,13 @@ type TranslatedRewardDetailsSnapshot {
 type PartnerSnapshot {
   id: ID!
   translatedDetailsSnapshots(
-    languageCodes: [LanguageCode!]
+    languageCodes: [String!]
   ): [TranslatedPartnerDetailsSnapshot!]!
   lastUpdatedAt: DateTime!
 }
 
 type TranslatedPartnerDetailsSnapshot {
-  languageCode: LanguageCode!
+  languageCode: String!
   name: String!
   logoUrl: String!
   description: String!

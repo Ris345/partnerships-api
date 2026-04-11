@@ -17,7 +17,9 @@ export class PartnerRepository {
     throw new Error('Not implemented');
   }
 
-  static select(fields: PartnerFields) {
+  static select(
+    fields: PartnerFields,
+  ): SelectQueryBuilder<DB, 'public.partner', any> {
     throw new Error('Not implemented');
   }
 

@@ -1,11 +1,6 @@
 scalar DateTime
   @specifiedBy(url: "https://scalars.graphql.org/andimarek/date-time.html")
 
-enum LanguageCode {
-  EN
-  ES
-}
-
 enum SortOrder {
   ASC
   DESC
