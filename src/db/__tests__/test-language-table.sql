@@ -4,12 +4,14 @@ DECLARE
   original_updated_at TIMESTAMPTZ;
   new_updated_at TIMESTAMPTZ;
 BEGIN 
-INSERT INTO language (language_code, language_name_en, language_name_native) VALUES (
-  'EN', 'English', ''
+DECLARE 
+  test_language_tag TEXT := 'en';
+INSERT INTO language (language_tag, language_name_en, language_name_native) VALUES (
+  test_language_tag, 'English', ''
 ) RETURNING updated_at INTO original_updated_at;
 
 UPDATE language SET language_name_native = 'English'
-WHERE language_code = 'EN' 
+WHERE language_tag = test_language_tag
 RETURNING updated_at INTO new_updated_at;
 
 RETURN QUERY (
@@ -20,20 +22,3 @@ RETURN QUERY (
 );
 END;
 $$ LANGUAGE plpgsql;
-
-CREATE FUNCTION public.test_language_code_must_be_uppercase() 
-RETURNS SETOF TEXT AS $test_function_body$
-BEGIN
-RETURN QUERY (
-  SELECT throws_ok(
-    $insert_statement$
-      INSERT INTO language (language_code, language_name_en, language_name_native) VALUES (
-        'fr',
-        'French',
-        'Français'
-      );
-    $insert_statement$
-  )
-);
-END;
-$test_function_body$ LANGUAGE plpgsql;

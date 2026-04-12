@@ -1,6 +1,6 @@
 type Partner {
   id: ID!
-  translatedDetails(languageCode: String!): PartnerDetails!
+  translatedDetails(languageTag: String!): PartnerDetails!
   locations(
     filter: LocationFilter
     orderBy: [LocationOrderByCriteria!]
@@ -35,7 +35,7 @@ input PartnerFilter @oneOf {
 }
 
 input TranslatedPartnerDetailsFilter {
-  _languageCode: String!
+  _languageTag: String!
   _filter: PartnerDetailsFilter!
 }
 
@@ -67,7 +67,7 @@ input PartnerOrderByCriteria @oneOf {
 }
 
 input TranslatedPartnerDetailsOrderByCriteria {
-  _languageCode: String!
+  _languageTag: String!
   _orderBy: PartnerDetailsOrderByCriteria!
 }
 

@@ -1,5 +1,5 @@
 type Language {
-  languageCode: String!
+  languageTag: String!
   languageNameEn: String!
   languageNameNative: String!
 }

@@ -137,7 +137,7 @@ RETURNS SETOF TEXT AS $$
 DECLARE
   test_partner_id INT;
   test_reward_id UUID;
-  test_language_code CHAR(2) := 'EN';
+  test_language_tag TEXT := 'en';
   original_updated_at TIMESTAMPTZ;
   new_updated_at TIMESTAMPTZ;
 BEGIN
@@ -153,25 +153,25 @@ BEGIN
     'ON_DEMAND'
   ) RETURNING id INTO test_reward_id;
 
-  INSERT INTO language (language_code, language_name_en, language_name_native) VALUES (
-    test_language_code,
+  INSERT INTO language (language_tag, language_name_en, language_name_native) VALUES (
+    test_language_tag,
     'English',
     'English'
   );
 
   INSERT INTO reward_details_translation (
     reward_id,
-    language_code,
+    language_tag,
     short_description
   ) VALUES (
     test_reward_id,
-    test_language_code,
+    test_language_tag,
     anon.lorem_ipsum(words => 5)
   ) RETURNING updated_at INTO original_updated_at;
 
   UPDATE reward_details_translation
   SET short_description = anon.lorem_ipsum(words => 5)
-  WHERE reward_id = test_reward_id AND language_code = test_language_code
+  WHERE reward_id = test_reward_id AND language_tag = test_language_tag
   RETURNING updated_at INTO new_updated_at;
 
   RETURN QUERY (

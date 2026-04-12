@@ -11,9 +11,9 @@ FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 CREATE TABLE category_translation (
   category_id INT NOT NULL REFERENCES category(id) ON DELETE CASCADE,
-  language_code CHAR(2) NOT NULL REFERENCES language(language_code) ON DELETE RESTRICT,
+  language_tag TEXT NOT NULL REFERENCES language(language_tag) ON DELETE RESTRICT,
   category_name TEXT NOT NULL,
-  PRIMARY KEY(category_id, language_code)
+  PRIMARY KEY(category_id, language_tag)
 ) INHERITS (base_entity);
 
 COMMENT ON TABLE category_translation IS '@introspeql-include';

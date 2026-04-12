@@ -32,10 +32,10 @@ FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 CREATE TABLE reward_details_translation (
   reward_id UUID NOT NULL REFERENCES reward(id) ON DELETE CASCADE,
-  language_code CHAR(2) NOT NULL REFERENCES language(language_code) ON DELETE RESTRICT,
+  language_tag TEXT NOT NULL REFERENCES language(language_tag) ON DELETE RESTRICT,
   short_description TEXT NOT NULL,
   long_description TEXT,
-  PRIMARY KEY(reward_id, language_code)
+  PRIMARY KEY(reward_id, language_tag)
 ) INHERITS (base_entity);
 
 COMMENT ON TABLE reward_details_translation IS '@introspeql-include';
@@ -56,30 +56,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE FUNCTION get_translated_reward_categories(reward_id UUID, language_code CHAR(2))
-RETURNS TEXT[] AS $$
-  DECLARE category_translations TEXT[];
-  BEGIN
-    SELECT ARRAY_AGG(c.category_name) 
-    INTO category_translations
-    FROM category_translation c
-    INNER JOIN reward_category r ON c.id = r.category_id
-    WHERE r.reward_id = get_translated_reward_categories.reward_id
-      AND c.language_code = get_translated_reward_categories.language_code;
-
-    RETURN category_translations;
-  END;
-$$ LANGUAGE plpgsql;
-
-COMMENT ON FUNCTION get_translated_reward_categories IS 
-$$
-@introspeql-include
-@introspeql-disable-nullable-return-types
-$$;
-
-
 -- migrate:down
-DROP FUNCTION get_translated_reward_categories;
 DROP FUNCTION reward_voucher_type_matches;
 DROP TABLE reward_details_translation;
 DROP TABLE reward_category;

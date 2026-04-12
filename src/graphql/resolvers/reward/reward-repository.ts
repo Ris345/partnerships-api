@@ -1,7 +1,8 @@
-import type {
-  RewardFields,
-  RewardFilter,
-  RewardOrderByCriteria,
+import {
+  VoucherOwnership,
+  type RewardFields,
+  type RewardFilter,
+  type RewardOrderByCriteria,
 } from '../../../model/graphql';
 import type { DB } from '../../../model/db';
 
@@ -9,6 +10,7 @@ import {
   Expression,
   ExpressionBuilder,
   SelectQueryBuilder,
+  sql,
   SqlBool,
 } from 'kysely';
 
@@ -30,39 +32,63 @@ export class RewardRepository {
             return eb.val('Reward').as(field.alias);
           case 'id':
             return eb.ref('id').as(field.alias);
+          case 'redemptionForums':
+            return eb.ref('redemption_forums').as(field.alias);
+          case 'voucherOwnership':
+            return eb
+              .case()
+              .when('voucher_type', '=', 'MULTIPLE_USE')
+              .then(VoucherOwnership.MULTI_USER)
+              .else(VoucherOwnership.SINGLE_USER)
+              .end()
+              .as(field.alias);
+          case 'hasUsageOrQuantityLimit':
+            return null;
+          case 'earliestExpirationDate'
           case 'translatedDetails':
+            const { languageCode } = field.arguments;
+
             return jsonObjectFrom(
               eb
                 .selectFrom('public.reward_details_translation')
-                // just write the sql first
                 .select(eb => {
                   return field.fields.map(field => {
                     switch (field.name) {
                       case '__typename':
                         return eb.val('RewardDetails').as(field.alias);
                       case 'categories':
-                        // This is tricky, need to think carefully
-                        return db.fn
-                          .agg<string[]>('array_agg', [''])
-                          .as('tag_list');
+                        return pgFn('public.get_translated_reward_categories', [
+                          eb.ref('public.reward.id'),
+                          eb.val(languageCode),
+                        ]).as(field.alias);
+                      case 'shortDescription':
+                        return eb
+                          .ref(
+                            'public.reward_details_translation.short_description',
+                          )
+                          .as(field.alias);
+                      case 'longDescription':
+                        return eb
+                          .ref(
+                            'public.reward_details_translation.long_description',
+                          )
+                          .as(field.alias);
                     }
                   });
                 })
-                .innerJoin(
-                  'public.language',
-                  'public.reward_details_translation.language_code',
-                  'public.language.language_code',
-                )
-                .innerJoin(
-                  'public.reward_category',
-                  'public.reward.id',
-                  'public.reward_category.reward_id',
-                )
-                .innerJoin('public.category')
-                .where(
-                  'public.language.language_name',
-                  '=',
-                  field.arguments.languageCode,
+                .where(eb =>
+                  eb.and([
+                    eb(
+                      'public.reward_details_translation.reward_id',
+                      '=',
+                      eb.ref('public.reward.id'),
+                    ),
+                    eb(
+                      'public.reward_details_translation.language_code',
+                      '=',
+                      languageCode,
+                    ),
+                  ]),
                 ),
             );
         }

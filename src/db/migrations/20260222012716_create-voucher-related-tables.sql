@@ -54,9 +54,9 @@ FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 CREATE TABLE code_based_voucher_value_details_translation (
   code_based_voucher_value_id BIGINT REFERENCES code_based_voucher_value(id) ON DELETE CASCADE,
-  language_code CHAR(2) REFERENCES language(language_code) ON DELETE RESTRICT,
+  language_tag TEXT REFERENCES language(language_tag) ON DELETE RESTRICT,
   instructions TEXT NOT NULL,
-  PRIMARY KEY (code_based_voucher_value_id, language_code)
+  PRIMARY KEY (code_based_voucher_value_id, language_tag)
 ) INHERITS (base_entity);
 
 COMMENT ON TABLE code_based_voucher_value_details_translation IS '@introspeql-include';
@@ -84,9 +84,9 @@ FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 CREATE TABLE qr_code_based_voucher_value_details_translation (
   qr_code_based_voucher_value_id BIGINT REFERENCES qr_code_based_voucher_value(id) ON DELETE CASCADE,
-  language_code CHAR(2) REFERENCES language(language_code) ON DELETE RESTRICT,
+  language_tag TEXT REFERENCES language(language_tag) ON DELETE RESTRICT,
   instructions TEXT NOT NULL,
-  PRIMARY KEY (qr_code_based_voucher_value_id, language_code)
+  PRIMARY KEY (qr_code_based_voucher_value_id, language_tag)
 ) INHERITS (base_entity);
 
 COMMENT ON TABLE qr_code_based_voucher_value_details_translation IS '@introspeql-include';
@@ -113,11 +113,11 @@ FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 CREATE TABLE link_based_voucher_value_details_translation (
   link_based_voucher_value_id BIGINT REFERENCES link_based_voucher_value(id) ON DELETE CASCADE,
-  language_code CHAR(2) REFERENCES language(language_code) ON DELETE RESTRICT,
+  language_tag TEXT REFERENCES language(language_tag) ON DELETE RESTRICT,
   instructions TEXT NOT NULL,
   redemption_link_url TEXT NOT NULL,
   redemption_link_text TEXT,
-  PRIMARY KEY (link_based_voucher_value_id, language_code)
+  PRIMARY KEY (link_based_voucher_value_id, language_tag)
 ) INHERITS (base_entity);
 
 COMMENT ON TABLE link_based_voucher_value_details_translation IS '@introspeql-include';
