@@ -7,7 +7,7 @@ CREATE TABLE reward (
   available_from_exact TIMESTAMPTZ,
   available_until_exact TIMESTAMPTZ,
   available_from_local TIMESTAMP,
-  available_until_local TIMESTAMP
+  available_until_local TIMESTAMP,
   CONSTRAINT redemption_forums_is_not_empty CHECK (CARDINALITY(redemption_forums) > 0),
   CONSTRAINT redemption_forums_contains_no_duplicates CHECK (NOT contains_duplicates (redemption_forums))
 ) INHERITS (base_entity);

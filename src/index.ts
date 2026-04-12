@@ -5,7 +5,7 @@ import express from 'express';
 import http from 'http';
 import cors from 'cors';
 import { parse as parseContentType } from 'content-type';
-import { typeDefs, resolvers } from './graphql';
+import { typeDefs } from './graphql';
 import { setCustomTypeParsers, parseTimeZoneHeader } from './util';
 import { AppContext } from './model/graphql';
 
@@ -15,7 +15,8 @@ const app = express();
 const httpServer = http.createServer(app);
 const server = new ApolloServer<AppContext>({
   typeDefs,
-  resolvers,
+  resolvers: {},
+  // resolvers,
   plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
 });
 

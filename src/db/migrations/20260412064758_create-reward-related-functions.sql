@@ -51,6 +51,12 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+COMMENT ON FUNCTION has_usage_or_quantity_limit IS 
+$$
+@introspeql-include
+@introspeql-disable-nullable-return-types
+$$;
+
 -- migrate:down
 DROP FUNCTION has_usage_or_quantity_limit;
 DROP FUNCTION get_translated_reward_categories;

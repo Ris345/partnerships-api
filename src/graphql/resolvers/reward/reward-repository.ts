@@ -23,7 +23,7 @@ export class RewardRepository {
       .selectFrom('public.reward')
       .select(eb => [eb.fn.countAll().as('reward_count')]);
   }
-
+  /*
   static select(fields: RewardFields) {
     return db.selectFrom('public.reward').select(eb => {
       return fields.map(field => {
@@ -95,6 +95,7 @@ export class RewardRepository {
       });
     });
   }
+    */
 
   static filter(
     eb: ExpressionBuilder<DB, 'public.reward'>,

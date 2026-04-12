@@ -38,6 +38,20 @@ on the following tables:
 - language
 $$;
 
+CREATE VIEW v_active_partner_location AS 
+SELECT l.* FROM location l
+INNER JOIN v_active_partner p ON l.partner_id = p.id;
+
+COMMENT ON VIEW v_active_partner_location IS 
+$$
+@introspeql-include
+
+A view that includes only locations that meet the following 
+conditions:
+
+- The partner_id column of the location corresponds to an active partner
+$$;
+
 CREATE MATERIALIZED VIEW v_valid_reward AS 
 SELECT r.* FROM reward r
 -- The reward's partner must be active
@@ -76,9 +90,10 @@ HAVING
 
 CREATE UNIQUE INDEX v_valid_reward_id_idx ON v_valid_reward (id);
 
-
 COMMENT ON MATERIALIZED VIEW v_valid_reward IS 
 $$
+@introspeql-include
+
 A materialized view that includes only rewards that meet the following 
 conditions:
 
@@ -105,7 +120,7 @@ CREATE VIEW v_available_single_use_voucher AS
 SELECT v.*
 FROM single_use_voucher v
 -- The voucher must be unexpired
-WHERE NOW() < v.redeemable_until
+WHERE (NOW() < v.redeemable_until OR v.redeemable_until IS NULL)
 -- The voucher must at have at least one value
 AND
 (
@@ -198,7 +213,8 @@ $$
 A view that includes only single-use vouchers that meet the following 
 conditions:
 
-- The voucher must be unexpired
+- The voucher must be unexpired (a NULL redeemable_until date indicates that the 
+  voucher never expires)
 - The voucher must have at minimum one code-based-, qr-code-based-, or 
   link-based-value 
 - All values for the voucher must have translated details in all supported languages
@@ -209,7 +225,7 @@ SELECT v.*
 FROM multiple_use_voucher v
 WHERE 
 -- The voucher must be unexpired
-NOW() < v.redeemable_until
+(NOW() < v.redeemable_until OR v.redeemable_until IS NULL)
 -- The voucher must at have at least one value
 AND
 (
@@ -302,7 +318,8 @@ $$
 A view that includes only multiple-use vouchers that meet the following 
 conditions:
 
-- The voucher must be unexpired
+- The voucher must be unexpired (a NULL redeemable_until date indicates that the 
+  voucher never expires)
 - The voucher must have at minimum one code-based-, qr-code-based-, or 
   link-based-value 
 - All values for the voucher must have translated details in all supported languages
@@ -313,8 +330,8 @@ SELECT s.*
 FROM manual_voucher_stub s 
 INNER JOIN manual_voucher_stub_details_translation sd 
 ON s.id = sd.manual_voucher_stub_id
-WHERE s.vouchers_remaining > 0
-AND NOW() < s.redeemable_until_exact
+WHERE (s.vouchers_remaining > 0 OR s.vouchers_remaining IS NULL)
+AND (NOW() < s.redeemable_until_exact OR s.redeemable_until_exact IS NULL)
 GROUP BY s.id
 HAVING ARRAY_AGG(
   sd.language_tag ORDER BY language_tag
@@ -332,15 +349,16 @@ A view that includes only manual voucher stubs that meet the following
 conditions:
 
 - The voucher stub must have at least one voucher remaining
-- The voucher stub must be unexpired
+- The voucher stub must be unexpired (A NULL redeemable_until_exact date 
+  indicates that the stub may never expire)
 - The voucher stub must have translated details in all supported languages
 $$;
 
 CREATE VIEW v_available_on_demand_voucher_stub AS 
 SELECT s.*
 FROM on_demand_voucher_stub s
-WHERE s.vouchers_remaining > 0
-AND NOW() < s.redeemable_until_exact;
+WHERE (s.vouchers_remaining > 0 OR s.vouchers_remaining IS NULL)
+AND (NOW() < s.redeemable_until_exact OR s.redeemable_until_exact IS NULL);
 
 COMMENT ON VIEW v_available_on_demand_voucher_stub IS 
 $$
@@ -350,7 +368,8 @@ A view that includes only on-demand voucher stubs that meet the following
 conditions:
 
 - The voucher stub must have at least one voucher remaining
-- The voucher stub must be unexpired
+- The voucher stub must be unexpired (a NULL redeemable_until_exact date 
+  indicates that the stub may never expire)
 $$;
 
 CREATE VIEW v_available_reward AS 
@@ -395,7 +414,6 @@ A view that includes only rewards that meet the following conditions:
 - The reward has an available voucher or voucher stub
 $$;
 
-
 -- migrate:down
 DROP VIEW v_available_reward;
 DROP VIEW v_available_on_demand_voucher_stub;
@@ -403,4 +421,5 @@ DROP VIEW v_available_manual_voucher_stub;
 DROP VIEW v_available_multiple_use_voucher;
 DROP VIEW v_available_single_use_voucher;
 DROP MATERIALIZED VIEW v_valid_reward;
+DROP VIEW v_active_partner_location;
 DROP MATERIALIZED VIEW v_active_partner;

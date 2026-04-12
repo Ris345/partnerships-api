@@ -1,6 +1,6 @@
 -- migrate:up
 CREATE TABLE category (
-  id SERIAL PRIMARY KEY
+  id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY
 ) INHERITS (base_entity);
 
 COMMENT ON TABLE category IS '@introspeql-include';

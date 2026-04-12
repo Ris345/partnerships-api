@@ -1,11 +1,10 @@
 CREATE FUNCTION public.test_language_update_trigger() 
 RETURNS SETOF TEXT AS $$
 DECLARE 
+  test_language_tag TEXT := 'en';
   original_updated_at TIMESTAMPTZ;
   new_updated_at TIMESTAMPTZ;
-BEGIN 
-DECLARE 
-  test_language_tag TEXT := 'en';
+BEGIN
 INSERT INTO language (language_tag, language_name_en, language_name_native) VALUES (
   test_language_tag, 'English', ''
 ) RETURNING updated_at INTO original_updated_at;

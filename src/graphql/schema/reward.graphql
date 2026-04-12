@@ -26,7 +26,7 @@ type RewardDetails {
 
 input RewardFilter @oneOf {
   id: IDFilter
-  voucherType: VoucherOwnershipFilter
+  voucherOwnership: VoucherOwnershipFilter
   redemptionForums: RedemptionForumArrayFilter
   translatedDetails: TranslatedRewardDetailsFilter
   hasUsageOrQuantityLimit: BooleanFilter

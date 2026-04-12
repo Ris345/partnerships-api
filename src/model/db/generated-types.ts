@@ -1,6 +1,12 @@
 import { Point } from '../point';
 
-import { sql, type Expression, type RawBuilder, type Generated } from "kysely";
+import {
+  sql,
+  type Expression,
+  type RawBuilder,
+  type Generated,
+  type GeneratedAlways,
+} from "kysely";
 
 export interface DB {
   "public.base_entity": {
@@ -22,19 +28,19 @@ export interface DB {
   };
   "public.category": {
     created_at: Generated<Date>;
-    id: Generated<number>;
+    id: GeneratedAlways<number>;
     updated_at: Generated<Date>;
   };
   "public.category_translation": {
     category_id: number;
     category_name: string;
     created_at: Generated<Date>;
-    language_code: string;
+    language_tag: string;
     updated_at: Generated<Date>;
   };
   "public.code_based_voucher_value": {
     created_at: Generated<Date>;
-    id: Generated<bigint>;
+    id: GeneratedAlways<bigint>;
     multiple_use_voucher_id: number;
     redemption_code: string;
     single_use_voucher_id: bigint;
@@ -44,21 +50,21 @@ export interface DB {
     code_based_voucher_value_id: bigint;
     created_at: Generated<Date>;
     instructions: string;
-    language_code: string;
+    language_tag: string;
     updated_at: Generated<Date>;
   };
   "public.language": {
     created_at: Generated<Date>;
-    language_code: string;
     /** The name of the language in English. */
     language_name_en: string;
     /** The native name of the language. */
     language_name_native: string;
+    language_tag: string;
     updated_at: Generated<Date>;
   };
   "public.link_based_voucher_value": {
     created_at: Generated<Date>;
-    id: Generated<bigint>;
+    id: GeneratedAlways<bigint>;
     multiple_use_voucher_id: number;
     single_use_voucher_id: bigint;
     updated_at: Generated<Date>;
@@ -66,7 +72,7 @@ export interface DB {
   "public.link_based_voucher_value_details_translation": {
     created_at: Generated<Date>;
     instructions: string;
-    language_code: string;
+    language_tag: string;
     link_based_voucher_value_id: bigint;
     redemption_link_text: string;
     redemption_link_url: string;
@@ -75,13 +81,13 @@ export interface DB {
   "public.location": {
     coordinates: Point;
     created_at: Generated<Date>;
-    id: Generated<bigint>;
+    id: GeneratedAlways<bigint>;
     partner_id: number;
     updated_at: Generated<Date>;
   };
   "public.manual_voucher_stub": {
     created_at: Generated<Date>;
-    id: Generated<number>;
+    id: GeneratedAlways<number>;
     redeemable_for: string;
     redeemable_until_exact: Date;
     redeemable_until_local: Date;
@@ -92,21 +98,21 @@ export interface DB {
   "public.manual_voucher_stub_details_translation": {
     created_at: Generated<Date>;
     instructions: string;
-    language_code: string;
+    language_tag: string;
     manual_voucher_stub_id: number;
     updated_at: Generated<Date>;
   };
   "public.multiple_use_voucher": {
     created_at: Generated<Date>;
     has_usage_cap: boolean;
-    id: Generated<number>;
+    id: GeneratedAlways<number>;
     redeemable_until: Date;
     reward_id: string;
     updated_at: Generated<Date>;
   };
   "public.on_demand_voucher_stub": {
     created_at: Generated<Date>;
-    id: Generated<number>;
+    id: GeneratedAlways<number>;
     redeemable_for: string;
     redeemable_until_exact: Date;
     redeemable_until_local: Date;
@@ -116,13 +122,14 @@ export interface DB {
   };
   "public.partner": {
     created_at: Generated<Date>;
-    id: Generated<number>;
+    id: GeneratedAlways<number>;
+    is_active: Generated<boolean>;
     updated_at: Generated<Date>;
   };
   "public.partner_details_translation": {
     created_at: Generated<Date>;
     description: string;
-    language_code: string;
+    language_tag: string;
     logo_url: string;
     name: string;
     partner_id: number;
@@ -133,7 +140,7 @@ export interface DB {
   };
   "public.qr_code_based_voucher_value": {
     created_at: Generated<Date>;
-    id: Generated<bigint>;
+    id: GeneratedAlways<bigint>;
     multiple_use_voucher_id: number;
     redemption_qr_code: string;
     single_use_voucher_id: bigint;
@@ -142,7 +149,7 @@ export interface DB {
   "public.qr_code_based_voucher_value_details_translation": {
     created_at: Generated<Date>;
     instructions: string;
-    language_code: string;
+    language_tag: string;
     qr_code_based_voucher_value_id: bigint;
     updated_at: Generated<Date>;
   };
@@ -166,7 +173,7 @@ export interface DB {
   };
   "public.reward_details_translation": {
     created_at: Generated<Date>;
-    language_code: string;
+    language_tag: string;
     long_description: string;
     reward_id: string;
     short_description: string;
@@ -174,10 +181,167 @@ export interface DB {
   };
   "public.single_use_voucher": {
     created_at: Generated<Date>;
-    id: Generated<bigint>;
+    id: GeneratedAlways<bigint>;
     redeemable_until: Date;
     reward_id: string;
     updated_at: Generated<Date>;
+  };
+  /**
+   * A view that includes only locations that meet the following conditions:
+   *
+   * - The partner_id column of the location corresponds to an active partner
+   */
+  "public.v_active_partner_location": {
+    coordinates: Point;
+    created_at: Date;
+    id: bigint;
+    partner_id: number;
+    updated_at: Date;
+  };
+  /**
+   * A view that includes only manual voucher stubs that meet the following
+   * conditions:
+   *
+   * - The voucher stub must have at least one voucher remaining
+   * - The voucher stub must be unexpired (A NULL redeemable_until_exact date
+   *   indicates that the stub may never expire)
+   * - The voucher stub must have translated details in all supported languages
+   */
+  "public.v_available_manual_voucher_stub": {
+    created_at: Date;
+    id: number;
+    redeemable_for: string;
+    redeemable_until_exact: Date;
+    redeemable_until_local: Date;
+    reward_id: string;
+    updated_at: Date;
+    vouchers_remaining: number;
+  };
+  /**
+   * A view that includes only multiple-use vouchers that meet the following
+   * conditions:
+   *
+   * - The voucher must be unexpired (a NULL redeemable_until date indicates
+   *   that the voucher never expires)
+   * - The voucher must have at minimum one code-based-, qr-code-based-, or
+   *   link-based-value
+   * - All values for the voucher must have translated details in all supported
+   *   languages
+   */
+  "public.v_available_multiple_use_voucher": {
+    created_at: Date;
+    has_usage_cap: boolean;
+    id: number;
+    redeemable_until: Date;
+    reward_id: string;
+    updated_at: Date;
+  };
+  /**
+   * A view that includes only on-demand voucher stubs that meet the following
+   * conditions:
+   *
+   * - The voucher stub must have at least one voucher remaining
+   * - The voucher stub must be unexpired (a NULL redeemable_until_exact date
+   *   indicates that the stub may never expire)
+   */
+  "public.v_available_on_demand_voucher_stub": {
+    created_at: Date;
+    id: number;
+    redeemable_for: string;
+    redeemable_until_exact: Date;
+    redeemable_until_local: Date;
+    reward_id: string;
+    updated_at: Date;
+    vouchers_remaining: number;
+  };
+  /**
+   * A view that includes only rewards that meet the following conditions:
+   *
+   * - The reward exists in v_valid_reward
+   * - The reward is currently available (according to available_from_exact and
+   *   available_until_exact)
+   * - The reward has an available voucher or voucher stub
+   */
+  "public.v_available_reward": {
+    available_from_exact: Date;
+    available_from_local: Date;
+    available_until_exact: Date;
+    available_until_local: Date;
+    created_at: Date;
+    id: string;
+    partner_id: number;
+    redemption_forums: string;
+    updated_at: Date;
+    voucher_type: "MULTIPLE_USE" | "SINGLE_USE" | "ON_DEMAND" | "MANUAL";
+  };
+  /**
+   * A view that includes only single-use vouchers that meet the following
+   * conditions:
+   *
+   * - The voucher must be unexpired (a NULL redeemable_until date indicates
+   *   that the voucher never expires)
+   * - The voucher must have at minimum one code-based-, qr-code-based-, or
+   *   link-based-value
+   * - All values for the voucher must have translated details in all supported
+   *   languages
+   */
+  "public.v_available_single_use_voucher": {
+    created_at: Date;
+    id: bigint;
+    redeemable_until: Date;
+    reward_id: string;
+    updated_at: Date;
+  };
+  /**
+   * A materialized view that includes only partners that meet the following
+   * conditions:
+   *
+   * - The partner is active
+   * - The partner has translated details in all supported languages
+   *
+   * Must be refreshed after insert, update, and delete operations are
+   * performed on the following tables:
+   *
+   * - Partner
+   * - Partner_details_translation
+   * - Language
+   */
+  "public.v_active_partner": {
+    id: number;
+  };
+  /**
+   * A materialized view that includes only rewards that meet the following
+   * conditions:
+   *
+   * - A record with id = reward.partner_id exists in v_active_partner
+   * - The reward has translated details in all supported languages
+   * - Each category for the reward has translations in all supported languages
+   *
+   * Must be refreshed after the following views are refreshed:
+   *
+   * - V_active_partner
+   *
+   * Must be refreshed after insert, update, and delete operations are
+   * performed on the following tables:
+   *
+   * - Reward
+   * - Reward_details_translation
+   * - Reward_category
+   * - Category
+   * - Category_translation
+   * - Language
+   */
+  "public.v_valid_reward": {
+    available_from_exact: Date;
+    available_from_local: Date;
+    available_until_exact: Date;
+    available_until_local: Date;
+    created_at: Date;
+    id: string;
+    partner_id: number;
+    redemption_forums: string;
+    updated_at: Date;
+    voucher_type: "MULTIPLE_USE" | "SINGLE_USE" | "ON_DEMAND" | "MANUAL";
   };
 }
 
@@ -188,6 +352,7 @@ type PgFnNames =
   | "public.get_latitude"
   | "public.get_longitude"
   | "public.get_translated_reward_categories"
+  | "public.has_usage_or_quantity_limit"
   | "public.make_geographic_point"
   | "public.st_dwithin";
 
@@ -211,18 +376,24 @@ type PgFnParams<T extends PgFnNames> = T extends "pg_catalog.jsonb_build_object"
           ? [Expression<Point>]
           : T extends "public.get_translated_reward_categories"
             ? [Expression<string>, Expression<string>]
-            : T extends "public.make_geographic_point"
-              ? [Expression<number>, Expression<number>]
-              : T extends "public.st_dwithin"
-                ?
-                    | [Expression<Point>, Expression<Point>, Expression<number>]
-                    | [
-                        Expression<Point>,
-                        Expression<Point>,
-                        Expression<number>,
-                        Expression<boolean>,
-                      ]
-                : never;
+            : T extends "public.has_usage_or_quantity_limit"
+              ? [Expression<string>]
+              : T extends "public.make_geographic_point"
+                ? [Expression<number>, Expression<number>]
+                : T extends "public.st_dwithin"
+                  ?
+                      | [
+                          Expression<Point>,
+                          Expression<Point>,
+                          Expression<number>,
+                        ]
+                      | [
+                          Expression<Point>,
+                          Expression<Point>,
+                          Expression<number>,
+                          Expression<boolean>,
+                        ]
+                  : never;
 
 type PgFnReturnTypes<
   T extends PgFnNames,
@@ -259,26 +430,30 @@ type PgFnReturnTypes<
             ? V extends [Expression<string>, Expression<string>]
               ? string[]
               : never
-            : T extends "public.make_geographic_point"
-              ? V extends [Expression<number>, Expression<number>]
-                ? Point
+            : T extends "public.has_usage_or_quantity_limit"
+              ? V extends [Expression<string>]
+                ? boolean
                 : never
-              : T extends "public.st_dwithin"
-                ? V extends [
-                    Expression<Point>,
-                    Expression<Point>,
-                    Expression<number>,
-                  ]
-                  ? boolean
-                  : V extends [
-                        Expression<Point>,
-                        Expression<Point>,
-                        Expression<number>,
-                        Expression<boolean>,
-                      ]
+              : T extends "public.make_geographic_point"
+                ? V extends [Expression<number>, Expression<number>]
+                  ? Point
+                  : never
+                : T extends "public.st_dwithin"
+                  ? V extends [
+                      Expression<Point>,
+                      Expression<Point>,
+                      Expression<number>,
+                    ]
                     ? boolean
-                    : never
-                : never;
+                    : V extends [
+                          Expression<Point>,
+                          Expression<Point>,
+                          Expression<number>,
+                          Expression<boolean>,
+                        ]
+                      ? boolean
+                      : never
+                  : never;
 
 export function pgFn<T extends PgFnNames, V extends PgFnParams<T>>(
   fn: T,

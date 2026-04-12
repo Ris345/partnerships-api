@@ -10,7 +10,7 @@ CREATE TABLE base_voucher_stub (
 COMMENT ON TABLE base_voucher_stub IS '@introspeql-include';
 
 CREATE TABLE on_demand_voucher_stub (
-  id SERIAL PRIMARY KEY,
+  id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   reward_id UUID NOT NULL UNIQUE REFERENCES reward(id) ON DELETE CASCADE,
   CONSTRAINT validate_reward_voucher_type CHECK (
     reward_voucher_type_matches(reward_id, 'ON_DEMAND')
@@ -24,7 +24,7 @@ BEFORE UPDATE ON on_demand_voucher_stub
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 CREATE TABLE manual_voucher_stub (
-  id SERIAL PRIMARY KEY,
+  id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   reward_id UUID NOT NULL UNIQUE REFERENCES reward(id) ON DELETE CASCADE,
   CONSTRAINT validate_reward_voucher_type CHECK (
     reward_voucher_type_matches(reward_id, 'MANUAL')

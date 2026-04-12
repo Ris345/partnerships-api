@@ -7,7 +7,7 @@ CREATE TABLE base_voucher (
 COMMENT ON TABLE base_voucher IS '@introspeql-include';
 
 CREATE TABLE single_use_voucher (
-  id BIGSERIAL PRIMARY KEY,
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   reward_id UUID NOT NULL REFERENCES reward(id) ON DELETE CASCADE,
   CONSTRAINT validate_reward_voucher_type CHECK (
     reward_voucher_type_matches(reward_id, 'SINGLE_USE')
@@ -21,7 +21,7 @@ BEFORE UPDATE ON single_use_voucher
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 CREATE TABLE multiple_use_voucher (
-  id SERIAL PRIMARY KEY,
+  id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   reward_id UUID UNIQUE NOT NULL REFERENCES reward(id) ON DELETE CASCADE, 
   has_usage_cap BOOLEAN NOT NULL,
   CONSTRAINT validate_reward_voucher_type CHECK (
@@ -36,7 +36,7 @@ BEFORE UPDATE ON multiple_use_voucher
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 CREATE TABLE code_based_voucher_value (
-  id BIGSERIAL PRIMARY KEY,
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   single_use_voucher_id BIGINT UNIQUE NULLS DISTINCT REFERENCES single_use_voucher(id) ON DELETE CASCADE,
   multiple_use_voucher_id INT UNIQUE NULLS DISTINCT REFERENCES multiple_use_voucher(id) ON DELETE CASCADE,
   redemption_code TEXT NOT NULL,
@@ -66,7 +66,7 @@ BEFORE UPDATE ON code_based_voucher_value_details_translation
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 CREATE TABLE qr_code_based_voucher_value (
-  id BIGSERIAL PRIMARY KEY,
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   single_use_voucher_id BIGINT UNIQUE NULLS DISTINCT REFERENCES single_use_voucher(id) ON DELETE CASCADE,
   multiple_use_voucher_id INT UNIQUE NULLS DISTINCT REFERENCES multiple_use_voucher(id) ON DELETE CASCADE,
   redemption_qr_code TEXT NOT NULL,
@@ -96,7 +96,7 @@ BEFORE UPDATE ON qr_code_based_voucher_value_details_translation
 FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 CREATE TABLE link_based_voucher_value (
-  id BIGSERIAL PRIMARY KEY,
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   single_use_voucher_id BIGINT UNIQUE NULLS DISTINCT REFERENCES single_use_voucher(id) ON DELETE CASCADE,
   multiple_use_voucher_id INT UNIQUE NULLS DISTINCT REFERENCES multiple_use_voucher(id) ON DELETE CASCADE,
   CONSTRAINT disallow_references_to_multiple_vouchers CHECK (num_nonnulls(
