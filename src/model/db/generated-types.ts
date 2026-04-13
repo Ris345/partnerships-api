@@ -348,6 +348,7 @@ export interface DB {
 type PgFnNames =
   | "pg_catalog.jsonb_build_object"
   | "public.calc_distance_with_units"
+  | "public.calc_earliest_expiration_date"
   | "public.convert_distance"
   | "public.get_latitude"
   | "public.get_longitude"
@@ -364,36 +365,38 @@ type PgFnParams<T extends PgFnNames> = T extends "pg_catalog.jsonb_build_object"
         Expression<Point>,
         Expression<"METERS" | "KILOMETERS" | "MILES">,
       ]
-    : T extends "public.convert_distance"
-      ? [
-          Expression<number>,
-          Expression<"METERS" | "KILOMETERS" | "MILES">,
-          Expression<"METERS" | "KILOMETERS" | "MILES">,
-        ]
-      : T extends "public.get_latitude"
-        ? [Expression<Point>]
-        : T extends "public.get_longitude"
+    : T extends "public.calc_earliest_expiration_date"
+      ? [Expression<string>, Expression<string>]
+      : T extends "public.convert_distance"
+        ? [
+            Expression<number>,
+            Expression<"METERS" | "KILOMETERS" | "MILES">,
+            Expression<"METERS" | "KILOMETERS" | "MILES">,
+          ]
+        : T extends "public.get_latitude"
           ? [Expression<Point>]
-          : T extends "public.get_translated_reward_categories"
-            ? [Expression<string>, Expression<string>]
-            : T extends "public.has_usage_or_quantity_limit"
-              ? [Expression<string>]
-              : T extends "public.make_geographic_point"
-                ? [Expression<number>, Expression<number>]
-                : T extends "public.st_dwithin"
-                  ?
-                      | [
-                          Expression<Point>,
-                          Expression<Point>,
-                          Expression<number>,
-                        ]
-                      | [
-                          Expression<Point>,
-                          Expression<Point>,
-                          Expression<number>,
-                          Expression<boolean>,
-                        ]
-                  : never;
+          : T extends "public.get_longitude"
+            ? [Expression<Point>]
+            : T extends "public.get_translated_reward_categories"
+              ? [Expression<string>, Expression<string>]
+              : T extends "public.has_usage_or_quantity_limit"
+                ? [Expression<string>]
+                : T extends "public.make_geographic_point"
+                  ? [Expression<number>, Expression<number>]
+                  : T extends "public.st_dwithin"
+                    ?
+                        | [
+                            Expression<Point>,
+                            Expression<Point>,
+                            Expression<number>,
+                          ]
+                        | [
+                            Expression<Point>,
+                            Expression<Point>,
+                            Expression<number>,
+                            Expression<boolean>,
+                          ]
+                    : never;
 
 type PgFnReturnTypes<
   T extends PgFnNames,
@@ -410,50 +413,54 @@ type PgFnReturnTypes<
       ]
       ? number
       : never
-    : T extends "public.convert_distance"
-      ? V extends [
-          Expression<number>,
-          Expression<"METERS" | "KILOMETERS" | "MILES">,
-          Expression<"METERS" | "KILOMETERS" | "MILES">,
-        ]
-        ? number
+    : T extends "public.calc_earliest_expiration_date"
+      ? V extends [Expression<string>, Expression<string>]
+        ? Date | null
         : never
-      : T extends "public.get_latitude"
-        ? V extends [Expression<Point>]
+      : T extends "public.convert_distance"
+        ? V extends [
+            Expression<number>,
+            Expression<"METERS" | "KILOMETERS" | "MILES">,
+            Expression<"METERS" | "KILOMETERS" | "MILES">,
+          ]
           ? number
           : never
-        : T extends "public.get_longitude"
+        : T extends "public.get_latitude"
           ? V extends [Expression<Point>]
             ? number
             : never
-          : T extends "public.get_translated_reward_categories"
-            ? V extends [Expression<string>, Expression<string>]
-              ? string[]
+          : T extends "public.get_longitude"
+            ? V extends [Expression<Point>]
+              ? number
               : never
-            : T extends "public.has_usage_or_quantity_limit"
-              ? V extends [Expression<string>]
-                ? boolean
+            : T extends "public.get_translated_reward_categories"
+              ? V extends [Expression<string>, Expression<string>]
+                ? string[]
                 : never
-              : T extends "public.make_geographic_point"
-                ? V extends [Expression<number>, Expression<number>]
-                  ? Point
+              : T extends "public.has_usage_or_quantity_limit"
+                ? V extends [Expression<string>]
+                  ? boolean
                   : never
-                : T extends "public.st_dwithin"
-                  ? V extends [
-                      Expression<Point>,
-                      Expression<Point>,
-                      Expression<number>,
-                    ]
-                    ? boolean
-                    : V extends [
-                          Expression<Point>,
-                          Expression<Point>,
-                          Expression<number>,
-                          Expression<boolean>,
-                        ]
+                : T extends "public.make_geographic_point"
+                  ? V extends [Expression<number>, Expression<number>]
+                    ? Point
+                    : never
+                  : T extends "public.st_dwithin"
+                    ? V extends [
+                        Expression<Point>,
+                        Expression<Point>,
+                        Expression<number>,
+                      ]
                       ? boolean
-                      : never
-                  : never;
+                      : V extends [
+                            Expression<Point>,
+                            Expression<Point>,
+                            Expression<number>,
+                            Expression<boolean>,
+                          ]
+                        ? boolean
+                        : never
+                    : never;
 
 export function pgFn<T extends PgFnNames, V extends PgFnParams<T>>(
   fn: T,

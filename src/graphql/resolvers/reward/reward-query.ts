@@ -17,15 +17,15 @@ import {
 import { db, pgFn } from '../../../db';
 import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/postgres';
 
-export class RewardRepository {
+export class RewardQuery {
   static count() {
     return db
-      .selectFrom('public.reward')
+      .selectFrom('public.v_available_reward')
       .select(eb => [eb.fn.countAll().as('reward_count')]);
   }
-  /*
-  static select(fields: RewardFields) {
-    return db.selectFrom('public.reward').select(eb => {
+
+  static select(fields: RewardFields, timezone: string) {
+    return db.selectFrom('public.v_available_reward').select(eb => {
       return fields.map(field => {
         switch (field.name) {
           case '__typename':
@@ -43,10 +43,16 @@ export class RewardRepository {
               .end()
               .as(field.alias);
           case 'hasUsageOrQuantityLimit':
-            return null;
-          case 'earliestExpirationDate'
+            return pgFn('public.has_usage_or_quantity_limit', [
+              eb.ref('id'),
+            ]).as(field.alias);
+          case 'earliestExpirationDate':
+            return pgFn('public.calc_earliest_expiration_date', [
+              eb.ref('id'),
+              eb.val(timezone),
+            ]).as(field.alias);
           case 'translatedDetails':
-            const { languageCode } = field.arguments;
+            const { languageTag } = field.arguments;
 
             return jsonObjectFrom(
               eb
@@ -58,8 +64,8 @@ export class RewardRepository {
                         return eb.val('RewardDetails').as(field.alias);
                       case 'categories':
                         return pgFn('public.get_translated_reward_categories', [
-                          eb.ref('public.reward.id'),
-                          eb.val(languageCode),
+                          eb.ref('public.v_available_reward.id'),
+                          eb.val(languageTag),
                         ]).as(field.alias);
                       case 'shortDescription':
                         return eb
@@ -81,31 +87,32 @@ export class RewardRepository {
                     eb(
                       'public.reward_details_translation.reward_id',
                       '=',
-                      eb.ref('public.reward.id'),
+                      eb.ref('public.v_available_reward.id'),
                     ),
                     eb(
-                      'public.reward_details_translation.language_code',
+                      'public.reward_details_translation.language_tag',
                       '=',
-                      languageCode,
+                      languageTag,
                     ),
                   ]),
                 ),
-            );
+            ).as(field.alias);
+          case 'partner':
+            return eb.val(null).as(field.alias);
         }
       });
     });
   }
-    */
 
   static filter(
-    eb: ExpressionBuilder<DB, 'public.reward'>,
+    eb: ExpressionBuilder<DB, 'public.v_available_reward'>,
     filter?: RewardFilter,
   ): Expression<SqlBool> {
     throw new Error('Not implemented');
   }
 
   static sort(
-    qb: SelectQueryBuilder<DB, 'public.reward', any>,
+    qb: SelectQueryBuilder<DB, 'public.v_available_reward', any>,
     orderByClauses: RewardOrderByCriteria[],
   ) {
     throw new Error('Not implemented');

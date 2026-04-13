@@ -1,0 +1,3 @@
+the logic is still not quite correct:
+- expired vouchers vs null vouchers
+- available from local, available until local

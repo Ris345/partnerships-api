@@ -2,7 +2,8 @@
 CREATE TABLE location (
   id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   partner_id INT NOT NULL REFERENCES partner(id) ON DELETE CASCADE,
-  coordinates GEOGRAPHY(POINT, 4326) NOT NULL
+  coordinates GEOGRAPHY(POINT, 4326) NOT NULL,
+  UNIQUE (partner_id, coordinates)
 ) INHERITS (base_entity);
 
 COMMENT ON TABLE location IS '@introspeql-include';

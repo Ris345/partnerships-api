@@ -20,12 +20,12 @@ import { PartnerRepository } from '../partner';
 export class LocationRepository {
   static count() {
     return db
-      .selectFrom('public.location')
+      .selectFrom('public.v_active_partner_location')
       .select(({ eb }) => [eb.fn.countAll().as('location_count')]);
   }
 
   static select(fields: LocationFields) {
-    return db.selectFrom('public.location').select(eb => {
+    return db.selectFrom('public.v_active_partner_location').select(eb => {
       return fields.map(field => {
         switch (field.name) {
           case '__typename':
@@ -74,7 +74,7 @@ export class LocationRepository {
   }
 
   static filter(
-    eb: ExpressionBuilder<DB, 'public.location'>,
+    eb: ExpressionBuilder<DB, 'public.v_active_partner_location'>,
     filter?: LocationFilter,
   ): Expression<SqlBool> {
     if (filter?._and) {
@@ -149,7 +149,7 @@ export class LocationRepository {
   }
 
   static sort(
-    qb: SelectQueryBuilder<DB, 'public.location', any>,
+    qb: SelectQueryBuilder<DB, 'public.v_active_partner_location', any>,
     orderByClauses: LocationOrderByCriteria[],
   ) {
     return orderByClauses.reduce((builder, clause) => {
