@@ -85,7 +85,11 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql STABLE;
 
-COMMENT ON FUNCTION get_available_rewards_in_timezone IS '@introspeql-include';
+COMMENT ON FUNCTION get_available_rewards_in_timezone IS 
+$$
+@introspeql-include
+@introspeql-disable-nullable-return-types
+$$;
 
 CREATE FUNCTION get_translated_reward_categories(reward_id UUID, language_tag TEXT)
 RETURNS TEXT[] AS $$
@@ -98,7 +102,7 @@ RETURNS TEXT[] AS $$
     WHERE r.reward_id = get_translated_reward_categories.reward_id
       AND c.language_tag = get_translated_reward_categories.language_tag;
 
-    RETURN category_translations;
+    RETURN array_sort(category_translations);
   END;
 $$ LANGUAGE plpgsql STABLE;
 
@@ -154,13 +158,13 @@ BEGIN
   SELECT r.voucher_type
   INTO reward_voucher_type
   FROM v_available_reward r
-  WHERE r.id = calculate_earliest_expiration_date.reward_id;
+  WHERE r.id = calc_earliest_future_expiration_date.reward_id;
   
   IF reward_voucher_type = 'SINGLE_USE' THEN 
     RETURN (
 	    SELECT v.redeemable_until
 	    FROM single_use_voucher v
-	    WHERE v.reward_id = calculate_earliest_expiration_date.reward_id
+	    WHERE v.reward_id = calc_earliest_future_expiration_date.reward_id
         AND (
           NOW() < v.redeemable_until
           OR v.redeemable_until IS NULL
@@ -174,7 +178,7 @@ BEGIN
     RETURN (
       SELECT v.redeemable_until
 	    FROM multiple_use_voucher v
-	    WHERE v.reward_id = calculate_earliest_expiration_date.reward_id
+	    WHERE v.reward_id = calc_earliest_future_expiration_date.reward_id
 	  );
   END IF;
 
@@ -190,7 +194,7 @@ BEGIN
       (s.redeemable_until_local AT TIME ZONE validated_tz),
       NOW() + s.redeemable_for
 	  ) FROM manual_voucher_stub s
-	  WHERE s.reward_id = calculate_earliest_expiration_date.reward_id
+	  WHERE s.reward_id = calc_earliest_future_expiration_date.reward_id
 	);
   END IF;
   
@@ -200,15 +204,15 @@ BEGIN
       (s.redeemable_until_local AT TIME ZONE validated_tz),
       NOW() + s.redeemable_for
 	  ) FROM v_available_on_demand_voucher_stub s
-	  WHERE s.reward_id = calculate_earliest_expiration_date.reward_id
+	  WHERE s.reward_id = calc_earliest_future_expiration_date.reward_id
   );
 END;
 $$ LANGUAGE plpgsql STABLE;
 
-COMMENT ON FUNCTION calc_earliest_expiration_date IS '@introspeql-include';
+COMMENT ON FUNCTION calc_earliest_future_expiration_date IS '@introspeql-include';
 
 -- migrate:down
-DROP FUNCTION calc_earliest_expiration_date;
+DROP FUNCTION calc_earliest_future_expiration_date;
 DROP FUNCTION has_usage_or_quantity_limit;
 DROP FUNCTION get_translated_reward_categories;
 DROP FUNCTION get_available_rewards_in_timezone;

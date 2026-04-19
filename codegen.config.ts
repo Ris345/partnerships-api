@@ -4,7 +4,7 @@ import { GQLARRConfig } from 'gqlarr';
 const gqlarrConfig: GQLARRConfig = {
   imports: {},
   types: {
-    DateTime: 'string',
+    DateTime: 'Date',
   },
 };
 

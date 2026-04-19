@@ -1,11 +1,20 @@
-import type { AppContext } from '../../../model/graphql';
+import { gqlarr, type AppContext } from '../../../model/graphql';
 import type { QueryRewardCountResolver } from '../../../model/graphql';
+import { createCountStatement, createFilterExpression } from '../sql/reward';
 
-export const rewardCount: QueryRewardCountResolver<AppContext> = (
+export const rewardCount: QueryRewardCountResolver<AppContext> = async (
   _parent,
   _args,
-  context,
+  { timezone },
   info,
 ) => {
-  throw new Error('Not implemented');
+  const rewardCountField = gqlarr.getQueryField(info, 'rewardCount')!;
+
+  const { reward_count } = await createCountStatement(timezone)
+    .where(eb =>
+      createFilterExpression(eb, rewardCountField.arguments.filter, timezone),
+    )
+    .executeTakeFirstOrThrow();
+
+  return Number(reward_count);
 };

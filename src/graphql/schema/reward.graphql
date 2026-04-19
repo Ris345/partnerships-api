@@ -1,6 +1,6 @@
 enum VoucherOwnership {
-  MULTI_USER
-  SINGLE_USER
+  SHARED
+  INDIVIDUAL
 }
 
 enum RedemptionForum {
@@ -14,7 +14,7 @@ type Reward {
   redemptionForums: [RedemptionForum!]!
   translatedDetails(languageTag: String!): RewardDetails!
   hasUsageOrQuantityLimit: Boolean!
-  earliestExpirationDate: DateTime
+  earliestFutureExpiryDate: DateTime
   partner: Partner!
 }
 
@@ -30,7 +30,7 @@ input RewardFilter @oneOf {
   redemptionForums: RedemptionForumArrayFilter
   translatedDetails: TranslatedRewardDetailsFilter
   hasUsageOrQuantityLimit: BooleanFilter
-  earliestExpirationDate: DateTimeFilter
+  earliestFutureExpiryDate: DateTimeFilter
   partner: PartnerFilter
   _and: [RewardFilter!]
   _or: [RewardFilter!]

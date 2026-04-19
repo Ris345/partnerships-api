@@ -22,20 +22,13 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE FUNCTION sort_arr(arr ANYARRAY) RETURNS ANYARRAY AS $$
-  BEGIN 
-    RETURN ARRAY(SELECT UNNEST(arr) ORDER BY 1);
-  END;
-$$ LANGUAGE plpgsql;
-
 CREATE FUNCTION contains_duplicates(arr ANYARRAY) RETURNS BOOLEAN AS $$
   BEGIN
-    RETURN sort_arr(ARRAY(SELECT DISTINCT UNNEST(arr))) != sort_arr(arr);
+    RETURN array_sort(ARRAY(SELECT DISTINCT UNNEST(arr))) != array_sort(arr);
   END;
 $$ LANGUAGE plpgsql;
 
 -- migrate:down
 DROP FUNCTION contains_duplicates;
-DROP FUNCTION sort_arr;
 DROP FUNCTION row_exists;
 DROP FUNCTION set_updated_at;

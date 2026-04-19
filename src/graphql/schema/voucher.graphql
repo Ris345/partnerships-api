@@ -82,6 +82,6 @@ type TranslatedPartnerDetailsSnapshot {
   description: String!
   webAddressUrl: String
   webAddressText: String
-  reasonForSupporting8by8: String
+  motivation: String
   lastUpdatedAt: DateTime!
 }

@@ -27,7 +27,6 @@ input IDFilter @oneOf {
   _lt: ID
   _gte: ID
   _lte: ID
-  _containedBy: [ID!]
 }
 
 input IntFilter @oneOf {
@@ -39,6 +38,8 @@ input IntFilter @oneOf {
   _lte: Int
 }
 
+# A regular-expression based filter has been intentionally omitted to avoid
+# denial-of-service vulnerabilities.
 input StringFilter @oneOf {
   _eq: CaseAwareStringFilterValue
   _neq: CaseAwareStringFilterValue
@@ -46,9 +47,7 @@ input StringFilter @oneOf {
   _gt: String
   _gte: String
   _lte: String
-  _includes: CaseAwareStringFilterValue
   _like: CaseAwareStringFilterValue
-  _containedBy: CaseAwareStringArrayFilterValue
 }
 
 input CaseAwareStringFilterValue {

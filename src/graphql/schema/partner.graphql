@@ -21,7 +21,7 @@ type PartnerDetails {
   description: String!
   webAddressUrl: String
   webAddressText: String
-  reasonForSupporting8by8: String
+  motivation: String
 }
 
 input PartnerFilter @oneOf {
@@ -43,9 +43,9 @@ input PartnerDetailsFilter @oneOf {
   name: StringFilter
   logoUrl: StringFilter
   description: StringFilter
+  motivation: StringFilter
   webAddressUrl: StringFilter
   webAddressText: StringFilter
-  reasonForSupporting8by8: StringFilter
   _and: [PartnerDetailsFilter!]
   _or: [PartnerDetailsFilter!]
   _not: PartnerDetailsFilter
@@ -77,5 +77,5 @@ input PartnerDetailsOrderByCriteria @oneOf {
   description: SortOrder
   webAddressUrl: SortOrder
   webAddressText: SortOrder
-  reasonForSupporting8by8: SortOrder
+  motivation: SortOrder
 }

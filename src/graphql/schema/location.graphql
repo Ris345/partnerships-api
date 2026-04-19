@@ -29,8 +29,8 @@ input LocationFilter @oneOf {
   _not: LocationFilter
 }
 
-input DistanceFilter @oneOf {
-  _within: DistanceWithinFilter
+input DistanceFilter {
+  _within: DistanceWithinFilter!
 }
 
 input DistanceWithinFilter {

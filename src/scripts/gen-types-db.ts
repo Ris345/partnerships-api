@@ -28,12 +28,20 @@ const config: IntrospeqlKyselyConfig = {
   },
   functions: {
     mode: 'exclusive',
+    includeFunctions: [
+      {
+        schema: 'pg_catalog',
+        name: 'array_sort',
+      },
+    ],
   },
-  header: "import { Point } from '../point';",
+  header: "import { Point } from './point';",
   types: {
     'pg_catalog.any': 'any',
-    'public.geography': 'Point',
+    'pg_catalog.anyarray': 'any[]',
     'pg_catalog.int8': 'bigint',
+    'public.geography': 'Point',
+    'public.reward': "DB['public.reward']",
   },
 };
 

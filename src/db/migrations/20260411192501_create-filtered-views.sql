@@ -1,5 +1,5 @@
 -- migrate:up
-CREATE MATERIALIZED VIEW v_active_partner AS 
+CREATE VIEW v_active_partner AS 
 SELECT p.id
 FROM partner p
 INNER JOIN partner_details_translation pd
@@ -18,13 +18,11 @@ HAVING ARRAY_AGG(
   ORDER BY l.language_tag
 );
 
-CREATE UNIQUE INDEX v_active_partner_id_idx ON v_active_partner (id);
-
-COMMENT ON MATERIALIZED VIEW v_active_partner IS 
+COMMENT ON VIEW v_active_partner IS 
 $$
 @introspeql-include
 
-A materialized view that includes only partners that meet the following 
+A view that includes only partners that meet the following 
 conditions:
 
 - The partner is active
@@ -52,7 +50,7 @@ conditions:
 - The partner_id column of the location corresponds to an active partner
 $$;
 
-CREATE MATERIALIZED VIEW v_valid_reward AS 
+CREATE VIEW v_valid_reward AS 
 SELECT r.* FROM reward r
 -- The reward's partner must be active
 INNER JOIN v_active_partner p ON r.partner_id = p.id
@@ -87,14 +85,12 @@ HAVING
     )
     GROUP BY c.id
   );
-
-CREATE UNIQUE INDEX v_valid_reward_id_idx ON v_valid_reward (id);
-
-COMMENT ON MATERIALIZED VIEW v_valid_reward IS 
+  
+COMMENT ON VIEW v_valid_reward IS 
 $$
 @introspeql-include
 
-A materialized view that includes only rewards that meet the following 
+A view that includes only rewards that meet the following 
 conditions:
 
 - A record with id = reward.partner_id exists in v_active_partner
@@ -345,6 +341,6 @@ $$;
 DROP VIEW v_valid_manual_voucher_stub;
 DROP VIEW v_valid_multiple_use_voucher;
 DROP VIEW v_valid_single_use_voucher;
-DROP MATERIALIZED VIEW v_valid_reward;
+DROP VIEW v_valid_reward;
 DROP VIEW v_active_partner_location;
-DROP MATERIALIZED VIEW v_active_partner;
+DROP VIEW v_active_partner;

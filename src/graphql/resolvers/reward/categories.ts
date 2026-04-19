@@ -1,11 +1,27 @@
-import type { AppContext } from '../../../model/graphql';
+import { db } from '../../../db';
+import { gqlarr, type AppContext } from '../../../model/graphql';
 import type { QueryCategoriesResolver } from '../../../model/graphql';
 
-export const categories: QueryCategoriesResolver<AppContext> = (
+export const categories: QueryCategoriesResolver<AppContext> = async (
   _parent,
   _args,
-  context,
+  _context,
   info,
 ) => {
-  throw new Error('Not implemented');
+  const {
+    arguments: { languageTag },
+  } = gqlarr.getQueryField(info, 'categories')!;
+
+  const result = await db
+    .selectFrom('public.category')
+    .innerJoin(
+      'public.category_translation',
+      'public.category.id',
+      'public.category_translation.category_id',
+    )
+    .select('category_name')
+    .where('language_tag', '=', languageTag)
+    .execute();
+
+  return result.map(row => row.category_name);
 };

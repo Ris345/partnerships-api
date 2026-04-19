@@ -1,7 +1,9 @@
-import type { AppContext } from '../../../model/graphql';
-
-import { gqlarr, QueryLocationCountResolver } from '../../../model/graphql';
-import { LocationRepository } from './location-repository';
+import type { AppContext } from '../../../../model/graphql';
+import { gqlarr, QueryLocationCountResolver } from '../../../../model/graphql';
+import {
+  createCountStatement,
+  createFilterExpression,
+} from '../../sql/location';
 
 export const locationCount: QueryLocationCountResolver<AppContext> = async (
   _parent,
@@ -9,14 +11,14 @@ export const locationCount: QueryLocationCountResolver<AppContext> = async (
   _context,
   info,
 ) => {
-  let query = LocationRepository.count();
+  let query = createCountStatement();
 
   const {
     arguments: { filter },
   } = gqlarr.getQueryField(info, 'locationCount')!;
 
   if (filter) {
-    query = query.where(eb => LocationRepository.filter(eb, filter));
+    query = query.where(eb => createFilterExpression(eb, filter));
   }
 
   const result = await query.executeTakeFirstOrThrow();

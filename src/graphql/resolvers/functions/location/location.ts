@@ -1,0 +1,22 @@
+import type { AppContext } from '../../../../model/graphql';
+import { sql } from 'kysely';
+import { gqlarr, QueryLocationResolver } from '../../../../model/graphql';
+import { createSelectStatement } from '../../sql/location';
+
+export const location: QueryLocationResolver<AppContext> = (
+  _parent,
+  _args,
+  _context,
+  info,
+) => {
+  const {
+    fields,
+    arguments: { id },
+  } = gqlarr.getQueryField(info, 'location')!;
+
+  return createSelectStatement(fields).where(
+    'id',
+    '=',
+    sql<bigint>`CAST(${id} AS BIGINT)`,
+  );
+};
