@@ -2,7 +2,6 @@ import { sql } from 'kysely';
 import { jsonBuildObject } from 'kysely/helpers/postgres';
 import { db, pgFn } from '../../../../db';
 import { LocationFields } from '../../../../model/graphql';
-import { PartnerRepository } from '../../functions/partner';
 
 export function createSelectStatement(fields: LocationFields) {
   return db.selectFrom('public.v_active_partner_location').select(eb => {
@@ -43,9 +42,7 @@ export function createSelectStatement(fields: LocationFields) {
             eb.val(field.arguments.units),
           ]).as(field.alias);
         case 'partner':
-          return PartnerRepository.select(field.fields)
-            .where('id', '=', eb.ref('partner_id'))
-            .as(field.alias);
+          throw new Error('Not implemented');
       }
     });
   });
