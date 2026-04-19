@@ -40,7 +40,7 @@ export function createFilterExpression(
     return createIdFilterExpression(
       eb.ref('id'),
       filter.id,
-      id => sql<number>`CAST(${filter.id} AS INTEGER)`,
+      id => sql<number>`CAST(${id} AS INTEGER)`,
     );
   }
 
@@ -53,6 +53,7 @@ export function createFilterExpression(
         .where(eb =>
           eb.and([
             eb('partner_id', '=', eb.ref('public.v_active_partner.id')),
+            eb('language_tag', '=', _languageTag),
             createTranslatedDetailsFilterExpression(eb, _filter, _languageTag),
           ]),
         ),

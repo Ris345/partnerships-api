@@ -30,7 +30,7 @@ export function createSelectStatement(fields: RewardFields, timezone: string) {
               eb.ref('redemption_forums'),
             ]).as(field.alias);
           case 'voucherOwnership':
-            createVoucherOwnershipExpression(eb, field);
+            return createVoucherOwnershipExpression(eb, field);
           case 'hasUsageOrQuantityLimit':
             return pgFn('public.has_usage_or_quantity_limit', [
               eb.ref('id'),

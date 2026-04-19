@@ -14,7 +14,7 @@ export function createStringArrayFilterExpression(
   }
 
   if (filter._neq) {
-    return sql<boolean>`array_sort(${lhs}) != array_sort(${filter._eq})`;
+    return sql<boolean>`array_sort(${lhs}) != array_sort(${filter._neq})`;
   }
 
   if (filter._neq === null) {
