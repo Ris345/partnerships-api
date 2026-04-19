@@ -1,11 +1,14 @@
 import type { Resolvers } from '../../model/graphql';
 
-import { location, locations, locationCount } from './location';
-import { partner, partners, partnerCount } from './partner';
-import { reward, rewards, rewardCount, categories } from './reward';
+import { DateTimeResolver, BigIntResolver } from 'graphql-scalars';
+import { location, locations, locationCount } from './functions/location';
+import { partner, partners, partnerCount } from './functions/partner';
+import { reward, rewards, rewardCount, categories } from './functions/reward';
 import { retrieveVoucher } from './voucher';
 
 export const resolvers: Resolvers = {
+  DateTime: DateTimeResolver,
+  BigInt: BigIntResolver,
   Query: {
     location,
     locations,

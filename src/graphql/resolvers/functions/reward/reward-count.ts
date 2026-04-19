@@ -1,6 +1,6 @@
-import { gqlarr, type AppContext } from '../../../model/graphql';
-import type { QueryRewardCountResolver } from '../../../model/graphql';
-import { createCountStatement, createFilterExpression } from '../sql/reward';
+import { gqlarr, type AppContext } from '../../../../model/graphql';
+import type { QueryRewardCountResolver } from '../../../../model/graphql';
+import { createCountStatement, createFilterExpression } from '../../sql/reward';
 
 export const rewardCount: QueryRewardCountResolver<AppContext> = async (
   _parent,
@@ -16,5 +16,5 @@ export const rewardCount: QueryRewardCountResolver<AppContext> = async (
     )
     .executeTakeFirstOrThrow();
 
-  return Number(reward_count);
+  return BigInt(reward_count);
 };

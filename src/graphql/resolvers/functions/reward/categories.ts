@@ -1,6 +1,6 @@
-import { db } from '../../../db';
-import { gqlarr, type AppContext } from '../../../model/graphql';
-import type { QueryCategoriesResolver } from '../../../model/graphql';
+import { db } from '../../../../db';
+import { gqlarr, type AppContext } from '../../../../model/graphql';
+import type { QueryCategoriesResolver } from '../../../../model/graphql';
 
 export const categories: QueryCategoriesResolver<AppContext> = async (
   _parent,

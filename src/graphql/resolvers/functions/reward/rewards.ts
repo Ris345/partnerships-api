@@ -1,11 +1,11 @@
-import { gqlarr, type AppContext } from '../../../model/graphql';
-import type { QueryRewardsResolver } from '../../../model/graphql';
-import { clampedOrDefault } from '../../../util';
+import { gqlarr, type AppContext } from '../../../../model/graphql';
+import type { QueryRewardsResolver } from '../../../../model/graphql';
+import { clampedOrDefault } from '../../../../util';
 import {
   applyOrderByClause,
   createFilterExpression,
   createSelectStatement,
-} from '../sql/reward';
+} from '../../sql/reward';
 
 export const rewards: QueryRewardsResolver<AppContext> = (
   _parent,

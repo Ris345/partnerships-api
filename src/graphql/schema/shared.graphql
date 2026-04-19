@@ -1,6 +1,8 @@
 scalar DateTime
   @specifiedBy(url: "https://scalars.graphql.org/andimarek/date-time.html")
 
+scalar BigInt
+
 enum SortOrder {
   ASC
   DESC
@@ -29,13 +31,13 @@ input IDFilter @oneOf {
   _lte: ID
 }
 
-input IntFilter @oneOf {
-  _eq: Int
-  _neq: Int
-  _gt: Int
-  _lt: Int
-  _gte: Int
-  _lte: Int
+input BigIntFilter @oneOf {
+  _eq: BigInt
+  _neq: BigInt
+  _gt: BigInt
+  _lt: BigInt
+  _gte: BigInt
+  _lte: BigInt
 }
 
 # A regular-expression based filter has been intentionally omitted to avoid

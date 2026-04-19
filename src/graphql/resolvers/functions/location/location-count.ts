@@ -22,5 +22,5 @@ export const locationCount: QueryLocationCountResolver<AppContext> = async (
   }
 
   const result = await query.executeTakeFirstOrThrow();
-  return Number(result.location_count); // going to have to add support for bigint scalars
+  return BigInt(result.location_count);
 };

@@ -7,7 +7,7 @@ type Query {
     take: Int = 50
   ): [Partner!]!
 
-  partnerCount(filter: PartnerFilter): Int!
+  partnerCount(filter: PartnerFilter): BigInt!
 
   location(id: ID!): Location
 
@@ -17,7 +17,7 @@ type Query {
     take: Int = 50
   ): [Location!]!
 
-  locationCount(filter: LocationFilter): Int!
+  locationCount(filter: LocationFilter): BigInt!
 
   reward(id: ID!): Reward
 
@@ -27,7 +27,7 @@ type Query {
     take: Int = 50
   ): [Reward!]!
 
-  rewardCount(filter: RewardFilter): Int!
+  rewardCount(filter: RewardFilter): BigInt!
 
   categories(languageTag: String!): [String!]!
 

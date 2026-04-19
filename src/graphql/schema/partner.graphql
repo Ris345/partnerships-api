@@ -6,13 +6,13 @@ type Partner {
     orderBy: [LocationOrderByCriteria!]
     take: Int
   ): [Location!]!
-  locationCount(filter: LocationFilter): Int!
+  locationCount(filter: LocationFilter): BigInt!
   rewards(
     filter: RewardFilter
     orderBy: [RewardOrderByCriteria!]
     take: Int
   ): [Reward!]!
-  rewardsCount(filter: RewardFilter): Int!
+  rewardsCount(filter: RewardFilter): BigInt!
 }
 
 type PartnerDetails {
@@ -52,12 +52,12 @@ input PartnerDetailsFilter @oneOf {
 }
 
 input LocationCountFilter {
-  _value: IntFilter!
+  _value: BigIntFilter!
   _filter: LocationFilter
 }
 
 input RewardCountFilter {
-  _value: IntFilter!
+  _value: BigIntFilter!
   _filter: RewardFilter
 }
 

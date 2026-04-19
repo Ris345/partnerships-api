@@ -1,6 +1,6 @@
-import { gqlarr, type AppContext } from '../../../model/graphql';
-import type { QueryRewardResolver } from '../../../model/graphql';
-import { createSelectStatement } from '../sql/reward';
+import { gqlarr, type AppContext } from '../../../../model/graphql';
+import type { QueryRewardResolver } from '../../../../model/graphql';
+import { createSelectStatement } from '../../sql/reward';
 
 export const reward: QueryRewardResolver<AppContext> = (
   _parent,

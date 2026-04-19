@@ -5,6 +5,7 @@ const gqlarrConfig: GQLARRConfig = {
   imports: {},
   types: {
     DateTime: 'Date',
+    BigInt: 'bigint',
   },
 };
 

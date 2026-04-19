@@ -1,28 +1,20 @@
 import { Expression, ExpressionBuilder, sql, SqlBool } from 'kysely';
 import { pgFn } from '../../../../db';
 import { DB } from '../../../../model/db';
+import { PartnerDetailsFilter, PartnerFilter } from '../../../../model/graphql';
 import {
-  PartnerDetailsFilter,
-  PartnerFilter,
-  RedemptionForumArrayFilter,
-  RewardDetailsFilter,
-  VoucherOwnership,
-  VoucherOwnershipFilter,
-} from '../../../../model/graphql';
-import { createBooleanFilterExpression } from '../common/create-boolean-filter-expression';
-import {
-  createDateTimeFilterExpression,
   createIdFilterExpression,
-  createStringArrayFilterExpression,
+  createBigIntFilterExpression,
   createStringFilterExpression,
 } from '../common';
 import {
   availableRewardTableAlias,
-  createFilterExpression as createRewardFilterStatement,
+  createFilterExpression as createRewardFilterExpression,
 } from '../reward';
+import { createFilterExpression as createLocationFilterExpression } from '../location';
 
 export function createFilterExpression(
-  eb: ExpressionBuilder<DB, 'public.partner'>,
+  eb: ExpressionBuilder<DB, 'public.v_active_partner'>,
   filter: PartnerFilter | undefined,
   timezone: string,
 ): Expression<SqlBool> {
@@ -53,25 +45,56 @@ export function createFilterExpression(
   }
 
   if (filter?.translatedDetails) {
+    const { _filter, _languageTag } = filter.translatedDetails;
+
     return eb.exists(
       eb
         .selectFrom('public.partner_details_translation')
-        .where(eb => eb.and([eb('partner_id', '=', eb.ref('id'))])),
+        .where(eb =>
+          eb.and([
+            eb('partner_id', '=', eb.ref('public.v_active_partner.id')),
+            createTranslatedDetailsFilterExpression(eb, _filter, _languageTag),
+          ]),
+        ),
     );
   }
 
   if (filter?.rewardCount) {
-  
-      eb
+    return createBigIntFilterExpression(
+      sql<bigint>`(${eb
         .selectFrom(
           pgFn('public.get_available_rewards_in_timezone', [
             eb.val(timezone),
           ]).as(availableRewardTableAlias),
         )
         .select(eb => eb.fn.countAll().as('reward_count'))
-        .where(eb =>
-          createRewardFilterStatement(eb, filter.rewardCount?._filter, timezone),
-        ),
+        .where(eb => {
+          return eb.and([
+            eb('partner_id', '=', eb.ref('public.v_active_partner.id')),
+            createRewardFilterExpression(
+              eb,
+              filter.rewardCount?._filter,
+              timezone,
+            ),
+          ]);
+        })})::bigint`,
+      filter.rewardCount._value,
+    );
+  }
+
+  if (filter?.locationCount) {
+    return createBigIntFilterExpression(
+      sql<bigint>`(${eb
+        .selectFrom('public.v_active_partner_location')
+        .select(eb => eb.fn.countAll().as('location_count'))
+        .where(eb => {
+          return eb.and([
+            eb('partner_id', '=', eb.ref('public.v_active_partner.id')),
+            createLocationFilterExpression(eb, filter.locationCount?._filter),
+          ]);
+        })})::bigint`,
+      filter.locationCount._value,
+    );
   }
 
   return eb.val(true);
