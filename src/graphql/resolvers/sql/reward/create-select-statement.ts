@@ -1,9 +1,10 @@
-import { sql } from 'kysely';
+import { SelectQueryBuilder, sql } from 'kysely';
 import { jsonObjectFrom } from 'kysely/helpers/postgres';
 import { db, pgFn } from '../../../../db';
 import { DB } from '../../../../model/db';
 import { RewardFields, VoucherOwnership } from '../../../../model/graphql';
 import { ExpressionBuilder } from 'kysely';
+import { createSelectStatement as createPartnerSelectStatement } from '../partner';
 
 export const availableRewardTableAlias = 'available_reward';
 
@@ -11,7 +12,10 @@ export type DBWithAvailableRewardTable = DB & {
   [availableRewardTableAlias]: DB['public.reward'];
 };
 
-export function createSelectStatement(fields: RewardFields, timezone: string) {
+export function createSelectStatement(
+  fields: RewardFields,
+  timezone: string,
+): SelectQueryBuilder<DBWithAvailableRewardTable, 'available_reward', any> {
   return db
     .selectFrom(
       pgFn('public.get_available_rewards_in_timezone', [sql.val(timezone)]).as(
@@ -43,7 +47,14 @@ export function createSelectStatement(fields: RewardFields, timezone: string) {
           case 'translatedDetails':
             return createTranslatedDetailsExpression(eb, field);
           case 'partner':
-            return eb.val(null).as(field.alias);
+            const partnerId = eb.ref('available_reward.partner_id');
+            return jsonObjectFrom(
+              createPartnerSelectStatement(field.fields, timezone).where(
+                'public.v_active_partner.id',
+                '=',
+                partnerId,
+              ),
+            ).as(field.alias);
         }
       });
     });

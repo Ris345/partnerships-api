@@ -1,4 +1,9 @@
-import { ExpressionBuilder, ExpressionWrapper, sql } from 'kysely';
+import {
+  ExpressionBuilder,
+  ExpressionWrapper,
+  SelectQueryBuilder,
+  sql,
+} from 'kysely';
 import { jsonBuildObject, jsonObjectFrom } from 'kysely/helpers/postgres';
 import { db, pgFn } from '../../../../db';
 import { PartnerFields } from '../../../../model/graphql';
@@ -17,7 +22,10 @@ import {
 import { clampedOrDefault } from '../../../../util';
 import { DB } from '../../../../model/db';
 
-export function createSelectStatement(fields: PartnerFields, timezone: string) {
+export function createSelectStatement(
+  fields: PartnerFields,
+  timezone: string,
+): SelectQueryBuilder<DB, 'public.v_active_partner', any> {
   return db.selectFrom('public.v_active_partner').select(eb => {
     const partnerId = eb.ref('public.v_active_partner.id');
 
@@ -31,9 +39,14 @@ export function createSelectStatement(fields: PartnerFields, timezone: string) {
           return createLocationsSelectStatementWithFilterOrderAndLimit(
             partnerId,
             field,
+            timezone,
           );
         case 'locationCount':
-          return createLocationCountStatementWithFilter(partnerId, field);
+          return createLocationCountStatementWithFilter(
+            partnerId,
+            field,
+            timezone,
+          );
         case 'rewards':
           return createRewardsSelectStatementWithFilterOrderAndLimit(
             partnerId,
@@ -56,12 +69,13 @@ export function createSelectStatement(fields: PartnerFields, timezone: string) {
 function createLocationsSelectStatementWithFilterOrderAndLimit(
   partnerId: ExpressionWrapper<DB, 'public.v_active_partner', number>,
   field: Extract<PartnerFields[number], { name: 'locations' }>,
+  timezone: string,
 ) {
   return applyLocationsOrderByClause(
-    createLocationsSelectStatement(field.fields).where(eb =>
+    createLocationsSelectStatement(field.fields, timezone).where(eb =>
       eb.and([
         eb('partner_id', '=', partnerId),
-        createLocationsFilterExpression(eb, field.arguments.filter),
+        createLocationsFilterExpression(eb, field.arguments.filter, timezone),
       ]),
     ),
     field.arguments.orderBy,
@@ -79,12 +93,13 @@ function createLocationsSelectStatementWithFilterOrderAndLimit(
 function createLocationCountStatementWithFilter(
   partnerId: ExpressionWrapper<DB, 'public.v_active_partner', number>,
   field: Extract<PartnerFields[number], { name: 'locationCount' }>,
+  timezone: string,
 ) {
   return createLocationCountStatement()
     .where(eb =>
       eb.and([
         eb('partner_id', '=', partnerId),
-        createLocationsFilterExpression(eb, field.arguments.filter),
+        createLocationsFilterExpression(eb, field.arguments.filter, timezone),
       ]),
     )
     .as(field.alias);
@@ -148,7 +163,7 @@ function createTranslatedDetailsExpression(
             case 'description':
               return eb.ref('description').as(field.alias);
             case 'motivation':
-              return eb.ref('reason_for_supporting_8by8').as(field.alias);
+              return eb.ref('motivation').as(field.alias);
             case 'logoUrl':
               return eb.ref('logo_url').as(field.alias);
             case 'webAddressUrl':

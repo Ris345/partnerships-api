@@ -128,14 +128,15 @@ export function applyOrderByClause(
 
     if (clause.partner) {
       return applyPartnerOrderByClause(
-        qb.innerJoin(
+        builder.innerJoin(
           'public.v_active_partner',
           'partner_id',
           'public.v_active_partner.id',
         ),
+        [clause.partner],
       );
     }
 
-    return builder.orderBy(eb => sql`${eb.ref('available_reward.id')} asc`);
+    return builder;
   }, qb);
 }

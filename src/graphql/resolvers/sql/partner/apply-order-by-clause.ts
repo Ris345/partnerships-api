@@ -66,7 +66,7 @@ export function applyOrderByClause(
 
       if (clause.translatedDetails._orderBy.motivation) {
         return orderByTranslatedDetailsField(
-          'reason_for_supporting_8by8',
+          'motivation',
           clause.translatedDetails._orderBy.motivation,
         );
       }
@@ -93,6 +93,6 @@ export function applyOrderByClause(
       }
     }
 
-    return builder.orderBy(eb => sql`${eb.ref('id')} asc`);
+    return builder;
   }, qb);
 }

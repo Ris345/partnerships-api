@@ -5,9 +5,9 @@ import { DB, pgFn } from '../../../../model/db';
 export function createCountStatement(timezone: string) {
   return db
     .selectFrom(
-      sql<
-        DB['public.reward']
-      >`get_available_rewards_in_timezone(${timezone})`.as('available_reward'),
+      pgFn('public.get_available_rewards_in_timezone', [sql.val(timezone)]).as(
+        'available_reward',
+      ),
     )
     .select(eb => [eb.fn.countAll().as('reward_count')]);
 }

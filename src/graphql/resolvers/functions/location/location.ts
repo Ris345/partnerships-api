@@ -6,7 +6,7 @@ import { createSelectStatement } from '../../sql/location';
 export const location: QueryLocationResolver<AppContext> = (
   _parent,
   _args,
-  _context,
+  { timezone },
   info,
 ) => {
   const {
@@ -14,7 +14,7 @@ export const location: QueryLocationResolver<AppContext> = (
     arguments: { id },
   } = gqlarr.getQueryField(info, 'location')!;
 
-  return createSelectStatement(fields)
+  return createSelectStatement(fields, timezone)
     .where('id', '=', sql<bigint>`CAST(${id} AS BIGINT)`)
     .executeTakeFirst();
 };

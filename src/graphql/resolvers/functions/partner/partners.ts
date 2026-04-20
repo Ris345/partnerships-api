@@ -22,6 +22,7 @@ export const partners: QueryPartnersResolver<AppContext> = (
     createSelectStatement(fields, timezone).where(eb =>
       createFilterExpression(eb, filter, timezone),
     ),
+    orderBy,
   )
     .limit(clampedOrDefault(take, { min: 0, max: 50, default: 50 }))
     .execute();

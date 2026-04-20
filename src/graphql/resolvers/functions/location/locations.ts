@@ -19,7 +19,7 @@ export const locations: QueryLocationsResolver<AppContext> = (
   } = gqlarr.getQueryField(info, 'locations')!;
 
   return applyOrderByClause(
-    createSelectStatement(fields).where(eb =>
+    createSelectStatement(fields, timezone).where(eb =>
       createFilterExpression(eb, filter, timezone),
     ),
     orderBy,

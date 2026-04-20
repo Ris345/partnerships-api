@@ -34,6 +34,11 @@ CREATE FUNCTION to_uppercase_array(arr TEXT[]) RETURNS TEXT[] AS $$
   END;
 $$ LANGUAGE plpgsql;
 
+COMMENT ON FUNCTION to_uppercase_array IS $$
+@introspeql-include 
+@introspeql-enable-nullable-args
+$$;
+
 -- migrate:down
 DROP FUNCTION to_uppercase_array;
 DROP FUNCTION contains_duplicates;

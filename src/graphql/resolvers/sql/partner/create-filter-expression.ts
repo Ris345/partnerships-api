@@ -145,7 +145,7 @@ function createTranslatedDetailsFilterExpression(
 
   if (filter.motivation) {
     return createStringFilterExpression(
-      eb.ref('reason_for_supporting_8by8'),
+      eb.ref('motivation'),
       filter.motivation,
     );
   }

@@ -36,16 +36,15 @@ export function applyOrderByClause(
       );
     }
     if (clause.partner) {
-      if (clause.partner) {
-        return applyPartnerOrderByClause(
-          qb.innerJoin(
-            'public.v_active_partner',
-            'public.v_active_partner_location.partner_id',
-            'public.v_active_partner.id',
-          ),
-        );
-      }
+      return applyPartnerOrderByClause(
+        builder.innerJoin(
+          'public.v_active_partner',
+          'public.v_active_partner_location.partner_id',
+          'public.v_active_partner.id',
+        ),
+        [clause.partner],
+      );
     }
-    return builder.orderBy(eb => sql`${eb.ref('id')} asc`);
+    return builder;
   }, qb);
 }

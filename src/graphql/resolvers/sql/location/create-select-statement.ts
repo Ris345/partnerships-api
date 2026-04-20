@@ -1,9 +1,14 @@
-import { sql } from 'kysely';
-import { jsonBuildObject } from 'kysely/helpers/postgres';
+import { SelectQueryBuilder, sql } from 'kysely';
+import { jsonBuildObject, jsonObjectFrom } from 'kysely/helpers/postgres';
 import { db, pgFn } from '../../../../db';
 import { LocationFields } from '../../../../model/graphql';
+import { createSelectStatement as createPartnerSelectStatement } from '../partner';
+import { DB } from '../../../../model/db';
 
-export function createSelectStatement(fields: LocationFields) {
+export function createSelectStatement(
+  fields: LocationFields,
+  timezone: string,
+): SelectQueryBuilder<DB, 'public.v_active_partner_location', any> {
   return db.selectFrom('public.v_active_partner_location').select(eb => {
     return fields.map(field => {
       switch (field.name) {
@@ -42,7 +47,16 @@ export function createSelectStatement(fields: LocationFields) {
             eb.val(field.arguments.units),
           ]).as(field.alias);
         case 'partner':
-          throw new Error('Not implemented');
+          const partnerId = eb.ref(
+            'public.v_active_partner_location.partner_id',
+          );
+          return jsonObjectFrom(
+            createPartnerSelectStatement(field.fields, timezone).where(
+              'public.v_active_partner.id',
+              '=',
+              partnerId,
+            ),
+          ).as(field.alias);
       }
     });
   });

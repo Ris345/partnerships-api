@@ -131,9 +131,9 @@ export interface DB {
     description: string;
     language_tag: string;
     logo_url: string;
+    motivation: string;
     name: string;
     partner_id: number;
-    reason_for_supporting_8by8: string;
     updated_at: Generated<Date>;
     web_address_text: string;
     web_address_url: string;
