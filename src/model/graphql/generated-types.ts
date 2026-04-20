@@ -127,7 +127,7 @@ export interface DistanceFilter {
 
 export interface DistanceOrderByCriteria {
   _from: InputCoordinates;
-  _sortOrder: SortOrder;
+  _sortOptions: SortOptions;
 }
 
 export enum DistanceUnits {
@@ -253,7 +253,7 @@ export type LocationFilter =
 
 export type LocationOrderByCriteria =
   | {
-      id?: SortOrder;
+      id?: SortOptions;
       distance?: never;
       partner?: never;
     }
@@ -371,7 +371,7 @@ export type PartnerDetailsFilter =
 
 export type PartnerDetailsOrderByCriteria =
   | {
-      name?: SortOrder;
+      name?: SortOptions;
       logoUrl?: never;
       description?: never;
       webAddressUrl?: never;
@@ -379,7 +379,7 @@ export type PartnerDetailsOrderByCriteria =
       motivation?: never;
     }
   | {
-      logoUrl?: SortOrder;
+      logoUrl?: SortOptions;
       name?: never;
       description?: never;
       webAddressUrl?: never;
@@ -387,7 +387,7 @@ export type PartnerDetailsOrderByCriteria =
       motivation?: never;
     }
   | {
-      description?: SortOrder;
+      description?: SortOptions;
       name?: never;
       logoUrl?: never;
       webAddressUrl?: never;
@@ -395,7 +395,7 @@ export type PartnerDetailsOrderByCriteria =
       motivation?: never;
     }
   | {
-      webAddressUrl?: SortOrder;
+      webAddressUrl?: SortOptions;
       name?: never;
       logoUrl?: never;
       description?: never;
@@ -403,7 +403,7 @@ export type PartnerDetailsOrderByCriteria =
       motivation?: never;
     }
   | {
-      webAddressText?: SortOrder;
+      webAddressText?: SortOptions;
       name?: never;
       logoUrl?: never;
       description?: never;
@@ -411,7 +411,7 @@ export type PartnerDetailsOrderByCriteria =
       motivation?: never;
     }
   | {
-      motivation?: SortOrder;
+      motivation?: SortOptions;
       name?: never;
       logoUrl?: never;
       description?: never;
@@ -486,7 +486,7 @@ export type PartnerFilter =
 
 export type PartnerOrderByCriteria =
   | {
-      id?: SortOrder;
+      id?: SortOptions;
       translatedDetails?: never;
     }
   | {
@@ -613,17 +613,17 @@ export type RewardDetailsFilter =
 
 export type RewardDetailsOrderByCriteria =
   | {
-      categories?: SortOrder;
+      categories?: SortOptions;
       shortDescription?: never;
       longDescription?: never;
     }
   | {
-      shortDescription?: SortOrder;
+      shortDescription?: SortOptions;
       categories?: never;
       longDescription?: never;
     }
   | {
-      longDescription?: SortOrder;
+      longDescription?: SortOptions;
       categories?: never;
       shortDescription?: never;
     };
@@ -752,7 +752,7 @@ export type RewardFilter =
 
 export type RewardOrderByCriteria =
   | {
-      id?: SortOrder;
+      id?: SortOptions;
       partner?: never;
       translatedDetails?: never;
     }
@@ -766,6 +766,11 @@ export type RewardOrderByCriteria =
       id?: never;
       partner?: never;
     };
+
+export interface SortOptions {
+  _order: SortOrder;
+  _nullsLast?: boolean;
+}
 
 export enum SortOrder {
   ASC = "ASC",
@@ -1179,7 +1184,7 @@ export type PartnerFields = (
       fields: RewardFields;
     }
   | {
-      name: "rewardsCount";
+      name: "rewardCount";
       on: "Partner";
       alias: string;
       arguments: {

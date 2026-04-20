@@ -70,8 +70,6 @@ export function createFilterExpression(
   }
 
   if (filter?.translatedDetails) {
-    const { _languageTag } = filter.translatedDetails;
-
     return eb.exists(
       eb
         .selectFrom('public.reward_details_translation')
@@ -79,10 +77,11 @@ export function createFilterExpression(
         .where(eb =>
           eb.and([
             eb('reward_id', '=', eb.ref('id')),
+            eb('language_tag', '=', filter.translatedDetails!._languageTag),
             createTranslatedDetailsFilterExpression(
               eb,
               filter.translatedDetails!._filter,
-              _languageTag,
+              filter.translatedDetails!._languageTag,
             ),
           ]),
         ),

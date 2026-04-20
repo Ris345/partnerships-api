@@ -12,7 +12,7 @@ type Partner {
     orderBy: [RewardOrderByCriteria!]
     take: Int
   ): [Reward!]!
-  rewardsCount(filter: RewardFilter): BigInt!
+  rewardCount(filter: RewardFilter): BigInt!
 }
 
 type PartnerDetails {
@@ -62,7 +62,7 @@ input RewardCountFilter {
 }
 
 input PartnerOrderByCriteria @oneOf {
-  id: SortOrder
+  id: SortOptions
   translatedDetails: TranslatedPartnerDetailsOrderByCriteria
 }
 
@@ -72,10 +72,10 @@ input TranslatedPartnerDetailsOrderByCriteria {
 }
 
 input PartnerDetailsOrderByCriteria @oneOf {
-  name: SortOrder
-  logoUrl: SortOrder
-  description: SortOrder
-  webAddressUrl: SortOrder
-  webAddressText: SortOrder
-  motivation: SortOrder
+  name: SortOptions
+  logoUrl: SortOptions
+  description: SortOptions
+  webAddressUrl: SortOptions
+  webAddressText: SortOptions
+  motivation: SortOptions
 }

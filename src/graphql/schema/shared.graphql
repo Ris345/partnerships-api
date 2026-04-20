@@ -8,6 +8,11 @@ enum SortOrder {
   DESC
 }
 
+input SortOptions {
+  _order: SortOrder!
+  _nullsLast: Boolean = true
+}
+
 input BooleanFilter @oneOf {
   _eq: Boolean
   _neq: Boolean
