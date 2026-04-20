@@ -91,7 +91,11 @@ export function createFilterExpression(
         .where(eb => {
           return eb.and([
             eb('partner_id', '=', eb.ref('public.v_active_partner.id')),
-            createLocationFilterExpression(eb, filter.locationCount?._filter),
+            createLocationFilterExpression(
+              eb,
+              filter.locationCount?._filter,
+              timezone,
+            ),
           ]);
         })})::bigint`,
       filter.locationCount._value,

@@ -8,18 +8,16 @@ import {
 export const locationCount: QueryLocationCountResolver<AppContext> = async (
   _parent,
   _args,
-  _context,
+  { timezone },
   info,
 ) => {
-  let query = createCountStatement();
-
   const {
     arguments: { filter },
   } = gqlarr.getQueryField(info, 'locationCount')!;
 
-  if (filter) {
-    query = query.where(eb => createFilterExpression(eb, filter));
-  }
+  const query = createCountStatement().where(eb =>
+    createFilterExpression(eb, filter, timezone),
+  );
 
   const result = await query.executeTakeFirstOrThrow();
   return BigInt(result.location_count);

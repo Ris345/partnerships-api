@@ -28,7 +28,14 @@ CREATE FUNCTION contains_duplicates(arr ANYARRAY) RETURNS BOOLEAN AS $$
   END;
 $$ LANGUAGE plpgsql;
 
+CREATE FUNCTION to_uppercase_array(arr TEXT[]) RETURNS TEXT[] AS $$
+  BEGIN
+    RETURN ARRAY(SELECT UPPER(UNNEST(arr)));
+  END;
+$$ LANGUAGE plpgsql;
+
 -- migrate:down
+DROP FUNCTION to_uppercase_array;
 DROP FUNCTION contains_duplicates;
 DROP FUNCTION row_exists;
 DROP FUNCTION set_updated_at;

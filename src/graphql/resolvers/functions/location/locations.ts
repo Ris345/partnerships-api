@@ -10,7 +10,7 @@ import {
 export const locations: QueryLocationsResolver<AppContext> = (
   _parent,
   _args,
-  _context,
+  { timezone },
   info,
 ) => {
   const {
@@ -20,7 +20,7 @@ export const locations: QueryLocationsResolver<AppContext> = (
 
   return applyOrderByClause(
     createSelectStatement(fields).where(eb =>
-      createFilterExpression(eb, filter),
+      createFilterExpression(eb, filter, timezone),
     ),
     orderBy,
   )

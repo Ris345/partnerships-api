@@ -14,9 +14,7 @@ export const location: QueryLocationResolver<AppContext> = (
     arguments: { id },
   } = gqlarr.getQueryField(info, 'location')!;
 
-  return createSelectStatement(fields).where(
-    'id',
-    '=',
-    sql<bigint>`CAST(${id} AS BIGINT)`,
-  );
+  return createSelectStatement(fields)
+    .where('id', '=', sql<bigint>`CAST(${id} AS BIGINT)`)
+    .executeTakeFirst();
 };
