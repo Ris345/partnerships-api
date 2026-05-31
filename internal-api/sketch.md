@@ -7,17 +7,17 @@
                           |
                     HTTP Request
                           |
-                    ┌─────────────┐
-                    │   Fastify   │  ← handles routing, auth middleware
-                    └─────────────┘
+               ┌─────────────────────┐
+               │   NestJS Controller  │  ← handles routing, Guards for auth
+               └─────────────────────┘
                           |
                ┌──────────────────────┐
-               │   Zod Schema         │  ← validates request body / params
+               │   DTO + ValidationPipe│  ← class-validator decorators on DTO
                │   (per route)        │     rejects bad input with 400
                └──────────────────────┘
                           |
                ┌──────────────────────┐
-               │   Route Handler      │  ← business logic lives here
+               │   Service            │  ← business logic lives here
                └──────────────────────┘
                           |
                ┌──────────────────────┐
@@ -29,21 +29,17 @@
                └──────────────────────┘
 ```
 
-## Where OpenAPI fits in
+## NestJS module structure
 
 ```
-   Zod schemas (attached to each route)
-               |
-               │  @fastify/swagger reads these at startup
-               ▼
-       /openapi.json                ← machine-readable spec (JSON)
-               |
-       ┌───────┴────────┐
-       ▼                ▼
-  Swagger UI          openapi-typescript (or any generator)
-  at /docs            generates typed client SDK
-  (interactive        for any consumer (frontend, mobile etc.)
-   browser docs)
+AppModule
+  ├── DatabaseModule (@Global)   ← Kysely instance provided via DB_TOKEN
+  ├── PartnerModule              ← imports RewardModule
+  │     ├── PartnerController
+  │     └── PartnerService
+  └── RewardModule               ← exports RewardService
+        ├── RewardController
+        └── RewardService
 ```
 
 ## Request lifecycle
@@ -51,12 +47,12 @@
 ```
 POST /partners
 
-1. Fastify receives request
-2. Zod validates body shape  →  invalid? return 400
-3. Route handler runs
-4. Kysely builds INSERT query
+1. NestJS Controller receives request
+2. ValidationPipe runs class-validator on DTO  →  invalid? return 400
+3. Controller calls PartnerService
+4. Service uses injected Kysely db to build INSERT query
 5. PostgreSQL executes
-6. Handler returns 201 + created resource
+6. Service returns created resource, Controller returns 201
 ```
 
 ## Resource hierarchy
