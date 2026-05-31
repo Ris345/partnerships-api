@@ -25,7 +25,7 @@ BEGIN
       (r.available_until_local AT TIME ZONE validated_tz)
     ) OR (
       r.available_until_exact IS NULL
-      AND r.available_from_local IS NULL
+      AND r.available_until_local IS NULL
     )
   ) AND (
     (

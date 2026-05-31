@@ -10,7 +10,7 @@ import {
 export const locations: QueryLocationsResolver<AppContext> = (
   _parent,
   _args,
-  _context,
+  { timezone },
   info,
 ) => {
   const {
@@ -19,8 +19,8 @@ export const locations: QueryLocationsResolver<AppContext> = (
   } = gqlarr.getQueryField(info, 'locations')!;
 
   return applyOrderByClause(
-    createSelectStatement(fields).where(eb =>
-      createFilterExpression(eb, filter),
+    createSelectStatement(fields, timezone).where(eb =>
+      createFilterExpression(eb, filter, timezone),
     ),
     orderBy,
   )

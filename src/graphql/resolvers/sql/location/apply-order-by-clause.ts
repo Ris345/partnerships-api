@@ -2,33 +2,49 @@ import { SelectQueryBuilder, sql } from 'kysely';
 import { pgFn } from '../../../../db';
 import { DB } from '../../../../model/db';
 import { LocationOrderByCriteria, SortOrder } from '../../../../model/graphql';
+import { applyOrderByClause as applyPartnerOrderByClause } from '../partner';
 
 export function applyOrderByClause(
-  qb: SelectQueryBuilder<DB, 'public.v_active_partner_location', any>,
+  qb: SelectQueryBuilder<
+    DB,
+    'public.v_active_partner_location' | 'public.v_active_partner',
+    any
+  >,
   orderByClauses: LocationOrderByCriteria[] = [],
 ) {
   return orderByClauses.reduce((builder, clause) => {
     if (clause.id) {
       return builder.orderBy(
         eb =>
-          sql`${eb.ref('id')} ${sql.raw(clause.id === SortOrder.ASC ? 'asc' : 'desc')}`,
+          sql`${eb.ref('public.v_active_partner_location.id')}
+            ${sql.raw(clause.id?._order === SortOrder.ASC ? 'asc' : 'desc')} 
+            ${sql.raw(clause.id?._nullsLast ? 'NULLS LAST' : 'NULLS FIRST')}`,
       );
     }
     if (clause.distance) {
       return builder.orderBy(
         eb =>
-          sql`${eb.ref('coordinates')} <-> ${pgFn(
+          sql`${eb.ref('public.v_active_partner_location.coordinates')} <-> ${pgFn(
             'public.make_geographic_point',
             [
               eb.val(clause.distance!._from.longitude),
               eb.val(clause.distance!._from.latitude),
             ],
-          )} ${sql.raw(clause.distance!._sortOrder === SortOrder.ASC ? 'asc' : 'desc')}`,
+          )} 
+          ${sql.raw(clause.distance!._sortOptions._order === SortOrder.ASC ? 'asc' : 'desc')}
+          ${sql.raw(clause.distance!._sortOptions._nullsLast ? 'NULLS LAST' : 'NULLS FIRST')}`,
       );
     }
     if (clause.partner) {
-      return builder.orderBy(eb => sql`${eb.ref('partner_id')} asc`);
+      return applyPartnerOrderByClause(
+        builder.innerJoin(
+          'public.v_active_partner',
+          'public.v_active_partner_location.partner_id',
+          'public.v_active_partner.id',
+        ),
+        [clause.partner],
+      );
     }
-    return builder.orderBy(eb => sql`${eb.ref('id')} asc`);
+    return builder;
   }, qb);
 }

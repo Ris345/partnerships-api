@@ -15,6 +15,7 @@ import {
   createStringArrayFilterExpression,
   createStringFilterExpression,
 } from '../common';
+import { createFilterExpression as createPartnerFilterExpression } from '../partner';
 import type { DBWithAvailableRewardTable } from './create-select-statement';
 
 export function createFilterExpression(
@@ -70,8 +71,6 @@ export function createFilterExpression(
   }
 
   if (filter?.translatedDetails) {
-    const { _languageTag } = filter.translatedDetails;
-
     return eb.exists(
       eb
         .selectFrom('public.reward_details_translation')
@@ -79,10 +78,11 @@ export function createFilterExpression(
         .where(eb =>
           eb.and([
             eb('reward_id', '=', eb.ref('id')),
+            eb('language_tag', '=', filter.translatedDetails!._languageTag),
             createTranslatedDetailsFilterExpression(
               eb,
               filter.translatedDetails!._filter,
-              _languageTag,
+              filter.translatedDetails!._languageTag,
             ),
           ]),
         ),
@@ -90,8 +90,19 @@ export function createFilterExpression(
   }
 
   if (filter?.partner) {
-    // use partner query filter
-    return eb.val(true);
+    const partnerId = eb.ref('available_reward.partner_id');
+
+    return eb.exists(
+      eb
+        .selectFrom('public.v_active_partner')
+        .select('id')
+        .where(eb =>
+          eb.and([
+            eb('public.v_active_partner.id', '=', partnerId),
+            createPartnerFilterExpression(eb, filter!.partner, timezone),
+          ]),
+        ),
+    );
   }
 
   // Catch-all
@@ -111,7 +122,7 @@ function createRedemptionForumsFilterExpression(
   }
 
   if (filter._neq) {
-    return sql<boolean>`array_sort(${eb.ref('redemption_forums')}) != array_sort(${eb.val(filter._eq)})::redemption_forum[]`;
+    return sql<boolean>`array_sort(${eb.ref('redemption_forums')}) != array_sort(${eb.val(filter._neq)})::redemption_forum[]`;
   }
 
   if (filter._neq === null) {

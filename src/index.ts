@@ -9,6 +9,7 @@ import { parse as parseContentType } from 'content-type';
 import { typeDefs } from './graphql';
 import { setCustomTypeParsers, parseTimeZoneHeader } from './util';
 import { AppContext } from './model/graphql';
+import { resolvers } from './graphql';
 
 await setCustomTypeParsers();
 
@@ -16,8 +17,7 @@ const app = express();
 const httpServer = http.createServer(app);
 const server = new ApolloServer<AppContext>({
   typeDefs,
-  resolvers: {},
-  // resolvers,
+  resolvers,
   plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
 });
 
@@ -45,7 +45,7 @@ app.use(
   }),
   expressMiddleware(server, {
     context: async ({ req }) => ({
-      timezone: parseTimeZoneHeader(req.headers['Time-Zone']),
+      timezone: parseTimeZoneHeader(req.headers['time-zone']),
     }),
   }),
 );

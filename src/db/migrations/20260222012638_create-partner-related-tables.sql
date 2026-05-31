@@ -18,7 +18,7 @@ CREATE TABLE partner_details_translation (
   description TEXT NOT NULL,
   web_address_url TEXT,
   web_address_text TEXT,
-  reason_for_supporting_8by8 TEXT,
+  motivation TEXT,
   PRIMARY KEY(partner_id, language_tag)
 ) INHERITS (base_entity);
 

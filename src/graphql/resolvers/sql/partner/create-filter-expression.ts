@@ -40,7 +40,7 @@ export function createFilterExpression(
     return createIdFilterExpression(
       eb.ref('id'),
       filter.id,
-      id => sql<number>`CAST(${filter.id} AS INTEGER)`,
+      id => sql<number>`CAST(${id} AS INTEGER)`,
     );
   }
 
@@ -53,6 +53,7 @@ export function createFilterExpression(
         .where(eb =>
           eb.and([
             eb('partner_id', '=', eb.ref('public.v_active_partner.id')),
+            eb('language_tag', '=', _languageTag),
             createTranslatedDetailsFilterExpression(eb, _filter, _languageTag),
           ]),
         ),
@@ -90,7 +91,11 @@ export function createFilterExpression(
         .where(eb => {
           return eb.and([
             eb('partner_id', '=', eb.ref('public.v_active_partner.id')),
-            createLocationFilterExpression(eb, filter.locationCount?._filter),
+            createLocationFilterExpression(
+              eb,
+              filter.locationCount?._filter,
+              timezone,
+            ),
           ]);
         })})::bigint`,
       filter.locationCount._value,
@@ -140,7 +145,7 @@ function createTranslatedDetailsFilterExpression(
 
   if (filter.motivation) {
     return createStringFilterExpression(
-      eb.ref('reason_for_supporting_8by8'),
+      eb.ref('motivation'),
       filter.motivation,
     );
   }

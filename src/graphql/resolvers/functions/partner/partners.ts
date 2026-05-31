@@ -1,11 +1,29 @@
-import type { AppContext } from '../../../model/graphql';
-import type { QueryPartnersResolver } from '../../../model/graphql';
+import { gqlarr, type AppContext } from '../../../../model/graphql';
+import type { QueryPartnersResolver } from '../../../../model/graphql';
+import { clampedOrDefault } from '../../../../util';
+import {
+  applyOrderByClause,
+  createFilterExpression,
+  createSelectStatement,
+} from '../../sql/partner';
 
 export const partners: QueryPartnersResolver<AppContext> = (
   _parent,
   _args,
-  context,
+  { timezone },
   info,
 ) => {
-  throw new Error('Not implemented');
+  const {
+    fields,
+    arguments: { filter, orderBy, take },
+  } = gqlarr.getQueryField(info, 'partners')!;
+
+  return applyOrderByClause(
+    createSelectStatement(fields, timezone).where(eb =>
+      createFilterExpression(eb, filter, timezone),
+    ),
+    orderBy,
+  )
+    .limit(clampedOrDefault(take, { min: 0, max: 50, default: 50 }))
+    .execute();
 };

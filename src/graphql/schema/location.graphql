@@ -40,12 +40,12 @@ input DistanceWithinFilter {
 }
 
 input LocationOrderByCriteria @oneOf {
-  id: SortOrder
+  id: SortOptions
   distance: DistanceOrderByCriteria
   partner: PartnerOrderByCriteria
 }
 
 input DistanceOrderByCriteria {
   _from: InputCoordinates!
-  _sortOrder: SortOrder!
+  _sortOptions: SortOptions!
 }
