@@ -3,30 +3,35 @@
 ## How the service fits together
 
 ```
-         Client (browser, mobile, other service)
-                          |
-                    HTTP Request
-                          |
-               ┌─────────────────────┐
-               │   NestJS Controller  │  ← handles routing, Guards for auth
-               └─────────────────────┘
-                          |
-               ┌──────────────────────┐
-               │   DTO + ValidationPipe│  ← class-validator decorators on DTO
-               │   (per route)        │     rejects bad input with 400
-               └──────────────────────┘
-                          |
-               ┌──────────────────────┐
-               │   Service            │  ← business logic lives here
-               └──────────────────────┘
-                          |
-               ┌──────────────────────┐
-               │   Kysely             │  ← builds type-safe SQL queries
-               └──────────────────────┘
-                          |
-               ┌──────────────────────┐
-               │   PostgreSQL         │  ← partners, rewards, vouchers etc.
-               └──────────────────────┘
+  Frontend UI / Admin Dashboard
+            |
+   openapi.json (contract)       ← platform-agnostic interface describing
+            |                       all endpoints, request/response schemas,
+            |                       and enum types. Frontend generates a
+            |                       typed client from this spec.
+            |
+     HTTP Request (REST)
+            |
+  ┌─────────────────────┐
+  │   NestJS Controller  │  ← handles routing, Guards for auth
+  └─────────────────────┘
+            |
+  ┌──────────────────────┐
+  │   DTO + ValidationPipe│  ← class-validator decorators on DTO
+  │   (per route)        │     rejects bad input with 400
+  └──────────────────────┘
+            |
+  ┌──────────────────────┐
+  │   Service            │  ← business logic lives here
+  └──────────────────────┘
+            |
+  ┌──────────────────────┐
+  │   Kysely             │  ← builds type-safe SQL queries
+  └──────────────────────┘
+            |
+  ┌──────────────────────┐
+  │   PostgreSQL         │  ← partners, rewards, vouchers etc.
+  └──────────────────────┘
 ```
 
 ## NestJS module structure

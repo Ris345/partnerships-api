@@ -3,20 +3,21 @@ import { DB_TOKEN, KyselyDB } from '../database/database.module';
 import { CreatePartnerDto } from './dto/create-partner.dto';
 import { UpdatePartnerDto } from './dto/update-partner.dto';
 import { UpsertPartnerTranslationDto } from './dto/upsert-partner-translation.dto';
+import { Partner, PartnerLocation, PartnerTranslation } from './interfaces/partner.interface';
 
 @Injectable()
 export class PartnerService {
   constructor(@Inject(DB_TOKEN) private readonly db: KyselyDB) {}
 
-  async createPartner(dto: CreatePartnerDto): Promise<unknown> {
+  async createPartner(dto: CreatePartnerDto): Promise<Partner> {
     throw new HttpException('Not implemented', HttpStatus.NOT_IMPLEMENTED);
   }
 
-  async getPartner(id: number): Promise<unknown> {
+  async getPartner(id: number): Promise<Partner> {
     throw new HttpException('Not implemented', HttpStatus.NOT_IMPLEMENTED);
   }
 
-  async updatePartner(id: number, dto: UpdatePartnerDto): Promise<unknown> {
+  async updatePartner(id: number, dto: UpdatePartnerDto): Promise<Partner> {
     throw new HttpException('Not implemented', HttpStatus.NOT_IMPLEMENTED);
   }
 
@@ -28,7 +29,7 @@ export class PartnerService {
     id: number,
     lang: string,
     dto: UpsertPartnerTranslationDto,
-  ): Promise<unknown> {
+  ): Promise<PartnerTranslation> {
     throw new HttpException('Not implemented', HttpStatus.NOT_IMPLEMENTED);
   }
 
@@ -36,7 +37,7 @@ export class PartnerService {
     throw new HttpException('Not implemented', HttpStatus.NOT_IMPLEMENTED);
   }
 
-  async listLocations(id: number): Promise<unknown[]> {
+  async listLocations(id: number): Promise<PartnerLocation[]> {
     throw new HttpException('Not implemented', HttpStatus.NOT_IMPLEMENTED);
   }
 }
