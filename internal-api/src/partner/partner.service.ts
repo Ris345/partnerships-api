@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { DB_TOKEN, KyselyDB } from '../database/database.module';
+import { CreateLocationDto } from './dto/create-location.dto';
 import { CreatePartnerDto } from './dto/create-partner.dto';
 import { UpdatePartnerDto } from './dto/update-partner.dto';
 import { UpsertPartnerTranslationDto } from './dto/upsert-partner-translation.dto';
@@ -38,6 +39,14 @@ export class PartnerService {
   }
 
   async listLocations(id: number): Promise<PartnerLocation[]> {
+    throw new HttpException('Not implemented', HttpStatus.NOT_IMPLEMENTED);
+  }
+
+  async createLocation(partnerId: number, dto: CreateLocationDto): Promise<PartnerLocation> {
+    throw new HttpException('Not implemented', HttpStatus.NOT_IMPLEMENTED);
+  }
+
+  async deleteLocation(partnerId: number, locationId: number): Promise<void> {
     throw new HttpException('Not implemented', HttpStatus.NOT_IMPLEMENTED);
   }
 }

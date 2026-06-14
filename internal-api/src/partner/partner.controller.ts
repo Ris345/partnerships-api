@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 import { CreateRewardDto } from '../reward/dto/create-reward.dto';
 import { RewardService } from '../reward/reward.service';
+import { CreateLocationDto } from './dto/create-location.dto';
 import { CreatePartnerDto } from './dto/create-partner.dto';
 import { UpdatePartnerDto } from './dto/update-partner.dto';
 import { UpsertPartnerTranslationDto } from './dto/upsert-partner-translation.dto';
@@ -64,6 +65,18 @@ export class PartnerController {
   @Get(':id/locations')
   listLocations(@Param('id') id: string) {
     return this.partnerService.listLocations(+id);
+  }
+
+  @Post(':id/locations')
+  @HttpCode(HttpStatus.CREATED)
+  createLocation(@Param('id') id: string, @Body() dto: CreateLocationDto) {
+    return this.partnerService.createLocation(+id, dto);
+  }
+
+  @Delete(':id/locations/:locationId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  deleteLocation(@Param('id') id: string, @Param('locationId') locationId: string) {
+    return this.partnerService.deleteLocation(+id, +locationId);
   }
 
   @Get(':id/rewards')

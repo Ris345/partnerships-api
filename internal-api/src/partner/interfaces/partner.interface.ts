@@ -21,6 +21,7 @@ export interface PartnerTranslation {
 export interface PartnerLocation {
   id: number;
   partnerId: number;
+  coordinates: { latitude: number; longitude: number };
   createdAt: Date;
   updatedAt: Date;
 }
